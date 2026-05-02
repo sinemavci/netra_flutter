@@ -1,0 +1,33 @@
+name: netra_flutter
+description: "A new Flutter plugin project."
+version: 0.0.1
+homepage:
+
+environment:
+  sdk: ^3.10.4
+  flutter: '>=3.3.0'
+
+dependencies:
+  collection: ^1.19.1
+  flutter:
+    sdk: flutter
+  freezed_annotation: ^3.1.0
+  json_annotation: ^4.11.0
+  pigeon: ^26.3.4
+  plugin_platform_interface: ^2.0.2
+  uuid: ^4.5.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.15.0
+  freezed: ^3.2.5
+  json_serializable: ^6.13.2
+
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: com.example.netra_flutter
+        pluginClass: NetraFlutterPlugin

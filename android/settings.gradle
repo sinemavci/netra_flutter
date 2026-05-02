@@ -1,0 +1,3 @@
+rootProject.name = 'netra_flutter'
+include(":netra")
+project(':netra').projectDir = file('modules/netra')
