@@ -59,7 +59,8 @@ private open class NetraControllerPigeonPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface NetraHostApi {
-  fun get(path: String, callback: (Result<String?>) -> Unit)
+  fun build(baseUrl: String, convertedType: String?, callback: (Result<String?>) -> Unit)
+  fun get(clientId: String, path: String, callback: (Result<String?>) -> Unit)
 
   companion object {
     /** The codec used by NetraHostApi. */
@@ -71,12 +72,34 @@ interface NetraHostApi {
     fun setUp(binaryMessenger: BinaryMessenger, api: NetraHostApi?, messageChannelSuffix: String = "") {
       val separatedMessageChannelSuffix = if (messageChannelSuffix.isNotEmpty()) ".$messageChannelSuffix" else ""
       run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.netra_flutter.NetraHostApi.build$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val baseUrlArg = args[0] as String
+            val convertedTypeArg = args[1] as String?
+            api.build(baseUrlArg, convertedTypeArg) { result: Result<String?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
         val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.netra_flutter.NetraHostApi.get$separatedMessageChannelSuffix", codec)
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val pathArg = args[0] as String
-            api.get(pathArg) { result: Result<String?> ->
+            val clientIdArg = args[0] as String
+            val pathArg = args[1] as String
+            api.get(clientIdArg, pathArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

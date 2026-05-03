@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'dart:async';
+import 'package:netra_flutter/netra_flutter_plugin.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +24,10 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
+    final netraClient = await NetraClient.build(
+        baseUrl: "http://10.0.2.2:3001", convertedType: ConverterType.gson);
+
+    await netraClient.get("/?status=200&delay=1000");
   }
 
   @override

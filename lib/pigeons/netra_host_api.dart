@@ -10,6 +10,9 @@ import 'package:pigeon/pigeon.dart';
 ))
 @HostApi()
 abstract class NetraHostApi {
- @async
-  String? get(String path);
+  @async
+  String? build(String baseUrl, String? convertedType);
+
+  @async
+  String? get(String clientId, String path);
 }
