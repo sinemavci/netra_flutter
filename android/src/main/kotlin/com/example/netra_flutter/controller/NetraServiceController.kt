@@ -3,8 +3,11 @@ package com.example.netra_flutter.controller
 import android.content.Context
 import android.util.Log
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
+import com.example.netra_flutter.dto.NetraResponseDTO
+import com.google.gson.Gson
 import com.netra.library.NetraClient
 import com.netra.library.NetraClientList
+import com.netra.library.NetraResponse
 import com.netra.library.converter.NetraGsonConverter
 import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
@@ -16,6 +19,7 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         path: String,
         callback: (Result<String?>) -> Unit
     ) {
+        val gson = Gson()
         val client = NetraClientList.getClients().find { it.id == clientId }
         if (client != null) {
             val request = client.get(path)
@@ -30,7 +34,15 @@ class NetraServiceController(val context: Context) : NetraHostApi {
                 if (result is Status.Success<*>) {
                     //todo
                     // callback.invoke(Result.success(result.response))
-                    Log.e("result is success", result.response.toString())
+                    val response =
+                        NetraResponse(
+                            data = mapOf("data" to gson.toJson(result.response)),
+                            statusCode = 200,
+                            error = null
+                        )
+                    val result = gson.toJson(NetraResponseDTO.fromDataModel(response))
+                    Log.e("result is success", result)
+                    callback.invoke(Result.success(result))
                 } else if (result is Status.Retrying) {
                     Log.e("result is Retrying", result.code.toString())
                 } else if (result is Status.Error) {
@@ -38,7 +50,6 @@ class NetraServiceController(val context: Context) : NetraHostApi {
                 } else {
                     Log.e("result is Failure", (result as Status.Failure).message.toString())
                 }
-
             }
         } else {
             //todo: throw client not found

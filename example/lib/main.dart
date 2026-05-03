@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'dart:async';
@@ -14,6 +16,17 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
+class DataList {
+  final List<Data> list;
+
+  DataList(this.list);
+}
+
+class Data {
+  final String name;
+  Data(this.name);
+}
+
 class _MyAppState extends State<MyApp> {
 
   @override
@@ -27,7 +40,8 @@ class _MyAppState extends State<MyApp> {
     final netraClient = await NetraClient.build(
         baseUrl: "http://10.0.2.2:3001", convertedType: ConverterType.gson);
 
-    await netraClient.get("/?status=200&delay=1000");
+    final result = await netraClient.get("/?status=200&delay=1000");
+    print("result in main: ${result?.data}");
   }
 
   @override
