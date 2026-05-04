@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:netra_flutter/common/dto/netra_response_dto.dart';
+import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/models/netra_response.dart';
+import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/pigeons/netra_host_api.g.dart';
 
 class NetraController {
@@ -20,10 +22,13 @@ class NetraController {
     return result;
   }
 
-  Future<NetraResponse?> get(String clientId, String url) async {
+  Future<NetraResponse?> get(String clientId, String url,
+      RequestOptions? requestOptions,) async {
     NetraResponse? response;
     try {
-      final result = await _hostApi.get(clientId, url);
+      var _requestOptions = requestOptions != null ? jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      final result = await _hostApi.get(clientId, url, _requestOptions);
       if (result != null) {
         response = NetraResponseDTO.fromJson(json.decode(result)).toDataModel();
       }

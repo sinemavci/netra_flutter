@@ -60,7 +60,7 @@ private open class NetraControllerPigeonPigeonCodec : StandardMessageCodec() {
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface NetraHostApi {
   fun build(baseUrl: String, convertedType: String?, callback: (Result<String?>) -> Unit)
-  fun get(clientId: String, path: String, callback: (Result<String?>) -> Unit)
+  fun get(clientId: String, path: String, requestOptions: String?, callback: (Result<String?>) -> Unit)
 
   companion object {
     /** The codec used by NetraHostApi. */
@@ -99,7 +99,8 @@ interface NetraHostApi {
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
             val pathArg = args[1] as String
-            api.get(clientIdArg, pathArg) { result: Result<String?> ->
+            val requestOptionsArg = args[2] as String?
+            api.get(clientIdArg, pathArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

@@ -5,32 +5,45 @@ import android.util.Log
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
 import com.example.netra_flutter.dto.NetraResponseDTO
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.netra.library.NetraClient
 import com.netra.library.NetraClientList
 import com.netra.library.NetraResponse
 import com.netra.library.converter.NetraGsonConverter
 import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
+import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.Status
-
 class NetraServiceController(val context: Context) : NetraHostApi {
     override fun get(
         clientId: String,
         path: String,
+        requestOptions: String?,
         callback: (Result<String?>) -> Unit
     ) {
         val gson = Gson()
         val client = NetraClientList.getClients().find { it.id == clientId }
-        if (client != null) {
-            val request = client.get(path)
-//            .slowMode()
-//            .addHeader("headercustom", "custom")
-                .asObject<Any>()
-//            .withCache(Cache(null))
-//            .whenOffline(OfflinePolicyAction.RETRY(4))
-//            .whenSlowNetwork(SlowNetworkPolicyAction.TIMEOUT(timeout = 3))
+        val type = object : TypeToken<Map<String, Any>>() {}.type
+        val parsedMap = gson.fromJson<Map<String, Any>>(requestOptions, type)
 
-            request.enqueue { result ->
+        val _offlinePolicyAction = parsedMap["offlinePolicyAction"] as? Map<*, *>
+        val identifier = _offlinePolicyAction?.get("identifier") as? String
+        val retries = (_offlinePolicyAction?.get("retries") as? Double)?.toInt()
+        var offlinePolicyAction: OfflinePolicyAction? = null
+        if (_offlinePolicyAction != null && identifier != null) {
+            offlinePolicyAction =
+                OfflinePolicyAction.fromIdentifier(identifier, retries)
+        }
+        Log.e(
+            "offlinePolicyAction: ",
+            "_offlinePolicyAction: ${_offlinePolicyAction} _retries: ${retries} offlinePolicyAction: ${offlinePolicyAction}"
+        )
+        if (client != null) {
+            val requestBuilder = client.get(path).asObject<Any>()
+            offlinePolicyAction?.let {
+                requestBuilder.whenOffline(offlinePolicyAction)
+            }
+            requestBuilder.enqueue { result ->
                 if (result is Status.Success<*>) {
                     //todo
                     // callback.invoke(Result.success(result.response))

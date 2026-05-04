@@ -14,5 +14,5 @@ abstract class NetraHostApi {
   String? build(String baseUrl, String? convertedType);
 
   @async
-  String? get(String clientId, String path);
+  String? get(String clientId, String path, String? requestOptions);
 }
