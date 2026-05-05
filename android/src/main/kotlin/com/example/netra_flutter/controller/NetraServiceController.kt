@@ -13,6 +13,7 @@ import com.netra.library.converter.NetraGsonConverter
 import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
 import com.netra.library.enums.OfflinePolicyAction
+import com.netra.library.enums.SlowNetworkPolicyAction
 import com.netra.library.enums.Status
 class NetraServiceController(val context: Context) : NetraHostApi {
     override fun get(
@@ -25,6 +26,20 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val client = NetraClientList.getClients().find { it.id == clientId }
         val type = object : TypeToken<Map<String, Any>>() {}.type
         val parsedMap = gson.fromJson<Map<String, Any>>(requestOptions, type)
+
+        val _slowNetworkPolicyAction = parsedMap["slowNetworkPolicyAction"] as? Map<*, *>
+        val slowNetworkIdentifier = _slowNetworkPolicyAction?.get("identifier") as? String
+        val delay = (_slowNetworkPolicyAction?.get("delay") as? Double)?.toLong()
+        val timeout = (_slowNetworkPolicyAction?.get("timeout") as? Double)?.toLong()
+        var slowNetworkPolicyAction: SlowNetworkPolicyAction? = null
+        if (_slowNetworkPolicyAction != null && slowNetworkIdentifier != null) {
+            slowNetworkPolicyAction =
+                SlowNetworkPolicyAction.fromIdentifier(slowNetworkIdentifier, delay, timeout)
+        }
+        Log.e(
+            "slowNetworkPolicyAction: ",
+            "slowNetworkPolicyAction: ${_slowNetworkPolicyAction} delay: ${delay} timeout: ${timeout} slowNetworkPolicyAction: ${slowNetworkPolicyAction}"
+        )
 
         val _offlinePolicyAction = parsedMap["offlinePolicyAction"] as? Map<*, *>
         val identifier = _offlinePolicyAction?.get("identifier") as? String
@@ -42,6 +57,9 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             val requestBuilder = client.get(path).asObject<Any>()
             offlinePolicyAction?.let {
                 requestBuilder.whenOffline(offlinePolicyAction)
+            }
+            slowNetworkPolicyAction?.let {
+                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             requestBuilder.enqueue { result ->
                 if (result is Status.Success<*>) {

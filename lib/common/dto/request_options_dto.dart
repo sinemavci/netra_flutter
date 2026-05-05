@@ -1,6 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:netra_flutter/common/dto/offline_policy_action_dto.dart';
+import 'package:netra_flutter/common/dto/slow_network_policy_action_dto.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
+import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 
 part 'request_options_dto.freezed.dart';
@@ -12,6 +14,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
 
   const factory RequestOptionsDTO({
     required OfflinePolicyActionDTO? offlinePolicyAction,
+    required SlowNetworkPolicyActionDTO? slowNetworkPolicyAction,
   }) = _RequestOptionsDTO;
 
   factory RequestOptionsDTO.fromJson(Map<String, dynamic> json) =>
@@ -22,6 +25,10 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
       offlinePolicyAction: model.offlinePolicyAction != null
           ? OfflinePolicyActionDTO.fromDataModel(model.offlinePolicyAction!)
           : null,
+      slowNetworkPolicyAction: model.slowNetworkPolicyAction != null
+          ? SlowNetworkPolicyActionDTO.fromDataModel(
+          model.slowNetworkPolicyAction!)
+          : null,
     );
   }
 
@@ -31,6 +38,12 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           ? null
           : OfflinePolicyAction.fromIdentifier(offlinePolicyAction!.identifier!,
           retries: offlinePolicyAction!.retries),
+      slowNetworkPolicyAction: slowNetworkPolicyAction == null
+          ? null
+          : SlowNetworkPolicyAction.fromIdentifier(
+        slowNetworkPolicyAction!.identifier!,
+        delay: slowNetworkPolicyAction!.delay,
+        timeout: slowNetworkPolicyAction!.timeout,),
     );
   }
 }

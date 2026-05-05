@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
+import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'dart:async';
 import 'package:netra_flutter/netra_flutter_plugin.dart';
@@ -37,14 +38,15 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
     final netraClient = await NetraClient.build(
         baseUrl: "http://10.0.2.2:3001", convertedType: ConverterType.gson);
 
     final result = await netraClient.get(url: "/?status=200&delay=1000",
-        requestOptions: RequestOptions(
-            offlinePolicyAction: OfflinePolicyAction.retry(retries: 3)));
+      requestOptions: RequestOptions(
+        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(
+            delay: 2),),);
     print("result in main: ${result?.data}");
   }
 
