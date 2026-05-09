@@ -4,7 +4,7 @@ sealed class OfflinePolicyAction {
   const OfflinePolicyAction(this.identifier);
 
   static const queue      = QueuePolicyAction();
-  static const useCache   = UseCachePolicyAction();
+  static const useCache   = UseCacheOfflinePolicyAction();
   static const throwError = ThrowErrorPolicyAction();
   static RetryPolicyAction retry({required int retries}) =>
       RetryPolicyAction(retries: retries);
@@ -12,7 +12,7 @@ sealed class OfflinePolicyAction {
   static OfflinePolicyAction fromIdentifier(String identifier, {int? retries}) {
     return switch (identifier) {
       "QUEUE"       => const QueuePolicyAction(),
-      "USE_CACHE"   => const UseCachePolicyAction(),
+      "USE_CACHE"   => const UseCacheOfflinePolicyAction(),
       "RETRY"       => RetryPolicyAction(retries: retries ?? 1),
       "THROW_ERROR" => const ThrowErrorPolicyAction(),
       _             => throw ArgumentError("Unknown offline policy: $identifier"),
@@ -24,8 +24,8 @@ class QueuePolicyAction extends OfflinePolicyAction {
   const QueuePolicyAction() : super("QUEUE");
 }
 
-class UseCachePolicyAction extends OfflinePolicyAction {
-  const UseCachePolicyAction() : super("USE_CACHE");
+class UseCacheOfflinePolicyAction extends OfflinePolicyAction {
+  const UseCacheOfflinePolicyAction() : super("USE_CACHE");
 }
 
 class RetryPolicyAction extends OfflinePolicyAction {
