@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:ffi';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
@@ -37,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  Future<void> initPlatformState() async {
+  Future<void> handleGet() async {
     final netraClient = await NetraClient.build(
         baseUrl: "http://10.0.2.2:3001", convertedType: ConverterType.gson);
 
@@ -50,6 +52,26 @@ class _MyAppState extends State<MyApp> {
     print("result in main: ${result?.statusCode}  statusMessage ${result?.statusMessage} data: ${result?.data}");
   }
 
+  Future<void> handlePost() async {
+    final netraClient = await NetraClient.build(
+        baseUrl: "https://jsonplaceholder.typicode.com",
+        convertedType: ConverterType.kotlinX);
+
+    final result = await netraClient.post(url: "/users",
+      body: RequestBody.createBytes(Uint8List.fromList(
+          utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
+      ),
+      // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
+      requestOptions: RequestOptions(
+        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+      ),
+    );
+    print("result in main: ${result?.statusCode}  statusMessage ${result
+        ?.statusMessage} data: ${result?.data}");
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -57,8 +79,11 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        body: Center(
-          child: ElevatedButton(onPressed: initPlatformState, child: Text('opnress',))
+        body: Column(
+          children:[
+            ElevatedButton(onPressed: handleGet, child: Text('get',)),
+            ElevatedButton(onPressed: handlePost, child: Text('post',))
+          ]
         ),
       ),
     );

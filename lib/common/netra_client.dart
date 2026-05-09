@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:netra_flutter/common/controllers/netra_controller.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
+import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:uuid/uuid.dart';
@@ -27,7 +28,16 @@ class NetraClient {
   Future<Response?> get(
       {required String url, RequestOptions? requestOptions}) async {
     final response = await NetraController().get(id, url, requestOptions);
-    print("response: ${response?.data}");
+    return response;
+  }
+
+  Future<Response?> post({
+    required String url,
+    required RequestBody? body,
+    RequestOptions? requestOptions,
+  }) async {
+    final response = await NetraController().post(
+        id, url, body, requestOptions);
     return response;
   }
 }

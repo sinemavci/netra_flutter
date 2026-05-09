@@ -61,6 +61,7 @@ private open class NetraControllerPigeonPigeonCodec : StandardMessageCodec() {
 interface NetraHostApi {
   fun build(baseUrl: String, convertedType: String?, callback: (Result<String?>) -> Unit)
   fun get(clientId: String, path: String, requestOptions: String?, callback: (Result<String?>) -> Unit)
+  fun post(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
 
   companion object {
     /** The codec used by NetraHostApi. */
@@ -101,6 +102,29 @@ interface NetraHostApi {
             val pathArg = args[1] as String
             val requestOptionsArg = args[2] as String?
             api.get(clientIdArg, pathArg, requestOptionsArg) { result: Result<String?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.netra_flutter.NetraHostApi.post$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val clientIdArg = args[0] as String
+            val pathArg = args[1] as String
+            val dataArg = args[2] as String?
+            val requestOptionsArg = args[3] as String?
+            api.post(clientIdArg, pathArg, dataArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

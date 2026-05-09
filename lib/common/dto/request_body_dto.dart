@@ -1,0 +1,40 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:netra_flutter/common/dto/offline_policy_action_dto.dart';
+import 'package:netra_flutter/common/dto/slow_network_policy_action_dto.dart';
+import 'package:netra_flutter/common/enums/offline_policy_action.dart';
+import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
+import 'package:netra_flutter/common/models/request_body.dart';
+import 'package:netra_flutter/common/models/request_options.dart';
+
+part 'request_body_dto.freezed.dart';
+part 'request_body_dto.g.dart';
+
+@freezed
+abstract class RequestBodyDTO with _$RequestBodyDTO {
+  const RequestBodyDTO._();
+
+  const factory RequestBodyDTO({
+    required dynamic content,
+    required String contentType,
+    required bool isMultipart,
+    required String type,
+  }) = _RequestBodyDTO;
+
+  factory RequestBodyDTO.fromJson(Map<String, dynamic> json) =>
+      _$RequestBodyDTOFromJson(json);
+
+  factory RequestBodyDTO.fromDataModel(RequestBody model) {
+    var typeResult = 'json';
+    if (model.content is Map) {
+      typeResult = 'map';
+    } else if (model.content is List<int>) {
+      typeResult = 'raw';
+    }
+    return RequestBodyDTO(
+        content: model.content,
+        contentType: model.contentType,
+        isMultipart: model.isMultipart,
+        type: typeResult
+    );
+  }
+}
