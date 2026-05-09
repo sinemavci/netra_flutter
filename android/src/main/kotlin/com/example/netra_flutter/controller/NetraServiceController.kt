@@ -62,9 +62,11 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val requestOptionsDto = requestOptions?.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
+        Log.e("", "data: ${data}")
         val requestBody = data?.let {
             gson.fromJson(it, RequestBodyDTO::class.java).toDataModel()
         } ?: NetraRequestBody.EMPTY
+        Log.e("", "requestBody: ${requestBody.isMultipart}")
         val offlinePolicyAction: OfflinePolicyAction? = requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? = requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
 

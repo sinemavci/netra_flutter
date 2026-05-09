@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:netra_flutter/common/dto/request_body_part_dto.dart';
+import 'package:netra_flutter/common/models/request_body_part.dart';
+
 class RequestBody {
   final dynamic content;
   final String contentType;
@@ -19,11 +24,11 @@ class RequestBody {
   }
 
   factory RequestBody.createBytes(List<int> bytes, {
-    String contentType = "application/json; charset=utf-8",
+    String? contentType,
   }) {
     return RequestBody._(
       content: bytes,
-      contentType: contentType,
+      contentType: contentType ?? "application/json; charset=utf-8",
     );
   }
 
@@ -33,13 +38,14 @@ class RequestBody {
     );
   }
 
-// factory NetraRequestBody.multipart(
-//     List<NetraPart> parts,
-//     ) {
-//   return NetraRequestBody._(
-//     content: parts,
-//     contentType: "multipart/form-data",
-//     isMultipart: true,
-//   );
-// }
+  factory RequestBody.multipart(List<RequestBodyPart> parts,) {
+    return RequestBody._(
+      content: jsonEncode(parts.map((it) {
+        return RequestBodyPartDTO
+            .fromDataModel(it).toJson();
+      }).toList()),
+      contentType: "multipart/form-data",
+      isMultipart: true,
+    );
+  }
 }

@@ -1,10 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:netra_flutter/common/dto/offline_policy_action_dto.dart';
-import 'package:netra_flutter/common/dto/slow_network_policy_action_dto.dart';
-import 'package:netra_flutter/common/enums/offline_policy_action.dart';
-import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/request_body.dart';
-import 'package:netra_flutter/common/models/request_options.dart';
 
 part 'request_body_dto.freezed.dart';
 part 'request_body_dto.g.dart';
