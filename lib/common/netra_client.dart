@@ -40,4 +40,34 @@ class NetraClient {
         id, url, body, requestOptions);
     return response;
   }
+
+  Future<Response?> put({
+    required String url,
+    required RequestBody? body,
+    RequestOptions? requestOptions,
+  }) async {
+    final response = await NetraController().put(
+        id, url, body, requestOptions);
+    return response;
+  }
+
+  Future<Response?> patch({
+    required String url,
+    required RequestBody? body,
+    RequestOptions? requestOptions,
+  }) async {
+    final response = await NetraController().patch(
+        id, url, body, requestOptions);
+    return response;
+  }
+
+  Future<Response?> delete({
+    required String url,
+    RequestBody? body,
+    RequestOptions? requestOptions,
+  }) async {
+    final response = await NetraController().delete(
+        id, url, body, requestOptions);
+    return response;
+  }
 }

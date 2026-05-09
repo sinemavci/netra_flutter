@@ -72,6 +72,40 @@ class _MyAppState extends State<MyApp> {
         ?.statusMessage} data: ${result?.data}");
   }
 
+  Future<void> handlePut() async {
+    final netraClient = await NetraClient.build(
+        baseUrl: "https://jsonplaceholder.typicode.com",
+        convertedType: ConverterType.kotlinX);
+
+    final result = await netraClient.put(url: "/users/1",
+      body: RequestBody.createBytes(Uint8List.fromList(
+          utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
+      ),
+      // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
+      requestOptions: RequestOptions(
+        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+      ),
+    );
+    print("result in main: ${result?.statusCode}  statusMessage ${result
+        ?.statusMessage} data: ${result?.data}");
+  }
+
+  Future<void> handleDelete() async {
+    final netraClient = await NetraClient.build(
+        baseUrl: "https://jsonplaceholder.typicode.com",
+        convertedType: ConverterType.kotlinX);
+
+    final result = await netraClient.delete(url: "/users/1",
+      requestOptions: RequestOptions(
+        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+      ),
+    );
+    print("result in main: ${result?.statusCode}  statusMessage ${result
+        ?.statusMessage} data: ${result?.data}");
+  }
+
   final ImagePicker _picker = ImagePicker();
 
   Future<void> pickImage() async {
@@ -116,7 +150,9 @@ class _MyAppState extends State<MyApp> {
           children:[
             ElevatedButton(onPressed: handleGet, child: Text('get',)),
             ElevatedButton(onPressed: handlePost, child: Text('post',)),
-            ElevatedButton(onPressed: pickImage, child: Text('post image',))
+            ElevatedButton(onPressed: pickImage, child: Text('post image',)),
+            ElevatedButton(onPressed: handlePut, child: Text('put',)),
+            ElevatedButton(onPressed: handleDelete, child: Text('delete',))
           ]
         ),
       ),

@@ -50,7 +50,71 @@ class NetraController {
           RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
       var requestBodyJson = data != null ? jsonEncode(
           RequestBodyDTO.fromDataModel(data).toJson()) : null;
-      final result = await _hostApi.post(clientId, url, requestBodyJson, requestOptionsJson);
+      final result = await _hostApi.post(
+          clientId, url, requestBodyJson, requestOptionsJson);
+      if (result != null) {
+        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+      }
+    } catch (e) {
+      print("result error: ${e}");
+    }
+    return response;
+  }
+
+  Future<Response?> put(String clientId,
+      String url,
+      RequestBody? data,
+      RequestOptions? requestOptions,) async {
+    Response? response;
+    try {
+      var requestOptionsJson = requestOptions != null ? jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestBodyJson = data != null ? jsonEncode(
+          RequestBodyDTO.fromDataModel(data).toJson()) : null;
+      final result = await _hostApi.put(
+          clientId, url, requestBodyJson, requestOptionsJson);
+      if (result != null) {
+        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+      }
+    } catch (e) {
+      print("result error: ${e}");
+    }
+    return response;
+  }
+
+  Future<Response?> patch(String clientId,
+      String url,
+      RequestBody? data,
+      RequestOptions? requestOptions,) async {
+    Response? response;
+    try {
+      var requestOptionsJson = requestOptions != null ? jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestBodyJson = data != null ? jsonEncode(
+          RequestBodyDTO.fromDataModel(data).toJson()) : null;
+      final result = await _hostApi.patch(
+          clientId, url, requestBodyJson, requestOptionsJson);
+      if (result != null) {
+        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+      }
+    } catch (e) {
+      print("result error: ${e}");
+    }
+    return response;
+  }
+
+  Future<Response?> delete(String clientId,
+      String url,
+      RequestBody? data,
+      RequestOptions? requestOptions,) async {
+    Response? response;
+    try {
+      var requestOptionsJson = requestOptions != null ? jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestBodyJson = data != null ? jsonEncode(
+          RequestBodyDTO.fromDataModel(data).toJson()) : null;
+      final result = await _hostApi.delete(
+          clientId, url, requestBodyJson, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }

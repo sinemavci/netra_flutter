@@ -17,28 +17,36 @@ import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
 
 class NetraServiceController(val context: Context) : NetraHostApi {
+    val gson = Gson()
     override fun get(
         clientId: String,
         path: String,
         requestOptions: String?,
         callback: (Result<String?>) -> Unit
     ) {
-        val gson = Gson()
         val client = NetraClientList.getClients().find { it.id == clientId }
         val requestOptionsDto = requestOptions?.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
-        val offlinePolicyAction: OfflinePolicyAction? = requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? = requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val offlinePolicyAction: OfflinePolicyAction? =
+            requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
 
         if (client != null) {
             val requestBuilder = client.get(path).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e("", "bridge setted offline policy action as: ${offlinePolicyAction.identifier}")
+                Log.e(
+                    "",
+                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
+                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e("", "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}")
+                Log.e(
+                    "",
+                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
+                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()
@@ -57,27 +65,164 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         requestOptions: String?,
         callback: (Result<String?>) -> Unit
     ) {
-        val gson = Gson()
         val client = NetraClientList.getClients().find { it.id == clientId }
         val requestOptionsDto = requestOptions?.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
-        Log.e("", "data: ${data}")
         val requestBody = data?.let {
             gson.fromJson(it, RequestBodyDTO::class.java).toDataModel()
         } ?: NetraRequestBody.EMPTY
-        Log.e("", "requestBody: ${requestBody.isMultipart}")
-        val offlinePolicyAction: OfflinePolicyAction? = requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? = requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val offlinePolicyAction: OfflinePolicyAction? =
+            requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
 
         if (client != null) {
             val requestBuilder = client.post(path, requestBody).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e("", "bridge setted offline policy action as: ${offlinePolicyAction.identifier}")
+                Log.e(
+                    "",
+                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
+                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e("", "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}")
+                Log.e(
+                    "",
+                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
+                )
+                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            val response = requestBuilder.execute()
+            val result = gson.toJson(ResponseDTO.fromDataModel(response))
+            callback.invoke(Result.success(result))
+
+        } else {
+            callback.invoke(Result.failure(Exception("Client not found!")))
+        }
+    }
+
+    override fun put(
+        clientId: String,
+        path: String,
+        data: String?,
+        requestOptions: String?,
+        callback: (Result<String?>) -> Unit
+    ) {
+        val client = NetraClientList.getClients().find { it.id == clientId }
+        val requestOptionsDto = requestOptions?.let {
+            gson.fromJson(it, RequestOptionsDTO::class.java)
+        }
+        val requestBody = data?.let {
+            gson.fromJson(it, RequestBodyDTO::class.java).toDataModel()
+        } ?: NetraRequestBody.EMPTY
+        val offlinePolicyAction: OfflinePolicyAction? =
+            requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+
+        if (client != null) {
+            val requestBuilder = client.put(path, requestBody).asObject<Any>()
+            offlinePolicyAction?.let {
+                Log.e(
+                    "",
+                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
+                )
+                requestBuilder.whenOffline(offlinePolicyAction)
+            }
+            slowNetworkPolicyAction?.let {
+                Log.e(
+                    "",
+                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
+                )
+                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            val response = requestBuilder.execute()
+            val result = gson.toJson(ResponseDTO.fromDataModel(response))
+            callback.invoke(Result.success(result))
+
+        } else {
+            callback.invoke(Result.failure(Exception("Client not found!")))
+        }
+    }
+
+    override fun patch(
+        clientId: String,
+        path: String,
+        data: String?,
+        requestOptions: String?,
+        callback: (Result<String?>) -> Unit
+    ) {
+        val client = NetraClientList.getClients().find { it.id == clientId }
+        val requestOptionsDto = requestOptions?.let {
+            gson.fromJson(it, RequestOptionsDTO::class.java)
+        }
+        val requestBody = data?.let {
+            gson.fromJson(it, RequestBodyDTO::class.java).toDataModel()
+        } ?: NetraRequestBody.EMPTY
+        val offlinePolicyAction: OfflinePolicyAction? =
+            requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+
+        if (client != null) {
+            val requestBuilder = client.patch(path, requestBody).asObject<Any>()
+            offlinePolicyAction?.let {
+                Log.e(
+                    "",
+                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
+                )
+                requestBuilder.whenOffline(offlinePolicyAction)
+            }
+            slowNetworkPolicyAction?.let {
+                Log.e(
+                    "",
+                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
+                )
+                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            val response = requestBuilder.execute()
+            val result = gson.toJson(ResponseDTO.fromDataModel(response))
+            callback.invoke(Result.success(result))
+
+        } else {
+            callback.invoke(Result.failure(Exception("Client not found!")))
+        }
+    }
+
+    override fun delete(
+        clientId: String,
+        path: String,
+        data: String?,
+        requestOptions: String?,
+        callback: (Result<String?>) -> Unit
+    ) {
+        val client = NetraClientList.getClients().find { it.id == clientId }
+        val requestOptionsDto = requestOptions?.let {
+            gson.fromJson(it, RequestOptionsDTO::class.java)
+        }
+        val requestBody = data?.let {
+            gson.fromJson(it, RequestBodyDTO::class.java).toDataModel()
+        } ?: NetraRequestBody.EMPTY
+        val offlinePolicyAction: OfflinePolicyAction? =
+            requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+
+        if (client != null) {
+            val requestBuilder = client.delete(path, requestBody).asObject<Any>()
+            offlinePolicyAction?.let {
+                Log.e(
+                    "",
+                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
+                )
+                requestBuilder.whenOffline(offlinePolicyAction)
+            }
+            slowNetworkPolicyAction?.let {
+                Log.e(
+                    "",
+                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
+                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()
