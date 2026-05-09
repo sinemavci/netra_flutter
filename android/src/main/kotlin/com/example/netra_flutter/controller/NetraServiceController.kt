@@ -3,18 +3,17 @@ package com.example.netra_flutter.controller
 import android.content.Context
 import android.util.Log
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
-import com.example.netra_flutter.dto.NetraResponseDTO
+import com.example.netra_flutter.dto.ResponseDTO
+import com.example.netra_flutter.dto.RequestOptionsDTO
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.netra.library.NetraClient
 import com.netra.library.NetraClientList
-import com.netra.library.NetraResponse
 import com.netra.library.converter.NetraGsonConverter
 import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
 import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
-import com.netra.library.enums.Status
+
 class NetraServiceController(val context: Context) : NetraHostApi {
     override fun get(
         clientId: String,
@@ -24,66 +23,28 @@ class NetraServiceController(val context: Context) : NetraHostApi {
     ) {
         val gson = Gson()
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val type = object : TypeToken<Map<String, Any>>() {}.type
-        val parsedMap = gson.fromJson<Map<String, Any>>(requestOptions, type)
-
-        val _slowNetworkPolicyAction = parsedMap["slowNetworkPolicyAction"] as? Map<*, *>
-        val slowNetworkIdentifier = _slowNetworkPolicyAction?.get("identifier") as? String
-        val delay = (_slowNetworkPolicyAction?.get("delay") as? Double)?.toLong()
-        val timeout = (_slowNetworkPolicyAction?.get("timeout") as? Double)?.toLong()
-        var slowNetworkPolicyAction: SlowNetworkPolicyAction? = null
-        if (_slowNetworkPolicyAction != null && slowNetworkIdentifier != null) {
-            slowNetworkPolicyAction =
-                SlowNetworkPolicyAction.fromIdentifier(slowNetworkIdentifier, delay, timeout)
+        val requestOptionsDto = requestOptions?.let {
+            gson.fromJson(it, RequestOptionsDTO::class.java)
         }
-        Log.e(
-            "slowNetworkPolicyAction: ",
-            "slowNetworkPolicyAction: ${_slowNetworkPolicyAction} delay: ${delay} timeout: ${timeout} slowNetworkPolicyAction: ${slowNetworkPolicyAction}"
-        )
+        val offlinePolicyAction: OfflinePolicyAction? = requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? = requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
 
-        val _offlinePolicyAction = parsedMap["offlinePolicyAction"] as? Map<*, *>
-        val identifier = _offlinePolicyAction?.get("identifier") as? String
-        val retries = (_offlinePolicyAction?.get("retries") as? Double)?.toInt()
-        var offlinePolicyAction: OfflinePolicyAction? = null
-        if (_offlinePolicyAction != null && identifier != null) {
-            offlinePolicyAction =
-                OfflinePolicyAction.fromIdentifier(identifier, retries)
-        }
-        Log.e(
-            "offlinePolicyAction: ",
-            "_offlinePolicyAction: ${_offlinePolicyAction} _retries: ${retries} offlinePolicyAction: ${offlinePolicyAction}"
-        )
         if (client != null) {
             val requestBuilder = client.get(path).asObject<Any>()
             offlinePolicyAction?.let {
+                Log.e("", "bridge setted offline policy action as: ${offlinePolicyAction.identifier}")
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
+                Log.e("", "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}")
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
-            requestBuilder.enqueue { result ->
-                if (result is Status.Success<*>) {
-                    //todo
-                    // callback.invoke(Result.success(result.response))
-                    val response =
-                        NetraResponse(
-                            data = mapOf("data" to gson.toJson(result.response)),
-                            statusCode = 200,
-                            error = null
-                        )
-                    val result = gson.toJson(NetraResponseDTO.fromDataModel(response))
-                    Log.e("result is success", result)
-                    callback.invoke(Result.success(result))
-                } else if (result is Status.Retrying) {
-                    Log.e("result is Retrying", result.code.toString())
-                } else if (result is Status.Error) {
-                    Log.e("result is Error", result.code.toString())
-                } else {
-                    Log.e("result is Failure", (result as Status.Failure).message.toString())
-                }
-            }
+            val response = requestBuilder.execute()
+            val result = gson.toJson(ResponseDTO.fromDataModel(response))
+            callback.invoke(Result.success(result))
+
         } else {
-            //todo: throw client not found
+            callback.invoke(Result.failure(Exception("Client not found!")))
         }
     }
 

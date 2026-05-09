@@ -35,7 +35,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    initPlatformState();
   }
 
   Future<void> initPlatformState() async {
@@ -45,9 +44,10 @@ class _MyAppState extends State<MyApp> {
     final result = await netraClient.get(url: "/?status=200&delay=1000",
       requestOptions: RequestOptions(
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(
-            delay: 2),),);
-    print("result in main: ${result?.data}");
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+      ),
+    );
+    print("result in main: ${result?.statusCode}  statusMessage ${result?.statusMessage} data: ${result?.data}");
   }
 
   @override
@@ -57,9 +57,9 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('Plugin example app'),
         ),
-        // body: Center(
-        //   child: Text('Running on: $_platformVersion\n'),
-        // ),
+        body: Center(
+          child: ElevatedButton(onPressed: initPlatformState, child: Text('opnress',))
+        ),
       ),
     );
   }
