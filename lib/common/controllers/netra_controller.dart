@@ -12,11 +12,14 @@ import 'package:netra_flutter/pigeons/netra_host_api.g.dart';
 class NetraController {
   final _hostApi = NetraHostApi();
 
-  Future<String?> build(
-      {required String baseUrl, ConverterType? convertedType}) async {
+  Future<String?> build({
+    required String baseUrl,
+    ConverterType? convertedType,
+    Map<String, String>? headers,
+  }) async {
     String? result;
     try {
-      final clientId = await _hostApi.build(baseUrl, convertedType?.identifier);
+      final clientId = await _hostApi.build(baseUrl, convertedType?.identifier, headers);
       result = clientId;
     } catch (e) {
       print("result error: ${e}");

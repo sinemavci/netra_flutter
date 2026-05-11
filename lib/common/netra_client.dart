@@ -14,10 +14,13 @@ class NetraClient {
 
   NetraClient._create(this.baseUrl, this.converterType) : id = Uuid().v4();
 
-  static Future<NetraClient> build(
-      { required String baseUrl, ConverterType? convertedType}) async {
+  static Future<NetraClient> build({
+    required String baseUrl,
+    Map<String, String>? headers,
+    ConverterType? convertedType,
+  }) async {
     final clientId = await NetraController().build(
-        baseUrl: baseUrl, convertedType: convertedType);
+        baseUrl: baseUrl, convertedType: convertedType, headers: headers);
     var client = NetraClient._create(baseUrl, convertedType);
     if (clientId != null) {
       client.id = clientId;

@@ -72,7 +72,8 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.post(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
+            val requestBuilder =
+                client.post(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
@@ -109,7 +110,8 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.put(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
+            val requestBuilder =
+                client.put(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
@@ -146,7 +148,8 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.patch(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
+            val requestBuilder =
+                client.patch(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
@@ -183,7 +186,8 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.delete(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
+            val requestBuilder =
+                client.delete(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
@@ -202,11 +206,15 @@ class NetraServiceController(val context: Context) : NetraHostApi {
     override fun build(
         baseUrl: String,
         convertedType: String?,
+        headers: Map<String, String>?,
         callback: (Result<String?>) -> Unit
     ) {
         try {
             val clientBuilder: NetraClient.Builder = NetraClient.Builder(context)
                 .baseUrl(baseUrl)
+            headers?.let {
+                clientBuilder.addHeaders(it)
+            }
             if (convertedType !== null) {
                 when (convertedType) {
                     NetraMoshiConverter().type -> {

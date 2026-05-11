@@ -42,7 +42,11 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> handleGet() async {
     final netraClient = await NetraClient.build(
-        baseUrl: "http://10.0.2.2:3001", convertedType: ConverterType.gson);
+        baseUrl: "http://10.0.2.2:3001",
+        convertedType: ConverterType.gson,
+        headers: {
+          "here": "heree"
+        });
 
     final result = await netraClient.get(url: "/?status=200&delay=1000",
       requestOptions: RequestOptions(
@@ -51,7 +55,9 @@ class _MyAppState extends State<MyApp> {
       ),
     );
 
-    print("result in main: ${jsonEncode(result?.headers)}  statusMessage ${result?.statusMessage} data: ${result?.data}");
+    print(
+        "result in main: ${jsonEncode(result?.headers)}  statusMessage ${result
+            ?.statusMessage} data: ${result?.data}");
   }
 
   Future<void> handlePost() async {
