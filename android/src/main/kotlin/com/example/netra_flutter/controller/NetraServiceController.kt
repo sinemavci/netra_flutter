@@ -32,21 +32,14 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.get(path).asObject<Any>()
+            val requestBuilder = client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
-                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
-                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()
@@ -76,21 +69,14 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.post(path, requestBody).asObject<Any>()
+            val requestBuilder = client.post(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
-                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
-                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()
@@ -120,21 +106,14 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.put(path, requestBody).asObject<Any>()
+            val requestBuilder = client.put(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
-                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
-                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()
@@ -164,21 +143,14 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.patch(path, requestBody).asObject<Any>()
+            val requestBuilder = client.patch(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
-                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
-                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()
@@ -208,21 +180,14 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val headers = requestOptionsDto?.headers
 
         if (client != null) {
-            val requestBuilder = client.delete(path, requestBody).asObject<Any>()
+            val requestBuilder = client.delete(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
             offlinePolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted offline policy action as: ${offlinePolicyAction.identifier}"
-                )
                 requestBuilder.whenOffline(offlinePolicyAction)
             }
             slowNetworkPolicyAction?.let {
-                Log.e(
-                    "",
-                    "bridge setted slow network policy action as: ${slowNetworkPolicyAction.identifier}"
-                )
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             val response = requestBuilder.execute()

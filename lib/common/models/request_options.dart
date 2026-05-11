@@ -6,5 +6,10 @@ class RequestOptions {
 
   final SlowNetworkPolicyAction? slowNetworkPolicyAction;
 
-  RequestOptions({ this.offlinePolicyAction, this.slowNetworkPolicyAction});
+  final Map<String, String?>? headers;
+
+  RequestOptions({
+    this.offlinePolicyAction,
+    this.slowNetworkPolicyAction,
+    this.headers,});
 }

@@ -15,6 +15,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
   const factory RequestOptionsDTO({
     required OfflinePolicyActionDTO? offlinePolicyAction,
     required SlowNetworkPolicyActionDTO? slowNetworkPolicyAction,
+    required Map<String, String?>? headers,
   }) = _RequestOptionsDTO;
 
   factory RequestOptionsDTO.fromJson(Map<String, dynamic> json) =>
@@ -29,6 +30,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           ? SlowNetworkPolicyActionDTO.fromDataModel(
           model.slowNetworkPolicyAction!)
           : null,
+      headers: model.headers,
     );
   }
 
@@ -43,7 +45,9 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           : SlowNetworkPolicyAction.fromIdentifier(
         slowNetworkPolicyAction!.identifier!,
         delay: slowNetworkPolicyAction!.delay,
-        timeout: slowNetworkPolicyAction!.timeout,),
+        timeout: slowNetworkPolicyAction!.timeout,
+      ),
+      headers: headers,
     );
   }
 }

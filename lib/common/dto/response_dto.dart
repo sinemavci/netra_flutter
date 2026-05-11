@@ -12,6 +12,7 @@ abstract class ResponseDTO with _$ResponseDTO {
     required Map<String, Object?>? data,
     required int statusCode,
     required String? statusMessage,
+    required Map<String, String?>? headers,
   }) = _ResponseDTO;
 
   factory ResponseDTO.fromJson(Map<String, dynamic> json) =>
@@ -19,10 +20,19 @@ abstract class ResponseDTO with _$ResponseDTO {
 
   factory ResponseDTO.fromDataModel(Response model) {
     return ResponseDTO(
-        data: model.data, statusCode: model.statusCode, statusMessage: model.statusMessage);
+      data: model.data,
+      statusCode: model.statusCode,
+      statusMessage: model.statusMessage,
+      headers: model.headers,
+    );
   }
 
   Response toDataModel() {
-    return Response(data: data, statusCode: statusCode, statusMessage: statusMessage);
+    return Response(
+      data: data,
+      statusCode: statusCode,
+      statusMessage: statusMessage,
+      headers: headers,
+    );
   }
 }

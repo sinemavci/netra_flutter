@@ -50,7 +50,8 @@ class _MyAppState extends State<MyApp> {
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
     );
-    print("result in main: ${result?.statusCode}  statusMessage ${result?.statusMessage} data: ${result?.data}");
+
+    print("result in main: ${jsonEncode(result?.headers)}  statusMessage ${result?.statusMessage} data: ${result?.data}");
   }
 
   Future<void> handlePost() async {
@@ -98,11 +99,14 @@ class _MyAppState extends State<MyApp> {
 
     final result = await netraClient.delete(url: "/users/1",
       requestOptions: RequestOptions(
-        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+          offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+          slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+          headers: {
+            "custom": "sinem here",
+          }
       ),
     );
-    print("result in main: ${result?.statusCode}  statusMessage ${result
+    print("result in main:  headers: ${jsonEncode(result?.headers)}  statusMessage ${result
         ?.statusMessage} data: ${result?.data}");
   }
 

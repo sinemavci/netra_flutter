@@ -7,6 +7,7 @@ data class ResponseDTO(
     val statusCode: Int,
     val statusMessage: String?,
     val isCache: Boolean?,
+    val headers: Map<String, String>?,
 ) {
     companion object {
         fun fromDataModel(response: NetraResponse): ResponseDTO {
@@ -15,6 +16,7 @@ data class ResponseDTO(
                 isCache = response.isCache,
                 statusCode = response.statusCode,
                 statusMessage = response.statusMessage,
+                headers = response.headers,
             )
         }
     }
@@ -25,6 +27,7 @@ data class ResponseDTO(
             isCache = isCache,
             statusCode = statusCode,
             statusMessage = statusMessage,
+            headers = headers,
         )
     }
 }
