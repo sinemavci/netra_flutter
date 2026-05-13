@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
+import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'dart:async';
 import 'package:netra_flutter/netra_flutter_plugin.dart';
@@ -42,13 +43,15 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> handleGet() async {
     final netraClient = await NetraClient.build(
-        baseUrl: "http://10.0.2.2:3001",
-        convertedType: ConverterType.gson,
-        headers: {
-          "here": "heree"
-        });
+      headers: {
+        "here": "heree"
+      },
+      baseUrl: "http://10.0.2.2:3001",
+      convertedType: ConverterType.gson,
+      circuitBreakerOptions: CircuitBreakerOptions(),
+    );
 
-    final result = await netraClient.get(url: "/?status=200&delay=1000",
+    final result = await netraClient.get(url: "/?status=500&delay=1000",
       requestOptions: RequestOptions(
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),

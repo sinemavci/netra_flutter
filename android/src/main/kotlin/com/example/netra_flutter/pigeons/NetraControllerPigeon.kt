@@ -59,7 +59,7 @@ private open class NetraControllerPigeonPigeonCodec : StandardMessageCodec() {
 
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface NetraHostApi {
-  fun build(baseUrl: String, convertedType: String?, headers: Map<String, String>?, callback: (Result<String?>) -> Unit)
+  fun build(baseUrl: String, convertedType: String?, headers: Map<String, String>?, circuitBreakerOptions: String?, callback: (Result<String?>) -> Unit)
   fun get(clientId: String, path: String, requestOptions: String?, callback: (Result<String?>) -> Unit)
   fun post(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
   fun put(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
@@ -83,7 +83,8 @@ interface NetraHostApi {
             val baseUrlArg = args[0] as String
             val convertedTypeArg = args[1] as String?
             val headersArg = args[2] as Map<String, String>?
-            api.build(baseUrlArg, convertedTypeArg, headersArg) { result: Result<String?> ->
+            val circuitBreakerOptionsArg = args[3] as String?
+            api.build(baseUrlArg, convertedTypeArg, headersArg, circuitBreakerOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

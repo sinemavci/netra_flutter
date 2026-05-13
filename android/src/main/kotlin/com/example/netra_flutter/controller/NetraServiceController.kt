@@ -3,6 +3,7 @@ package com.example.netra_flutter.controller
 import android.content.Context
 import android.util.Log
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
+import com.example.netra_flutter.dto.CircuitBreakerOptionsDTO
 import com.example.netra_flutter.dto.RequestBodyDTO
 import com.example.netra_flutter.dto.ResponseDTO
 import com.example.netra_flutter.dto.RequestOptionsDTO
@@ -18,6 +19,7 @@ import com.netra.library.enums.SlowNetworkPolicyAction
 
 class NetraServiceController(val context: Context) : NetraHostApi {
     val gson = Gson()
+
     override fun get(
         clientId: String,
         path: String,
@@ -207,11 +209,24 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         baseUrl: String,
         convertedType: String?,
         headers: Map<String, String>?,
+        circuitBreakerOptions: String?,
         callback: (Result<String?>) -> Unit
     ) {
         try {
             val clientBuilder: NetraClient.Builder = NetraClient.Builder(context)
                 .baseUrl(baseUrl)
+            val circuitBreakerOptionsDto = circuitBreakerOptions?.let {
+                gson.fromJson(it, CircuitBreakerOptionsDTO::class.java)
+            }
+            circuitBreakerOptionsDto.let {
+                if (it?.failureThreshold != null && it.retryDelayMs != null) {
+                    Log.e(
+                        "",
+                        "circuit breaker adding in bridge: failureThreshold${it?.failureThreshold} retryDelayMs${it?.retryDelayMs}"
+                    )
+                    clientBuilder.circuitBreaker(it.failureThreshold, it.retryDelayMs)
+                }
+            }
             headers?.let {
                 clientBuilder.addHeaders(it)
             }

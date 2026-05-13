@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:netra_flutter/common/dto/circuit_breaker_options_dto.dart';
 import 'package:netra_flutter/common/dto/request_body_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
+import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
@@ -16,10 +18,16 @@ class NetraController {
     required String baseUrl,
     ConverterType? convertedType,
     Map<String, String>? headers,
+    CircuitBreakerOptions? circuitBreakerOptions,
   }) async {
     String? result;
     try {
-      final clientId = await _hostApi.build(baseUrl, convertedType?.identifier, headers);
+      var _circuitBreakerOptions = circuitBreakerOptions != null ? jsonEncode(
+          CircuitBreakerOptionsDTO
+              .fromDataModel(circuitBreakerOptions)
+              .toJson()) : null;
+      final clientId = await _hostApi.build(
+          baseUrl, convertedType?.identifier, headers, _circuitBreakerOptions);
       result = clientId;
     } catch (e) {
       print("result error: ${e}");

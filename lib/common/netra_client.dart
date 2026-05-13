@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:netra_flutter/common/controllers/netra_controller.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
+import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
@@ -18,9 +19,14 @@ class NetraClient {
     required String baseUrl,
     Map<String, String>? headers,
     ConverterType? convertedType,
+    CircuitBreakerOptions? circuitBreakerOptions,
   }) async {
     final clientId = await NetraController().build(
-        baseUrl: baseUrl, convertedType: convertedType, headers: headers);
+      baseUrl: baseUrl,
+      convertedType: convertedType,
+      headers: headers,
+      circuitBreakerOptions: circuitBreakerOptions,
+    );
     var client = NetraClient._create(baseUrl, convertedType);
     if (clientId != null) {
       client.id = clientId;
