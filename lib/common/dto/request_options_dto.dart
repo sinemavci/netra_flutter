@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:netra_flutter/common/dto/cache_options_dto.dart';
 import 'package:netra_flutter/common/dto/offline_policy_action_dto.dart';
 import 'package:netra_flutter/common/dto/slow_network_policy_action_dto.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
@@ -15,6 +16,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
   const factory RequestOptionsDTO({
     required OfflinePolicyActionDTO? offlinePolicyAction,
     required SlowNetworkPolicyActionDTO? slowNetworkPolicyAction,
+    required CacheOptionsDTO? cacheOptions,
     required Map<String, String?>? headers,
   }) = _RequestOptionsDTO;
 
@@ -31,6 +33,9 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           model.slowNetworkPolicyAction!)
           : null,
       headers: model.headers,
+      cacheOptions: model.cacheOptions != null
+          ? CacheOptionsDTO.fromDataModel(model.cacheOptions!)
+          : null,
     );
   }
 
@@ -47,6 +52,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
         delay: slowNetworkPolicyAction!.delay,
         timeout: slowNetworkPolicyAction!.timeout,
       ),
+      cacheOptions: cacheOptions?.toDataModel(),
       headers: headers,
     );
   }

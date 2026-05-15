@@ -3,11 +3,13 @@ package com.example.netra_flutter.controller
 import android.content.Context
 import android.util.Log
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
+import com.example.netra_flutter.dto.CacheOptionsDTO
 import com.example.netra_flutter.dto.CircuitBreakerOptionsDTO
 import com.example.netra_flutter.dto.RequestBodyDTO
 import com.example.netra_flutter.dto.ResponseDTO
 import com.example.netra_flutter.dto.RequestOptionsDTO
 import com.google.gson.Gson
+import com.netra.library.Cache
 import com.netra.library.NetraClient
 import com.netra.library.NetraClientList
 import com.netra.library.NetraRequestBody
@@ -34,6 +36,8 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+        Log.e("", "cache data: ${cache}")
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
@@ -43,6 +47,10 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             }
             slowNetworkPolicyAction?.let {
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            cache?.let {
+                Log.e("cache", "cache enabled: ${it.ttl}")
+                requestBuilder.withCache(it)
             }
             val response = requestBuilder.execute()
             val result = gson.toJson(ResponseDTO.fromDataModel(response))

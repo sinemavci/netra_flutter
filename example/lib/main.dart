@@ -51,9 +51,9 @@ class _MyAppState extends State<MyApp> {
       circuitBreakerOptions: CircuitBreakerOptions(),
     );
 
-    final result = await netraClient.get(url: "/?status=500&delay=1000",
+    final result = await netraClient.get(url: "/?status=200&delay=1000",
       requestOptions: RequestOptions(
-        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        offlinePolicyAction: OfflinePolicyAction.useCache,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
     );

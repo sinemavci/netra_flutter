@@ -1,15 +1,20 @@
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
+import 'package:netra_flutter/common/models/cache_options.dart';
 
 class RequestOptions {
-  final OfflinePolicyAction? offlinePolicyAction;
+  OfflinePolicyAction? offlinePolicyAction;
 
-  final SlowNetworkPolicyAction? slowNetworkPolicyAction;
+  SlowNetworkPolicyAction? slowNetworkPolicyAction;
 
-  final Map<String, String?>? headers;
+  CacheOptions? cacheOptions = CacheOptions();
+
+  Map<String, String?>? headers;
 
   RequestOptions({
     this.offlinePolicyAction,
     this.slowNetworkPolicyAction,
-    this.headers,});
+    this.headers,
+    CacheOptions? cacheOptions,
+  }) : cacheOptions = cacheOptions ?? CacheOptions();
 }
