@@ -37,7 +37,6 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
-        Log.e("", "cache data: ${cache}")
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
@@ -49,7 +48,6 @@ class NetraServiceController(val context: Context) : NetraHostApi {
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
             }
             cache?.let {
-                Log.e("cache", "cache enabled: ${it.ttl}")
                 requestBuilder.withCache(it)
             }
             val response = requestBuilder.execute()
@@ -79,6 +77,7 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
@@ -89,6 +88,9 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             }
             slowNetworkPolicyAction?.let {
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            cache?.let {
+                requestBuilder.withCache(it)
             }
             val response = requestBuilder.execute()
             val result = gson.toJson(ResponseDTO.fromDataModel(response))
@@ -118,6 +120,7 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val headers = requestOptionsDto?.headers
+        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
 
         if (client != null) {
             val requestBuilder =
@@ -127,6 +130,9 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             }
             slowNetworkPolicyAction?.let {
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            cache?.let {
+                requestBuilder.withCache(it)
             }
             val response = requestBuilder.execute()
             val result = gson.toJson(ResponseDTO.fromDataModel(response))
@@ -155,6 +161,7 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
@@ -165,6 +172,9 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             }
             slowNetworkPolicyAction?.let {
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            cache?.let {
+                requestBuilder.withCache(it)
             }
             val response = requestBuilder.execute()
             val result = gson.toJson(ResponseDTO.fromDataModel(response))
@@ -193,6 +203,7 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             requestOptionsDto?.offlinePolicyAction?.toDataModel()
         val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
 
         if (client != null) {
@@ -203,6 +214,9 @@ class NetraServiceController(val context: Context) : NetraHostApi {
             }
             slowNetworkPolicyAction?.let {
                 requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            cache?.let {
+                requestBuilder.withCache(it)
             }
             val response = requestBuilder.execute()
             val result = gson.toJson(ResponseDTO.fromDataModel(response))
