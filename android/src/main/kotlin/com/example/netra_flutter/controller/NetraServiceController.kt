@@ -2,12 +2,15 @@ package com.example.netra_flutter.controller
 
 import android.content.Context
 import android.util.Log
+import com.example.netra_flutter.ClientEventHandler
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
-import com.example.netra_flutter.dto.CacheOptionsDTO
+import com.example.netra_flutter.observers
+import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.CircuitBreakerOptionsDTO
 import com.example.netra_flutter.dto.RequestBodyDTO
 import com.example.netra_flutter.dto.ResponseDTO
 import com.example.netra_flutter.dto.RequestOptionsDTO
+import com.example.netra_flutter.observers.NetraObserver
 import com.google.gson.Gson
 import com.netra.library.Cache
 import com.netra.library.NetraClient
@@ -18,8 +21,9 @@ import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
 import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
+import io.flutter.plugin.common.BinaryMessenger
 
-class NetraServiceController(val context: Context) : NetraHostApi {
+class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
     val gson = Gson()
 
     override fun get(
@@ -227,6 +231,41 @@ class NetraServiceController(val context: Context) : NetraHostApi {
         }
     }
 
+    override fun on(
+        clientId: String,
+        eventName: String,
+        eventId: String,
+        callback: (Result<Boolean>) -> Unit
+    ) {
+        if (observers.contains(clientId)) {
+            observers[clientId]?.on(
+                eventName,
+                eventId
+            )
+        } else {
+            val obs = NetraObserver(clientId)
+            observers[clientId] = obs
+            obs.on(eventName, eventId)
+            val client = NetraClientList.getClients().find { client -> client.id == clientId }
+            client?.addObserver(obs)
+        }
+        callback.invoke(Result.success(true))
+    }
+
+    override fun off(clientId: String, eventId: String, callback: (Result<Boolean>) -> Unit) {
+        val observer = observers[clientId]
+        observer?.let {
+            it.off(eventId)
+            if (it.hasNoListeners()) {
+                val client =
+                    NetraClientList.getClients().find { client -> client.id == clientId }
+                client?.removeObserver(it)
+                observers.remove(clientId)
+            }
+        }
+        callback.invoke(Result.success(true))
+    }
+
     override fun build(
         baseUrl: String,
         convertedType: String?,
@@ -270,6 +309,7 @@ class NetraServiceController(val context: Context) : NetraHostApi {
 
             val client = clientBuilder.build()
             NetraClientList.add(client)
+            clientEventHandlers[client.id] = ClientEventHandler(binaryMessenger, client.id)
             callback(Result.success(client.id))
         } catch (e: Error) {
             Log.e("", "build error: ${e}")

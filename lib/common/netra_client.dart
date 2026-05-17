@@ -6,12 +6,17 @@ import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
+import 'package:netra_flutter/common/observers/client_observer.dart';
+import 'package:netra_flutter/common/observers/client_observer_event.dart';
 import 'package:uuid/uuid.dart';
 
 class NetraClient {
   String id;
   final String baseUrl;
   final ConverterType? converterType;
+
+  late final ClientObserver observer;
+  final controller = NetraController();
 
   NetraClient._create(this.baseUrl, this.converterType) : id = Uuid().v4();
 
@@ -30,13 +35,16 @@ class NetraClient {
     var client = NetraClient._create(baseUrl, convertedType);
     if (clientId != null) {
       client.id = clientId;
+      client.observer = ClientObserver(
+        clientId: clientId,
+      );
     }
     return client;
   }
 
   Future<Response?> get(
       {required String url, RequestOptions? requestOptions}) async {
-    final response = await NetraController().get(id, url, requestOptions);
+    final response = await controller.get(id, url, requestOptions);
     return response;
   }
 
@@ -45,7 +53,7 @@ class NetraClient {
     required RequestBody? body,
     RequestOptions? requestOptions,
   }) async {
-    final response = await NetraController().post(
+    final response = await controller.post(
         id, url, body, requestOptions);
     return response;
   }
@@ -55,7 +63,7 @@ class NetraClient {
     required RequestBody? body,
     RequestOptions? requestOptions,
   }) async {
-    final response = await NetraController().put(
+    final response = await controller.put(
         id, url, body, requestOptions);
     return response;
   }
@@ -65,7 +73,7 @@ class NetraClient {
     required RequestBody? body,
     RequestOptions? requestOptions,
   }) async {
-    final response = await NetraController().patch(
+    final response = await controller.patch(
         id, url, body, requestOptions);
     return response;
   }
@@ -75,8 +83,20 @@ class NetraClient {
     RequestBody? body,
     RequestOptions? requestOptions,
   }) async {
-    final response = await NetraController().delete(
+    final response = await controller.delete(
         id, url, body, requestOptions);
     return response;
+  }
+
+  String on(ClientObserverEvent eventName) {
+    String eventId = const Uuid().v4().toString();
+    observer.on(eventName, eventId);
+    controller.on(id, eventName.eventName, eventId);
+    return eventId;
+  }
+
+  void off(String eventId) {
+    observer.off(eventId);
+    controller.off(id, eventId);
   }
 }

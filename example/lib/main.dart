@@ -8,6 +8,7 @@ import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
+import 'package:netra_flutter/common/observers/client_observer_event.dart';
 import 'dart:async';
 import 'package:netra_flutter/netra_flutter_plugin.dart';
 import 'package:image_picker/image_picker.dart';
@@ -41,6 +42,19 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+String? eventId;
+
+
+void callback1() {
+  print("offffline event 1 here");
+}
+
+
+void callback2() {
+  print("offffline event 2 here");
+}
+
+
   Future<void> handleGet() async {
     final netraClient = await NetraClient.build(
       headers: {
@@ -50,6 +64,10 @@ class _MyAppState extends State<MyApp> {
       convertedType: ConverterType.gson,
       circuitBreakerOptions: CircuitBreakerOptions(),
     );
+
+    netraClient.on(ClientObserverEvent.connectionRestored(callback1));
+
+    eventId = netraClient.on(ClientObserverEvent.connectionRestored(callback2));
 
     final result = await netraClient.get(url: "/?status=200&delay=1000",
       requestOptions: RequestOptions(
@@ -61,6 +79,12 @@ class _MyAppState extends State<MyApp> {
     print(
         "result in main: ${jsonEncode(result?.headers)}  statusMessage ${result
             ?.statusMessage} data: ${result?.data}");
+
+    Future.delayed(Duration(seconds: 15), () {
+      if (eventId != null) {
+        netraClient.off(eventId!);
+      }
+    });
   }
 
   Future<void> handlePost() async {

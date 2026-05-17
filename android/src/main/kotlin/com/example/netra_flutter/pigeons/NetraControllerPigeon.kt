@@ -65,6 +65,8 @@ interface NetraHostApi {
   fun put(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
   fun patch(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
   fun delete(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
+  fun on(clientId: String, eventName: String, eventId: String, callback: (Result<Boolean>) -> Unit)
+  fun off(clientId: String, eventId: String, callback: (Result<Boolean>) -> Unit)
 
   companion object {
     /** The codec used by NetraHostApi. */
@@ -199,6 +201,49 @@ interface NetraHostApi {
             val dataArg = args[2] as String?
             val requestOptionsArg = args[3] as String?
             api.delete(clientIdArg, pathArg, dataArg, requestOptionsArg) { result: Result<String?> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.netra_flutter.NetraHostApi.on$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val clientIdArg = args[0] as String
+            val eventNameArg = args[1] as String
+            val eventIdArg = args[2] as String
+            api.on(clientIdArg, eventNameArg, eventIdArg) { result: Result<Boolean> ->
+              val error = result.exceptionOrNull()
+              if (error != null) {
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
+              } else {
+                val data = result.getOrNull()
+                reply.reply(NetraControllerPigeonPigeonUtils.wrapResult(data))
+              }
+            }
+          }
+        } else {
+          channel.setMessageHandler(null)
+        }
+      }
+      run {
+        val channel = BasicMessageChannel<Any?>(binaryMessenger, "dev.flutter.pigeon.netra_flutter.NetraHostApi.off$separatedMessageChannelSuffix", codec)
+        if (api != null) {
+          channel.setMessageHandler { message, reply ->
+            val args = message as List<Any?>
+            val clientIdArg = args[0] as String
+            val eventIdArg = args[1] as String
+            api.off(clientIdArg, eventIdArg) { result: Result<Boolean> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

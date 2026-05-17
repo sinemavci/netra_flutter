@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/dto/circuit_breaker_options_dto.dart';
 import 'package:netra_flutter/common/dto/request_body_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
@@ -12,6 +13,7 @@ import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/pigeons/netra_host_api.g.dart';
 
 class NetraController {
+
   final _hostApi = NetraHostApi();
 
   Future<String?> build({
@@ -133,5 +135,21 @@ class NetraController {
       print("result error: ${e}");
     }
     return response;
+  }
+
+  Future<void> on(String clientId, String eventName, String eventId) async {
+    try {
+      await _hostApi.on(clientId, eventName, eventId);
+    } on PlatformException catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> off(String clientId, String eventId) async {
+    try {
+      await _hostApi.off(clientId, eventId);
+    } on PlatformException catch (e) {
+      rethrow;
+    }
   }
 }
