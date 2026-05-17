@@ -1,7 +1,16 @@
 enum ClientEvents {
+  // network events
   offline("Offline"),
   slowNetwork("SlowNetwork"),
-  connectionRestored("ConnectionRestored");
+  connectionRestored("ConnectionRestored"),
+
+  //cache events
+  cacheHit("CacheHit"),
+  cacheMiss("CacheMiss"),
+  cacheStored("CacheStored"),
+  cacheExpired("CacheExpired"),
+  cacheStaleUsed("StaleCacheUsed");
+
 
   final String value;
 

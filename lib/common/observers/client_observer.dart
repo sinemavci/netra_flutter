@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/observers/client_events.dart';
-import 'package:netra_flutter/common/observers/network_event.dart';
+import 'package:netra_flutter/common/observers/client_event.dart';
 
 class ClientObserver {
   final String clientId;
@@ -68,23 +68,50 @@ class ClientObserver {
     final eventValue = event["Value"];
     if (eventNameValue == ClientEvents.offline.value) {
       if (registeredEvent is Offline) {
-        // final parsed = eventValue as String;
         registeredEvent.onChanged?.call();
       }
-
-      // CenterChanged
     } else if (eventNameValue == ClientEvents.slowNetwork.value) {
       if (registeredEvent is SlowNetwork) {
-        // final coordinateDTO = CoordinateDTO.fromJson(
-        //     eventValue as Map<String, dynamic>);
-        // registeredEvent.s!();
         registeredEvent.onChanged?.call();
       }
     } else if (eventNameValue == ClientEvents.connectionRestored.value) {
       if (registeredEvent is ConnectionRestored) {
-        // final coordinateDTO = CoordinateDTO.fromJson(
-        //     eventValue as Map<String, dynamic>);
         registeredEvent.onChanged?.call();
+      }
+    } else if (eventNameValue == ClientEvents.cacheMiss.value) {
+      if (registeredEvent is CacheMiss) {
+        final key = eventValue["key"] as String;
+        registeredEvent.onCacheMiss?.call(key);
+      }
+    } else if (eventNameValue == ClientEvents.cacheHit.value) {
+      if (registeredEvent is CacheHit) {
+        final key = eventValue["key"] as String;
+        final ageMs = eventValue["ageMs"] as int;
+        final ttlMs = eventValue["ttlMs"] as int;
+        registeredEvent.onCacheHit?.call(key, ageMs, ttlMs);
+      }
+    } else if (eventNameValue == ClientEvents.cacheStored.value) {
+      if (registeredEvent is CacheStored) {
+        final key = eventValue["key"] as String;
+        final ageMs = eventValue["ageMs"] as int;
+        final sizeByte = eventValue["sizeByte"] as int;
+        registeredEvent.onCacheStored?.call(key, ageMs, sizeByte);
+      }
+    } else if (eventNameValue == ClientEvents.cacheExpired.value) {
+      if (registeredEvent is CacheExpired) {
+        final key = eventValue["key"] as String;
+        final ageMs = eventValue["ageMs"] as int;
+        final ttlMs = eventValue["ttlMs"] as int;
+        final expiredByMs = eventValue["expiredByMs"] as int;
+        registeredEvent.onCacheExpired?.call(key, ageMs, ttlMs, expiredByMs);
+      }
+    } else if (eventNameValue == ClientEvents.cacheStaleUsed.value) {
+      if (registeredEvent is CacheStaleUsed) {
+        final key = eventValue["key"] as String;
+        final ageMs = eventValue["ageMs"] as int;
+        final ttlMs = eventValue["ttlMs"] as int;
+        final expiredByMs = eventValue["expiredByMs"] as int;
+        registeredEvent.onCacheStaleUsed?.call(key, ageMs, ttlMs, expiredByMs);
       }
     }
   }

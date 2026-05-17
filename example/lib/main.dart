@@ -8,7 +8,7 @@ import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
-import 'package:netra_flutter/common/observers/network_event.dart';
+import 'package:netra_flutter/common/observers/client_event.dart';
 import 'dart:async';
 import 'package:netra_flutter/netra_flutter_plugin.dart';
 import 'package:image_picker/image_picker.dart';
@@ -45,13 +45,13 @@ class _MyAppState extends State<MyApp> {
 String? eventId;
 
 
-void callback1() {
-  print("offffline event 1 here");
+void callback1(String key, int ageMs, int ttlMs, int expiredByMs) {
+  print("cache expired: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
 }
 
 
-void callback2() {
-  print("offffline event 2 here");
+void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
+  print("cache stolen used: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
 }
 
 
@@ -65,9 +65,16 @@ void callback2() {
       circuitBreakerOptions: CircuitBreakerOptions(),
     );
 
-    netraClient.on(NetworkEvent.connectionRestored(callback1));
+    netraClient.on(CacheEvent.cacheExpired(callback1));
+    netraClient.on(CacheEvent.cacheMiss((key) {
+      print("cache missed");
+    }));
 
-    eventId = netraClient.on(NetworkEvent.connectionRestored(callback2));
+    netraClient.on(CacheEvent.cacheStored((key, a, b) {
+      print("cache stored: ${a} ${b}");
+    }));
+
+    eventId = netraClient.on(CacheEvent.cacheStaleUsed(callback2));
 
     final result = await netraClient.get(url: "/?status=200&delay=1000",
       requestOptions: RequestOptions(
@@ -80,11 +87,11 @@ void callback2() {
         "result in main: ${jsonEncode(result?.headers)}  statusMessage ${result
             ?.statusMessage} data: ${result?.data}");
 
-    Future.delayed(Duration(seconds: 15), () {
-      if (eventId != null) {
-        netraClient.off(eventId!);
-      }
-    });
+    // Future.delayed(Duration(seconds: 15), () {
+    //   if (eventId != null) {
+    //     netraClient.off(eventId!);
+    //   }
+    // });
   }
 
   Future<void> handlePost() async {

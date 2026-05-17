@@ -14,7 +14,6 @@ class NetraObserver(val clientId: String): INetraObserver {
     private val listenerEvents = mutableMapOf<String, String>()
 
     fun on(eventName: String, eventId: String) {
-        print("_startListening in kt: ${clientId}");
         if (!listenerEvents.containsKey(eventId)) {
             listenerEvents[eventId] = eventName
         }
@@ -36,32 +35,61 @@ class NetraObserver(val clientId: String): INetraObserver {
                 "EventName" to parsedEventName,
             )
             val clientEventHandler = clientEventHandlers[clientId]
-            Log.e("clientEventHandler", "clientEventHandler: ${clientId} ${clientEventHandler}")
             clientEventHandler?.send(gson.toJson(sender))
         }
     }
 
     override fun onCacheChanged(event: CacheEvent) {
-        when (event) {
-            is CacheEvent.CacheHit -> {
+        val parsedEventName = event::class.simpleName
 
-            }
+        if (listenerEvents.any { item -> item.value == parsedEventName }) {
+            val sender = mutableMapOf(
+                "EventName" to parsedEventName,
+                "Value" to
+                        when (event) {
+                            is CacheEvent.CacheHit -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                    "ageMs" to event.ageMs,
+                                    "ttlMs" to event.ttlMs,
+                                )
+                            }
 
-            is CacheEvent.StaleCacheUsed -> {
+                            is CacheEvent.StaleCacheUsed -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                    "ageMs" to event.ageMs,
+                                    "ttlMs" to event.ttlMs,
+                                    "expiredByMs" to event.expiredByMs,
+                                )
+                            }
 
-            }
+                            is CacheEvent.CacheMiss -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                )
+                            }
 
-            is CacheEvent.CacheMiss -> {
+                            is CacheEvent.CacheExpired -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                    "ageMs" to event.ageMs,
+                                    "ttlMs" to event.ttlMs,
+                                    "expiredByMs" to event.expiredByMs,
+                                )
+                            }
 
-            }
-
-            is CacheEvent.CacheExpired -> {
-
-            }
-
-            is CacheEvent.CacheStored -> {
-
-            }
+                            is CacheEvent.CacheStored -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                    "ageMs" to event.ageMs,
+                                    "sizeByte" to event.sizeByte,
+                                )
+                            }
+                        }
+            )
+            val clientEventHandler = clientEventHandlers[clientId]
+            clientEventHandler?.send(gson.toJson(sender))
         }
     }
 
