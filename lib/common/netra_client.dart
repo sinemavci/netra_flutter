@@ -7,7 +7,7 @@ import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/common/observers/client_observer.dart';
-import 'package:netra_flutter/common/observers/client_observer_event.dart';
+import 'package:netra_flutter/common/observers/network_event.dart';
 import 'package:uuid/uuid.dart';
 
 class NetraClient {
@@ -88,7 +88,7 @@ class NetraClient {
     return response;
   }
 
-  String on(ClientObserverEvent eventName) {
+  String on(ClientEvent eventName) {
     String eventId = const Uuid().v4().toString();
     observer.on(eventName, eventId);
     controller.on(id, eventName.eventName, eventId);

@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/observers/client_events.dart';
-import 'package:netra_flutter/common/observers/client_observer_event.dart';
+import 'package:netra_flutter/common/observers/network_event.dart';
 
 class ClientObserver {
   final String clientId;
@@ -34,13 +34,13 @@ class ClientObserver {
         }, onError: (error) => print('MapListener Stream Error: $error'));
   }
 
-  void on(ClientObserverEvent mapObserverEvent, String eventId) {
+  void on(ClientEvent clientEvent, String eventId) {
     if (_masterSubscription == null || _eventController.isClosed);
 
     final subscription =
     _eventController.stream.where((event) =>
-    event["EventName"] == mapObserverEvent.eventName).listen((event) {
-      _dispatchEvent(event, mapObserverEvent);
+    event["EventName"] == clientEvent.eventName).listen((event) {
+      _dispatchEvent(event, clientEvent);
     });
 
     _subscriptions[eventId] = subscription;
@@ -63,14 +63,13 @@ class ClientObserver {
     _eventController.close();
   }
 
-  void _dispatchEvent(Map<String, dynamic> event,
-      ClientObserverEvent registeredEvent) {
+  void _dispatchEvent(Map<String, dynamic> event, ClientEvent registeredEvent) {
     final eventNameValue = event["EventName"];
     final eventValue = event["Value"];
     if (eventNameValue == ClientEvents.offline.value) {
       if (registeredEvent is Offline) {
         // final parsed = eventValue as String;
-        registeredEvent.onClientChanged?.call();
+        registeredEvent.onChanged?.call();
       }
 
       // CenterChanged
@@ -79,12 +78,13 @@ class ClientObserver {
         // final coordinateDTO = CoordinateDTO.fromJson(
         //     eventValue as Map<String, dynamic>);
         // registeredEvent.s!();
+        registeredEvent.onChanged?.call();
       }
     } else if (eventNameValue == ClientEvents.connectionRestored.value) {
       if (registeredEvent is ConnectionRestored) {
         // final coordinateDTO = CoordinateDTO.fromJson(
         //     eventValue as Map<String, dynamic>);
-        registeredEvent.onClientChanged?.call();
+        registeredEvent.onChanged?.call();
       }
     }
   }
