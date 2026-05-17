@@ -2,6 +2,7 @@ package com.example.netra_flutter.observers
 
 import android.util.Log
 import com.example.netra_flutter.clientEventHandlers
+import com.example.netra_flutter.dto.ResponseDTO
 import com.google.gson.Gson
 import com.netra.library.CacheEvent
 import com.netra.library.INetraObserver
@@ -94,22 +95,39 @@ class NetraObserver(val clientId: String): INetraObserver {
     }
 
     override fun onQueueChanged(event: RequestQueuedEvent) {
-        when (event) {
-            is RequestQueuedEvent.RequestQueued -> {
+        val parsedEventName = event::class.simpleName
 
-            }
+        if (listenerEvents.any { item -> item.value == parsedEventName }) {
+            val sender = mutableMapOf(
+                "EventName" to parsedEventName,
+                "Value" to
+                        when (event) {
+                            is RequestQueuedEvent.RequestQueued -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                    "queueOrder" to event.queueOrder,
+                                    "createdAt" to event.createdAt,
+                                )
+                            }
 
-            is RequestQueuedEvent.QueuedRequestRestored -> {
+                            is RequestQueuedEvent.QueuedRequestRestored -> {
+                                mutableMapOf("key" to event.key)
+                            }
 
-            }
+                            is RequestQueuedEvent.QueuedRequestExecuted -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+                                    "response" to ResponseDTO.fromDataModel(event.response),
+                                )
+                            }
 
-            is RequestQueuedEvent.QueuedRequestExecuted -> {
-
-            }
-
-            is RequestQueuedEvent.QueuedRequestFailed -> {
-
-            }
+                            is RequestQueuedEvent.QueuedRequestFailed -> {
+                                mutableMapOf("key" to event.key)
+                            }
+                        }
+            )
+            val clientEventHandler = clientEventHandlers[clientId]
+            clientEventHandler?.send(gson.toJson(sender))
         }
     }
 }

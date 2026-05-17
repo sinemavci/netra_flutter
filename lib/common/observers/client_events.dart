@@ -9,8 +9,13 @@ enum ClientEvents {
   cacheMiss("CacheMiss"),
   cacheStored("CacheStored"),
   cacheExpired("CacheExpired"),
-  cacheStaleUsed("StaleCacheUsed");
+  cacheStaleUsed("StaleCacheUsed"),
 
+  // queue events
+  requestQueued("RequestQueued"),
+  queuedRequestRestored("QueuedRequestRestored"),
+  queuedRequestExecuted("QueuedRequestExecuted"),
+  queuedRequestFailed("QueuedRequestFailed");
 
   final String value;
 

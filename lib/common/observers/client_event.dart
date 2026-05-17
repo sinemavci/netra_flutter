@@ -1,3 +1,5 @@
+import 'package:netra_flutter/common/models/response.dart';
+
 typedef OnCacheMiss = void Function(String key);
 typedef OnCacheHit = void Function(String key, int ageMs, int ttlMs);
 typedef OnCacheStored = void Function(String key, int ageMs, int sizeByte);
@@ -5,6 +7,11 @@ typedef OnCacheExpired = void Function(String key, int ageMs, int ttlMs, int exp
 typedef OnStaleCacheUsed = void Function(String key, int ageMs, int ttlMs, int expiredByMs);
 
 typedef OnNetworkChanged = void Function();
+
+typedef OnQueuedRequestFailed = void Function(String key);
+typedef OnQueuedRequestRestored = void Function(String key);
+typedef OnRequestQueued = void Function(String key, int queueOrder, int createdAt);
+typedef OnQueuedRequestExecuted = void Function(String key, Response response);
 
 interface class ClientEvent {
   final String eventName;
@@ -91,4 +98,53 @@ final class CacheExpired extends CacheEvent {
 final class CacheStaleUsed extends CacheEvent {
   const CacheStaleUsed(OnStaleCacheUsed? onStaleCacheUsed)
       : super('StaleCacheUsed', onCacheStaleUsed: onStaleCacheUsed);
+}
+
+sealed class QueueEvent extends ClientEvent {
+  final OnRequestQueued? onRequestQueued;
+  final OnQueuedRequestFailed? onQueuedRequestFailed;
+  final OnQueuedRequestExecuted? onQueuedRequestExecuted;
+  final OnQueuedRequestRestored? onQueuedRequestRestored;
+
+  const QueueEvent(super.eventName, {
+    this.onRequestQueued,
+    this.onQueuedRequestFailed,
+    this.onQueuedRequestExecuted,
+    this.onQueuedRequestRestored,
+  });
+
+  factory QueueEvent.requestQueued(
+      OnRequestQueued? onRequestQueued) = RequestQueued;
+
+  factory QueueEvent.queuedRequestFailed(
+      OnQueuedRequestFailed? onQueuedRequestFailed) = QueuedRequestFailed;
+
+  factory QueueEvent.queuedRequestExecuted(
+      OnQueuedRequestExecuted? onQueuedRequestExecuted) = QueuedRequestExecuted;
+
+  factory QueueEvent.queuedRequestRestored(
+      OnQueuedRequestRestored? onQueuedRequestRestored) = QueuedRequestRestored;
+}
+
+final class RequestQueued extends QueueEvent {
+  const RequestQueued(OnRequestQueued? onRequestQueued)
+      : super('RequestQueued', onRequestQueued: onRequestQueued);
+}
+
+final class QueuedRequestFailed extends QueueEvent {
+  const QueuedRequestFailed(OnQueuedRequestFailed? onQueuedRequestFailed)
+      : super(
+      'QueuedRequestFailed', onQueuedRequestFailed: onQueuedRequestFailed);
+}
+
+final class QueuedRequestExecuted extends QueueEvent {
+  const QueuedRequestExecuted(OnQueuedRequestExecuted? onQueuedRequestExecuted)
+      : super('QueuedRequestExecuted',
+      onQueuedRequestExecuted: onQueuedRequestExecuted);
+}
+
+final class QueuedRequestRestored extends QueueEvent {
+  const QueuedRequestRestored(OnQueuedRequestRestored? onQueuedRequestRestored)
+      : super('QueuedRequestRestored',
+      onQueuedRequestRestored: onQueuedRequestRestored);
 }

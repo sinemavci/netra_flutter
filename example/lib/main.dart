@@ -74,11 +74,24 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
       print("cache stored: ${a} ${b}");
     }));
 
+    netraClient.on(QueueEvent.requestQueued((key, a, b) {
+      print("requestQueued: $key ${a} ${b}");
+    }));
+
+    netraClient.on(QueueEvent.queuedRequestRestored((key) {
+      print("queuedRequestRestored: $key");
+    }));
+
+    netraClient.on(QueueEvent.queuedRequestExecuted((key, response) {
+      print("queuedRequestExecuted: $key response${response.statusCode} ${response.data}");
+    }));
+
+
     eventId = netraClient.on(CacheEvent.cacheStaleUsed(callback2));
 
     final result = await netraClient.get(url: "/?status=200&delay=1000",
       requestOptions: RequestOptions(
-        offlinePolicyAction: OfflinePolicyAction.useCache,
+        offlinePolicyAction: OfflinePolicyAction.queue,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
     );

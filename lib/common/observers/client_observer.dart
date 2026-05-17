@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/observers/client_events.dart';
 import 'package:netra_flutter/common/observers/client_event.dart';
 
@@ -66,6 +67,7 @@ class ClientObserver {
   void _dispatchEvent(Map<String, dynamic> event, ClientEvent registeredEvent) {
     final eventNameValue = event["EventName"];
     final eventValue = event["Value"];
+
     if (eventNameValue == ClientEvents.offline.value) {
       if (registeredEvent is Offline) {
         registeredEvent.onChanged?.call();
@@ -112,6 +114,32 @@ class ClientObserver {
         final ttlMs = eventValue["ttlMs"] as int;
         final expiredByMs = eventValue["expiredByMs"] as int;
         registeredEvent.onCacheStaleUsed?.call(key, ageMs, ttlMs, expiredByMs);
+      }
+    } else if (eventNameValue == ClientEvents.requestQueued.value) {
+      if (registeredEvent is RequestQueued) {
+        final key = eventValue["key"] as String;
+        final queueOrder = eventValue["queueOrder"] as int;
+        final createdAt = eventValue["createdAt"] as int;
+        registeredEvent.onRequestQueued?.call(key, queueOrder, createdAt);
+      }
+    } else if (eventNameValue == ClientEvents.queuedRequestRestored.value) {
+      if (registeredEvent is QueuedRequestRestored) {
+        final key = eventValue["key"] as String;
+        registeredEvent.onQueuedRequestRestored?.call(key);
+      }
+    } else if (eventNameValue == ClientEvents.queuedRequestExecuted.value) {
+      if (registeredEvent is QueuedRequestExecuted) {
+        final key = eventValue["key"] as String;
+        final responseJson = eventValue["response"] as Map<String, dynamic>;
+        final response = ResponseDTO
+            .fromJson(responseJson)
+            .toDataModel();
+        registeredEvent.onQueuedRequestExecuted?.call(key, response);
+      }
+    } else if (eventNameValue == ClientEvents.queuedRequestFailed.value) {
+      if (registeredEvent is QueuedRequestFailed) {
+        final key = eventValue["key"] as String;
+        registeredEvent.onQueuedRequestFailed?.call(key);
       }
     }
   }
