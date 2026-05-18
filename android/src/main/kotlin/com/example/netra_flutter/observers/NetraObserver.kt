@@ -4,10 +4,10 @@ import android.util.Log
 import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.ResponseDTO
 import com.google.gson.Gson
-import com.netra.library.CacheEvent
-import com.netra.library.INetraObserver
-import com.netra.library.NetworkEvent
-import com.netra.library.RequestQueuedEvent
+import com.netra.library.observers.CacheEvent
+import com.netra.library.observers.INetraObserver
+import com.netra.library.observers.NetworkEvent
+import com.netra.library.observers.RequestQueuedEvent
 
 
 class NetraObserver(val clientId: String): INetraObserver {
