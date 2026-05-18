@@ -1,5 +1,6 @@
 import 'package:pigeon/pigeon.dart';
 
+//flutter pub run pigeon --input lib/pigeons/netra_host_api.dart
 @ConfigurePigeon(PigeonOptions(
   dartOut: 'lib/pigeons/netra_host_api.g.dart',
   kotlinOut: 'android/src/main/kotlin/com/example/netra_flutter/pigeons/NetraControllerPigeon.kt',

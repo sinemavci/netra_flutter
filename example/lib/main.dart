@@ -57,10 +57,10 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
 
   Future<void> handleGet() async {
     final netraClient = await NetraClient.build(
+      baseUrl: "https://api.example.com",
       headers: {
-        "here": "heree"
+        "Authorization": "Bearer token"
       },
-      baseUrl: "http://10.0.2.2:3001",
       convertedType: ConverterType.gson,
       circuitBreakerOptions: CircuitBreakerOptions(),
     );
