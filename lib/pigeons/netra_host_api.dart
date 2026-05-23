@@ -32,7 +32,7 @@ abstract class NetraHostApi {
   void stream(String clientId, String requestOptions);
 
   @async
-  bool registerStream(String clientId);
+  bool registerStream(String requestId);
 
   @async
   bool on(String clientId, String eventName, String eventId);

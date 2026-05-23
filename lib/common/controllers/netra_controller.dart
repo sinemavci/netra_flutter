@@ -56,11 +56,12 @@ class NetraController {
   Future<Stream<List<int>>> getStream(String clientId,
       RequestOptions requestOptions,) async {
     final controller = StreamController<List<int>>();
-    await _hostApi.registerStream(clientId);
+    print("StreamResponseListener${requestOptions.id}");
+    await _hostApi.registerStream(requestOptions.id!);
     var _requestOptions = jsonEncode(
         RequestOptionsDTO.fromDataModel(requestOptions).toJson());
     final EventChannel _eventChannel = EventChannel(
-        "StreamResponseListener$clientId");
+        "StreamResponseListener${requestOptions.id}");
     _eventChannel.receiveBroadcastStream().listen((data) {
       if (data is List<int>) {
         controller.add(data);

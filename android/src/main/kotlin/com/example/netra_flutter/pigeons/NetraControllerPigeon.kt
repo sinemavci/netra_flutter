@@ -66,7 +66,7 @@ interface NetraHostApi {
   fun patch(clientId: String, data: String?, requestOptions: String, callback: (Result<String?>) -> Unit)
   fun delete(clientId: String, data: String?, requestOptions: String, callback: (Result<String?>) -> Unit)
   fun stream(clientId: String, requestOptions: String, callback: (Result<Unit>) -> Unit)
-  fun registerStream(clientId: String, callback: (Result<Boolean>) -> Unit)
+  fun registerStream(requestId: String, callback: (Result<Boolean>) -> Unit)
   fun on(clientId: String, eventName: String, eventId: String, callback: (Result<Boolean>) -> Unit)
   fun off(clientId: String, eventId: String, callback: (Result<Boolean>) -> Unit)
 
@@ -236,8 +236,8 @@ interface NetraHostApi {
         if (api != null) {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
-            val clientIdArg = args[0] as String
-            api.registerStream(clientIdArg) { result: Result<Boolean> ->
+            val requestIdArg = args[0] as String
+            api.registerStream(requestIdArg) { result: Result<Boolean> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

@@ -26,6 +26,7 @@ import com.netra.library.converter.NetraMoshiConverter
 import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
 import io.flutter.plugin.common.BinaryMessenger
+import kotlin.text.set
 
 class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
     val gson = Gson()
@@ -258,6 +259,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
         val path = requestOptionsDto.url
+        val requestId = requestOptionsDto.id
 
         if (client != null) {
             val requestBuilder = client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
@@ -278,16 +280,16 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     while (inputStream.read(buffer).also { bytesRead = it } != -1) {
                         val chunk = buffer.copyOfRange(0, bytesRead)
                         mainHandler.post {
-                            getStreamResponseEventHandler(clientId)?.send(chunk)
+                            streamResponseEventHandlers[requestId]?.send(chunk)
                         }
                     }
                     mainHandler.post {
-                        getStreamResponseEventHandler(clientId)?.endOfStream()
+                        streamResponseEventHandlers[requestId]?.endOfStream()
                     }
                                 },
                 onFailure = { exception ->
                     mainHandler.post {
-                        getStreamResponseEventHandler(clientId)?.onCancel(null)
+                        streamResponseEventHandlers[requestId]?.onCancel(null)
                         callback.invoke(Result.failure(exception))
                     }
                 })
@@ -297,10 +299,11 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
     }
 
     override fun registerStream(
-        clientId: String,
+        requestId: String,
         callback: (Result<Boolean>) -> Unit
     ) {
-        streamResponseEventHandlers[clientId] = getStreamResponseEventHandler(clientId)
+        Log.e("", "registerStream: ${requestId}")
+        streamResponseEventHandlers[requestId] = getStreamResponseEventHandler(requestId)
         callback.invoke(Result.success(true))
     }
 
