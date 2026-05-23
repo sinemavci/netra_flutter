@@ -56,7 +56,6 @@ class NetraController {
   Future<Stream<List<int>>> getStream(String clientId,
       RequestOptions requestOptions,) async {
     final controller = StreamController<List<int>>();
-    print("StreamResponseListener${requestOptions.id}");
     await _hostApi.registerStream(requestOptions.id!);
     var _requestOptions = jsonEncode(
         RequestOptionsDTO.fromDataModel(requestOptions).toJson());

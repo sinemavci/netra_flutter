@@ -302,7 +302,6 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         requestId: String,
         callback: (Result<Boolean>) -> Unit
     ) {
-        Log.e("", "registerStream: ${requestId}")
         streamResponseEventHandlers[requestId] = getStreamResponseEventHandler(requestId)
         callback.invoke(Result.success(true))
     }
