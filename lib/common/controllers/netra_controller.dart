@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
@@ -51,6 +52,30 @@ class NetraController {
       print("result error: ${e}");
     }
     return response;
+  }
+
+  Future<Stream<List<int>>> getStream(String clientId, String url,
+      RequestOptions? requestOptions,) async {
+    final controller = StreamController<List<int>>();
+    await _hostApi.registerStream(clientId, "");
+    var _requestOptions = requestOptions != null ? jsonEncode(
+        RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+    final EventChannel _eventChannel = EventChannel(
+        "StreamResponseListener$clientId");
+    _eventChannel.receiveBroadcastStream().listen((data) {
+      if (data is List<int>) {
+        controller.add(data);
+      } else {
+        controller.close();
+      }
+    }, onDone: () {
+      controller.close();
+    }, onError: (error) {
+      print("onError: ${error}");
+    });
+
+    _hostApi.stream(clientId, url, _requestOptions);
+    return controller.stream;
   }
 
   Future<Response?> post(String clientId,

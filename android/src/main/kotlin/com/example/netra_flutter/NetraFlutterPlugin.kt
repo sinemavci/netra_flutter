@@ -13,8 +13,12 @@ import io.flutter.plugin.common.MethodChannel.Result
 class ClientEventHandler(messenger: BinaryMessenger, channelSuffix: String) :
     IClientEventHandler("ClientListener${channelSuffix}", messenger)
 
+class StreamResponseEventHandler(messenger: BinaryMessenger, channelSuffix: String) :
+    IClientEventHandler("StreamResponseListener${channelSuffix}", messenger)
+
 val observers: MutableMap<String, NetraObserver?> = mutableMapOf()
 val clientEventHandlers: MutableMap<String, ClientEventHandler?> = mutableMapOf()
+val streamResponseEventHandlers: MutableMap<String, StreamResponseEventHandler?> = mutableMapOf()
 
 /** NetraFlutterPlugin */
 class NetraFlutterPlugin :

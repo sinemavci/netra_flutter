@@ -42,9 +42,19 @@ class NetraClient {
     return client;
   }
 
-  Future<Response?> get(
-      {required String url, RequestOptions? requestOptions}) async {
+  Future<Response?> get({
+    required String url,
+    RequestOptions? requestOptions
+  }) async {
     final response = await controller.get(id, url, requestOptions);
+    return response;
+  }
+
+  Future<Stream<List<int>>> getStream({
+    required String url,
+    RequestOptions? requestOptions,
+  }) async {
+    final response = await controller.getStream(id, url, requestOptions);
     return response;
   }
 

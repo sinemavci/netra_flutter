@@ -42,17 +42,20 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-String? eventId;
+  String? eventId;
+  StreamController<Uint8List> imageStream = StreamController();
 
 
-void callback1(String key, int ageMs, int ttlMs, int expiredByMs) {
-  print("cache expired: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
-}
+  void callback1(String key, int ageMs, int ttlMs, int expiredByMs) {
+    print(
+        "cache expired: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
+  }
 
 
-void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
-  print("cache stolen used: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
-}
+  void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
+    print(
+        "cache stolen used: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
+  }
 
 
   Future<void> handleGet() async {
@@ -83,7 +86,9 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
     }));
 
     netraClient.on(QueueEvent.queuedRequestExecuted((key, response) {
-      print("queuedRequestExecuted: $key response${response.statusCode} ${response.data}");
+      print(
+          "queuedRequestExecuted: $key response${response.statusCode} ${response
+              .data}");
     }));
 
 
@@ -105,6 +110,34 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
     //     netraClient.off(eventId!);
     //   }
     // });
+  }
+
+  Future<void> handleGetImage() async {
+    final netraClient = await NetraClient.build(
+      baseUrl: "http://10.0.2.2:3001",
+    );
+
+    final result = await netraClient.getStream(url: "/image",
+      requestOptions: RequestOptions(
+        offlinePolicyAction: OfflinePolicyAction.queue,
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+      ),
+    );
+    final List<int> imageBytes = [];
+
+    result.listen(
+          (data) {
+            print("data in main: ${data}");
+        imageBytes.addAll(data);
+      },
+      onDone: () {
+        imageStream.add(Uint8List.fromList(imageBytes));
+        print("image completed");
+      },
+      onError: (e) {
+        print("stream error $e");
+      },
+    );
   }
 
   Future<void> handlePost() async {
@@ -133,7 +166,8 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
 
     final result = await netraClient.put(url: "/users/1",
       body: RequestBody.createBytes(Uint8List.fromList(
-          utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
+          utf8.encode(
+              jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
       ),
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(
@@ -159,7 +193,8 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
           }
       ),
     );
-    print("result in main:  headers: ${jsonEncode(result?.headers)}  statusMessage ${result
+    print("result in main:  headers: ${jsonEncode(
+        result?.headers)}  statusMessage ${result
         ?.statusMessage} data: ${result?.data}");
   }
 
@@ -204,13 +239,32 @@ void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
           title: const Text('Plugin example app'),
         ),
         body: Column(
-          children:[
-            ElevatedButton(onPressed: handleGet, child: Text('get',)),
-            ElevatedButton(onPressed: handlePost, child: Text('post',)),
-            ElevatedButton(onPressed: pickImage, child: Text('post image',)),
-            ElevatedButton(onPressed: handlePut, child: Text('put',)),
-            ElevatedButton(onPressed: handleDelete, child: Text('delete',))
-          ]
+            children: [
+              ElevatedButton(onPressed: handleGet, child: Text('get',)),
+              ElevatedButton(
+                  onPressed: handleGetImage, child: Text('get image',)),
+              ElevatedButton(onPressed: handlePost, child: Text('post',)),
+              ElevatedButton(onPressed: pickImage, child: Text('post image',)),
+              ElevatedButton(onPressed: handlePut, child: Text('put',)),
+              ElevatedButton(onPressed: handleDelete, child: Text('delete',)),
+              StreamBuilder<Uint8List>(
+                stream: imageStream.stream,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (snapshot.hasData && snapshot.data != null) {
+                    return Image.memory(
+                      snapshot.data!,
+                      gaplessPlayback: true, // Prevents flickering when the stream updates
+                    );
+                  }
+
+                  return const Icon(Icons.error);
+                },
+              ),
+            ]
         ),
       ),
     );

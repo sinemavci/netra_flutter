@@ -1,9 +1,12 @@
 package com.example.netra_flutter.controller
 
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import com.example.netra_flutter.ClientEventHandler
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
+import com.example.netra_flutter.StreamResponseEventHandler
 import com.example.netra_flutter.observers
 import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.CircuitBreakerOptionsDTO
@@ -11,6 +14,7 @@ import com.example.netra_flutter.dto.RequestBodyDTO
 import com.example.netra_flutter.dto.ResponseDTO
 import com.example.netra_flutter.dto.RequestOptionsDTO
 import com.example.netra_flutter.observers.NetraObserver
+import com.example.netra_flutter.streamResponseEventHandlers
 import com.google.gson.Gson
 import com.netra.library.Cache
 import com.netra.library.NetraClient
@@ -25,6 +29,7 @@ import io.flutter.plugin.common.BinaryMessenger
 
 class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
     val gson = Gson()
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     override fun get(
         clientId: String,
@@ -229,6 +234,75 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         } else {
             callback.invoke(Result.failure(Exception("Client not found!")))
         }
+    }
+
+    fun getStreamResponseEventHandler(id: String): StreamResponseEventHandler? {
+        return streamResponseEventHandlers.getOrPut(id) {
+            StreamResponseEventHandler(binaryMessenger, id)
+        }
+    }
+
+    override fun stream(
+        clientId: String,
+        path: String,
+        requestOptions: String?,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        val client = NetraClientList.getClients().find { it.id == clientId }
+        val requestOptionsDto = requestOptions?.let {
+            gson.fromJson(it, RequestOptionsDTO::class.java)
+        }
+        val offlinePolicyAction: OfflinePolicyAction? =
+            requestOptionsDto?.offlinePolicyAction?.toDataModel()
+        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+        val headers = requestOptionsDto?.headers
+
+        if (client != null) {
+            val requestBuilder = client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
+            offlinePolicyAction?.let {
+                requestBuilder.whenOffline(offlinePolicyAction)
+            }
+            slowNetworkPolicyAction?.let {
+                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+            }
+            cache?.let {
+                requestBuilder.withCache(it)
+            }
+            requestBuilder.executeStream(
+                onStreamReady = { inputStream ->
+                    val buffer = ByteArray(8192)
+                    var bytesRead: Int
+
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        val chunk = buffer.copyOfRange(0, bytesRead)
+                        mainHandler.post {
+                            getStreamResponseEventHandler(clientId)?.send(chunk)
+                        }
+                    }
+                    mainHandler.post {
+                        getStreamResponseEventHandler(clientId)?.endOfStream()
+                    }
+                                },
+                onFailure = { exception ->
+                    mainHandler.post {
+                        getStreamResponseEventHandler(clientId)?.onCancel(null)
+                        callback.invoke(Result.failure(exception))
+                    }
+                })
+        } else {
+            callback.invoke(Result.failure(Exception("Client not found!")))
+        }
+    }
+
+    override fun registerStream(
+        clientId: String,
+        path: String,
+        callback: (Result<Boolean>) -> Unit
+    ) {
+        streamResponseEventHandlers[clientId] = getStreamResponseEventHandler(clientId)
+        callback.invoke(Result.success(true))
     }
 
     override fun on(

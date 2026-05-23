@@ -29,6 +29,12 @@ abstract class NetraHostApi {
   String? delete(String clientId, String path, String? data, String? requestOptions);
 
   @async
+  void stream(String clientId, String path, String? requestOptions);
+
+  @async
+  bool registerStream(String clientId, String path);
+
+  @async
   bool on(String clientId, String eventName, String eventId);
 
   @async
