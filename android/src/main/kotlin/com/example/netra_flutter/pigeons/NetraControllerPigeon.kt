@@ -60,13 +60,13 @@ private open class NetraControllerPigeonPigeonCodec : StandardMessageCodec() {
 /** Generated interface from Pigeon that represents a handler of messages from Flutter. */
 interface NetraHostApi {
   fun build(baseUrl: String, convertedType: String?, headers: Map<String, String>?, circuitBreakerOptions: String?, callback: (Result<String?>) -> Unit)
-  fun get(clientId: String, path: String, requestOptions: String?, callback: (Result<String?>) -> Unit)
-  fun post(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
-  fun put(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
-  fun patch(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
-  fun delete(clientId: String, path: String, data: String?, requestOptions: String?, callback: (Result<String?>) -> Unit)
-  fun stream(clientId: String, path: String, requestOptions: String?, callback: (Result<Unit>) -> Unit)
-  fun registerStream(clientId: String, path: String, callback: (Result<Boolean>) -> Unit)
+  fun get(clientId: String, requestOptions: String, callback: (Result<String?>) -> Unit)
+  fun post(clientId: String, data: String?, requestOptions: String, callback: (Result<String?>) -> Unit)
+  fun put(clientId: String, data: String?, requestOptions: String, callback: (Result<String?>) -> Unit)
+  fun patch(clientId: String, data: String?, requestOptions: String, callback: (Result<String?>) -> Unit)
+  fun delete(clientId: String, data: String?, requestOptions: String, callback: (Result<String?>) -> Unit)
+  fun stream(clientId: String, requestOptions: String, callback: (Result<Unit>) -> Unit)
+  fun registerStream(clientId: String, callback: (Result<Boolean>) -> Unit)
   fun on(clientId: String, eventName: String, eventId: String, callback: (Result<Boolean>) -> Unit)
   fun off(clientId: String, eventId: String, callback: (Result<Boolean>) -> Unit)
 
@@ -108,9 +108,8 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            val requestOptionsArg = args[2] as String?
-            api.get(clientIdArg, pathArg, requestOptionsArg) { result: Result<String?> ->
+            val requestOptionsArg = args[1] as String
+            api.get(clientIdArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
@@ -130,10 +129,9 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            val dataArg = args[2] as String?
-            val requestOptionsArg = args[3] as String?
-            api.post(clientIdArg, pathArg, dataArg, requestOptionsArg) { result: Result<String?> ->
+            val dataArg = args[1] as String?
+            val requestOptionsArg = args[2] as String
+            api.post(clientIdArg, dataArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
@@ -153,10 +151,9 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            val dataArg = args[2] as String?
-            val requestOptionsArg = args[3] as String?
-            api.put(clientIdArg, pathArg, dataArg, requestOptionsArg) { result: Result<String?> ->
+            val dataArg = args[1] as String?
+            val requestOptionsArg = args[2] as String
+            api.put(clientIdArg, dataArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
@@ -176,10 +173,9 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            val dataArg = args[2] as String?
-            val requestOptionsArg = args[3] as String?
-            api.patch(clientIdArg, pathArg, dataArg, requestOptionsArg) { result: Result<String?> ->
+            val dataArg = args[1] as String?
+            val requestOptionsArg = args[2] as String
+            api.patch(clientIdArg, dataArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
@@ -199,10 +195,9 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            val dataArg = args[2] as String?
-            val requestOptionsArg = args[3] as String?
-            api.delete(clientIdArg, pathArg, dataArg, requestOptionsArg) { result: Result<String?> ->
+            val dataArg = args[1] as String?
+            val requestOptionsArg = args[2] as String
+            api.delete(clientIdArg, dataArg, requestOptionsArg) { result: Result<String?> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
@@ -222,9 +217,8 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            val requestOptionsArg = args[2] as String?
-            api.stream(clientIdArg, pathArg, requestOptionsArg) { result: Result<Unit> ->
+            val requestOptionsArg = args[1] as String
+            api.stream(clientIdArg, requestOptionsArg) { result: Result<Unit> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))
@@ -243,8 +237,7 @@ interface NetraHostApi {
           channel.setMessageHandler { message, reply ->
             val args = message as List<Any?>
             val clientIdArg = args[0] as String
-            val pathArg = args[1] as String
-            api.registerStream(clientIdArg, pathArg) { result: Result<Boolean> ->
+            api.registerStream(clientIdArg) { result: Result<Boolean> ->
               val error = result.exceptionOrNull()
               if (error != null) {
                 reply.reply(NetraControllerPigeonPigeonUtils.wrapError(error))

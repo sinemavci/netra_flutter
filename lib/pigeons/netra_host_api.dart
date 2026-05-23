@@ -14,25 +14,25 @@ abstract class NetraHostApi {
   String? build(String baseUrl, String? convertedType, Map<String, String>? headers, String? circuitBreakerOptions);
 
   @async
-  String? get(String clientId, String path, String? requestOptions);
+  String? get(String clientId, String requestOptions);
 
   @async
-  String? post(String clientId, String path, String? data, String? requestOptions);
+  String? post(String clientId, String? data, String requestOptions);
 
   @async
-  String? put(String clientId, String path, String? data, String? requestOptions);
+  String? put(String clientId, String? data, String requestOptions);
 
   @async
-  String? patch(String clientId, String path, String? data, String? requestOptions);
+  String? patch(String clientId, String? data, String requestOptions);
 
   @async
-  String? delete(String clientId, String path, String? data, String? requestOptions);
+  String? delete(String clientId, String? data, String requestOptions);
 
   @async
-  void stream(String clientId, String path, String? requestOptions);
+  void stream(String clientId, String requestOptions);
 
   @async
-  bool registerStream(String clientId, String path);
+  bool registerStream(String clientId);
 
   @async
   bool on(String clientId, String eventName, String eventId);

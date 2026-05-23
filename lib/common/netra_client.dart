@@ -42,59 +42,51 @@ class NetraClient {
     return client;
   }
 
-  Future<Response?> get({
-    required String url,
-    RequestOptions? requestOptions
-  }) async {
-    final response = await controller.get(id, url, requestOptions);
+  Future<Response?> get({required RequestOptions requestOptions}) async {
+    final response = await controller.get(id, requestOptions);
     return response;
   }
 
   Future<Stream<List<int>>> getStream({
-    required String url,
-    RequestOptions? requestOptions,
+    required RequestOptions requestOptions,
   }) async {
-    final response = await controller.getStream(id, url, requestOptions);
+    final response = await controller.getStream(id, requestOptions);
     return response;
   }
 
   Future<Response?> post({
-    required String url,
     required RequestBody? body,
-    RequestOptions? requestOptions,
+    required RequestOptions requestOptions,
   }) async {
     final response = await controller.post(
-        id, url, body, requestOptions);
+        id, body, requestOptions);
     return response;
   }
 
   Future<Response?> put({
-    required String url,
     required RequestBody? body,
-    RequestOptions? requestOptions,
+    required RequestOptions requestOptions,
   }) async {
     final response = await controller.put(
-        id, url, body, requestOptions);
+        id, body, requestOptions);
     return response;
   }
 
   Future<Response?> patch({
-    required String url,
     required RequestBody? body,
-    RequestOptions? requestOptions,
+    required RequestOptions requestOptions,
   }) async {
     final response = await controller.patch(
-        id, url, body, requestOptions);
+        id, body, requestOptions);
     return response;
   }
 
   Future<Response?> delete({
-    required String url,
     RequestBody? body,
-    RequestOptions? requestOptions,
+    required RequestOptions requestOptions,
   }) async {
     final response = await controller.delete(
-        id, url, body, requestOptions);
+        id, body, requestOptions);
     return response;
   }
 

@@ -94,8 +94,9 @@ class _MyAppState extends State<MyApp> {
 
     eventId = netraClient.on(CacheEvent.cacheStaleUsed(callback2));
 
-    final result = await netraClient.get(url: "/?status=200&delay=1000",
+    final result = await netraClient.get(
       requestOptions: RequestOptions(
+        url: "/?status=200&delay=1000",
         offlinePolicyAction: OfflinePolicyAction.queue,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
@@ -117,8 +118,9 @@ class _MyAppState extends State<MyApp> {
       baseUrl: "http://10.0.2.2:3001",
     );
 
-    final result = await netraClient.getStream(url: "/image",
+    final result = await netraClient.getStream(
       requestOptions: RequestOptions(
+        url: "/image",
         offlinePolicyAction: OfflinePolicyAction.queue,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
@@ -145,12 +147,13 @@ class _MyAppState extends State<MyApp> {
         baseUrl: "https://jsonplaceholder.typicode.com",
         convertedType: ConverterType.kotlinX);
 
-    final result = await netraClient.post(url: "/users",
+    final result = await netraClient.post(
       body: RequestBody.createBytes(Uint8List.fromList(
           utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
       ),
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(
+        url: "/users",
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
@@ -164,13 +167,14 @@ class _MyAppState extends State<MyApp> {
         baseUrl: "https://jsonplaceholder.typicode.com",
         convertedType: ConverterType.kotlinX);
 
-    final result = await netraClient.put(url: "/users/1",
+    final result = await netraClient.put(
       body: RequestBody.createBytes(Uint8List.fromList(
           utf8.encode(
               jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
       ),
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(
+        url: "/users/1",
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
@@ -184,8 +188,9 @@ class _MyAppState extends State<MyApp> {
         baseUrl: "https://jsonplaceholder.typicode.com",
         convertedType: ConverterType.kotlinX);
 
-    final result = await netraClient.delete(url: "/users/1",
+    final result = await netraClient.delete(
       requestOptions: RequestOptions(
+          url: "/users/1",
           offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
           slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
           headers: {
@@ -218,9 +223,10 @@ class _MyAppState extends State<MyApp> {
           contentType: "image/jpeg");
       final requestBody = RequestBody.multipart([requestBodyPart]);
 
-      final result = await netraClient.post(url: "/users",
+      final result = await netraClient.post(
         body: requestBody,
         requestOptions: RequestOptions(
+          url: "/users",
           offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
           slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
         ),

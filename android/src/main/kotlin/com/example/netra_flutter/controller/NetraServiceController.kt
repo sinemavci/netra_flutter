@@ -33,12 +33,11 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun get(
         clientId: String,
-        path: String,
-        requestOptions: String?,
+        requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions?.let {
+        val requestOptionsDto = requestOptions.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
         val offlinePolicyAction: OfflinePolicyAction? =
@@ -47,6 +46,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
+        val path = requestOptionsDto.url
 
         if (client != null) {
             val requestBuilder = client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
@@ -70,13 +70,12 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun post(
         clientId: String,
-        path: String,
         data: String?,
-        requestOptions: String?,
+        requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions?.let {
+        val requestOptionsDto = requestOptions.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
         val requestBody = data?.let {
@@ -88,6 +87,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
+        val path = requestOptionsDto.url
 
         if (client != null) {
             val requestBuilder =
@@ -112,13 +112,12 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun put(
         clientId: String,
-        path: String,
         data: String?,
-        requestOptions: String?,
+        requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions?.let {
+        val requestOptionsDto = requestOptions.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
         val requestBody = data?.let {
@@ -130,6 +129,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val headers = requestOptionsDto?.headers
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+        val path = requestOptionsDto.url
 
         if (client != null) {
             val requestBuilder =
@@ -154,13 +154,12 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun patch(
         clientId: String,
-        path: String,
         data: String?,
-        requestOptions: String?,
+        requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions?.let {
+        val requestOptionsDto = requestOptions.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
         val requestBody = data?.let {
@@ -172,6 +171,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
+        val path = requestOptionsDto.url
 
         if (client != null) {
             val requestBuilder =
@@ -196,13 +196,12 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun delete(
         clientId: String,
-        path: String,
         data: String?,
-        requestOptions: String?,
+        requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions?.let {
+        val requestOptionsDto = requestOptions.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
         val requestBody = data?.let {
@@ -214,6 +213,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
+        val path = requestOptionsDto.url
 
         if (client != null) {
             val requestBuilder =
@@ -244,12 +244,11 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun stream(
         clientId: String,
-        path: String,
-        requestOptions: String?,
+        requestOptions: String,
         callback: (Result<Unit>) -> Unit
     ) {
         val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions?.let {
+        val requestOptionsDto = requestOptions.let {
             gson.fromJson(it, RequestOptionsDTO::class.java)
         }
         val offlinePolicyAction: OfflinePolicyAction? =
@@ -258,6 +257,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
         val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
         val headers = requestOptionsDto?.headers
+        val path = requestOptionsDto.url
 
         if (client != null) {
             val requestBuilder = client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
@@ -298,7 +298,6 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun registerStream(
         clientId: String,
-        path: String,
         callback: (Result<Boolean>) -> Unit
     ) {
         streamResponseEventHandlers[clientId] = getStreamResponseEventHandler(clientId)

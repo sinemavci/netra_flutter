@@ -38,13 +38,12 @@ class NetraController {
     return result;
   }
 
-  Future<Response?> get(String clientId, String url,
-      RequestOptions? requestOptions,) async {
+  Future<Response?> get(String clientId, RequestOptions requestOptions) async {
     Response? response;
     try {
-      var _requestOptions = requestOptions != null ? jsonEncode(
-          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
-      final result = await _hostApi.get(clientId, url, _requestOptions);
+      var _requestOptions = jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson());
+      final result = await _hostApi.get(clientId, _requestOptions);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -54,12 +53,12 @@ class NetraController {
     return response;
   }
 
-  Future<Stream<List<int>>> getStream(String clientId, String url,
-      RequestOptions? requestOptions,) async {
+  Future<Stream<List<int>>> getStream(String clientId,
+      RequestOptions requestOptions,) async {
     final controller = StreamController<List<int>>();
-    await _hostApi.registerStream(clientId, "");
-    var _requestOptions = requestOptions != null ? jsonEncode(
-        RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+    await _hostApi.registerStream(clientId);
+    var _requestOptions = jsonEncode(
+        RequestOptionsDTO.fromDataModel(requestOptions).toJson());
     final EventChannel _eventChannel = EventChannel(
         "StreamResponseListener$clientId");
     _eventChannel.receiveBroadcastStream().listen((data) {
@@ -74,22 +73,21 @@ class NetraController {
       print("onError: ${error}");
     });
 
-    _hostApi.stream(clientId, url, _requestOptions);
+    _hostApi.stream(clientId, _requestOptions);
     return controller.stream;
   }
 
   Future<Response?> post(String clientId,
-      String url,
       RequestBody? data,
-      RequestOptions? requestOptions,) async {
+      RequestOptions requestOptions,) async {
     Response? response;
     try {
-      var requestOptionsJson = requestOptions != null ? jsonEncode(
-          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestOptionsJson = jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson());
       var requestBodyJson = data != null ? jsonEncode(
           RequestBodyDTO.fromDataModel(data).toJson()) : null;
       final result = await _hostApi.post(
-          clientId, url, requestBodyJson, requestOptionsJson);
+          clientId, requestBodyJson, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -100,17 +98,16 @@ class NetraController {
   }
 
   Future<Response?> put(String clientId,
-      String url,
       RequestBody? data,
-      RequestOptions? requestOptions,) async {
+      RequestOptions requestOptions) async {
     Response? response;
     try {
-      var requestOptionsJson = requestOptions != null ? jsonEncode(
-          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestOptionsJson = jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson());
       var requestBodyJson = data != null ? jsonEncode(
           RequestBodyDTO.fromDataModel(data).toJson()) : null;
       final result = await _hostApi.put(
-          clientId, url, requestBodyJson, requestOptionsJson);
+          clientId, requestBodyJson, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -121,17 +118,16 @@ class NetraController {
   }
 
   Future<Response?> patch(String clientId,
-      String url,
       RequestBody? data,
-      RequestOptions? requestOptions,) async {
+      RequestOptions requestOptions) async {
     Response? response;
     try {
-      var requestOptionsJson = requestOptions != null ? jsonEncode(
-          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestOptionsJson = jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson());
       var requestBodyJson = data != null ? jsonEncode(
           RequestBodyDTO.fromDataModel(data).toJson()) : null;
       final result = await _hostApi.patch(
-          clientId, url, requestBodyJson, requestOptionsJson);
+          clientId, requestBodyJson, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -142,17 +138,16 @@ class NetraController {
   }
 
   Future<Response?> delete(String clientId,
-      String url,
       RequestBody? data,
-      RequestOptions? requestOptions,) async {
+      RequestOptions requestOptions) async {
     Response? response;
     try {
-      var requestOptionsJson = requestOptions != null ? jsonEncode(
-          RequestOptionsDTO.fromDataModel(requestOptions).toJson()) : null;
+      var requestOptionsJson = jsonEncode(
+          RequestOptionsDTO.fromDataModel(requestOptions).toJson());
       var requestBodyJson = data != null ? jsonEncode(
           RequestBodyDTO.fromDataModel(data).toJson()) : null;
       final result = await _hostApi.delete(
-          clientId, url, requestBodyJson, requestOptionsJson);
+          clientId, requestBodyJson, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }

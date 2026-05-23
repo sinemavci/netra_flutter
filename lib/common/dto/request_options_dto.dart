@@ -14,6 +14,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
   const RequestOptionsDTO._();
 
   const factory RequestOptionsDTO({
+    required String url,
     required OfflinePolicyActionDTO? offlinePolicyAction,
     required SlowNetworkPolicyActionDTO? slowNetworkPolicyAction,
     required CacheOptionsDTO? cacheOptions,
@@ -25,6 +26,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
 
   factory RequestOptionsDTO.fromDataModel(RequestOptions model) {
     return RequestOptionsDTO(
+      url: model.url,
       offlinePolicyAction: model.offlinePolicyAction != null
           ? OfflinePolicyActionDTO.fromDataModel(model.offlinePolicyAction!)
           : null,
@@ -41,6 +43,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
 
   RequestOptions toDataModel() {
     return RequestOptions(
+      url: url,
       offlinePolicyAction: offlinePolicyAction == null
           ? null
           : OfflinePolicyAction.fromIdentifier(offlinePolicyAction!.identifier!,
