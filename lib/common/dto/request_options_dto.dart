@@ -20,6 +20,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
     required SlowNetworkPolicyActionDTO? slowNetworkPolicyAction,
     required CacheOptionsDTO? cacheOptions,
     required Map<String, String?>? headers,
+    required bool? cancelOnDispose,
   }) = _RequestOptionsDTO;
 
   factory RequestOptionsDTO.fromJson(Map<String, dynamic> json) =>
@@ -37,6 +38,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           model.slowNetworkPolicyAction!)
           : null,
       headers: model.headers,
+      cancelOnDispose: model.cancelOnDispose,
       cacheOptions: model.cacheOptions != null
           ? CacheOptionsDTO.fromDataModel(model.cacheOptions!)
           : null,
@@ -58,6 +60,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
         timeout: slowNetworkPolicyAction!.timeout,
       ),
       cacheOptions: cacheOptions?.toDataModel(),
+      cancelOnDispose: cancelOnDispose,
       headers: headers,
     );
   }

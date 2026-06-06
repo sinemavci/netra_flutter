@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> handleGet() async {
     final netraClient = await NetraClient.build(
-      baseUrl: "https://api.example.com",
+      baseUrl: "http://10.0.2.2:3001",
       headers: {
         "Authorization": "Bearer token"
       },
@@ -96,8 +96,9 @@ class _MyAppState extends State<MyApp> {
 
     final result = await netraClient.get(
       requestOptions: RequestOptions(
-        url: "/?status=200&delay=1000",
+        url: "/?status=200&delay=5000",
         offlinePolicyAction: OfflinePolicyAction.queue,
+        cancelOnDispose: true,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
     );

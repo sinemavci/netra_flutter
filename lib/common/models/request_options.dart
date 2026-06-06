@@ -16,11 +16,14 @@ class RequestOptions {
 
   Map<String, String?>? headers;
 
+  bool? cancelOnDispose;
+
   RequestOptions({
     required this.url,
     this.offlinePolicyAction,
     this.slowNetworkPolicyAction,
     this.headers,
+    this.cancelOnDispose,
     CacheOptions? cacheOptions,
   })
       : cacheOptions = cacheOptions ?? CacheOptions(),

@@ -6,5 +6,6 @@ data class RequestOptionsDTO(
     val offlinePolicyAction: OfflinePolicyActionDTO? = null,
     val slowNetworkPolicyAction: SlowNetworkPolicyActionDTO? = null,
     val cacheOptions: CacheOptionsDTO? = null,
-    val headers: Map<String, String>?
+    val headers: Map<String, String>?,
+    val cancelOnDispose: Boolean? = false,
 )
