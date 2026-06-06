@@ -26,6 +26,7 @@ import com.netra.library.converter.NetraMoshiConverter
 import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
 import io.flutter.plugin.common.BinaryMessenger
+import kotlin.invoke
 
 class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -35,40 +36,44 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
-        val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions.let {
-            Gson().fromJson(it, RequestOptionsDTO::class.java)
-        }
-        val offlinePolicyAction: OfflinePolicyAction? =
-            requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
-            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
-        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
-        val headers = requestOptionsDto?.headers
-        val path = requestOptionsDto.url
-        val cancelOnDispose = requestOptionsDto.cancelOnDispose
+        try {
+            val client = NetraClientList.getClients().find { it.id == clientId }
+            val requestOptionsDto = requestOptions.let {
+                Gson().fromJson(it, RequestOptionsDTO::class.java)
+            }
+            val offlinePolicyAction: OfflinePolicyAction? =
+                requestOptionsDto?.offlinePolicyAction?.toDataModel()
+            val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+                requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+            val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+            val headers = requestOptionsDto?.headers
+            val path = requestOptionsDto.url
+            val cancelOnDispose = requestOptionsDto.cancelOnDispose
 
-        if (client != null) {
-            val requestBuilder = client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
-            offlinePolicyAction?.let {
-                requestBuilder.whenOffline(offlinePolicyAction)
+            if (client != null) {
+                val requestBuilder =
+                    client.get(path).addHeaders(headers ?: emptyMap()).asObject<Any>()
+                offlinePolicyAction?.let {
+                    requestBuilder.whenOffline(offlinePolicyAction)
+                }
+                slowNetworkPolicyAction?.let {
+                    requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+                }
+                cache?.let {
+                    requestBuilder.withCache(it)
+                }
+                cancelOnDispose?.let {
+                    Log.e("", "can activated for flutter")
+                    requestBuilder.cancelWhenDestroyed()
+                }
+                requestBuilder.enqueue { result ->
+                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(result!!))))
+                }
+            } else {
+                callback.invoke(Result.failure(Exception("Client not found!")))
             }
-            slowNetworkPolicyAction?.let {
-                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
-            }
-            cache?.let {
-                requestBuilder.withCache(it)
-            }
-            cancelOnDispose?.let {
-                Log.e("", "can activated for flutter")
-                requestBuilder.cancelWhenDestroyed()
-            }
-            val response = requestBuilder.execute()
-            val result = Gson().toJson(ResponseDTO.fromDataModel(response))
-            callback.invoke(Result.success(result))
-
-        } else {
-            callback.invoke(Result.failure(Exception("Client not found!")))
+        } catch (e: Error) {
+            callback.invoke(Result.failure(Exception(e)))
         }
     }
 
@@ -78,43 +83,46 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
-        val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions.let {
-            Gson().fromJson(it, RequestOptionsDTO::class.java)
-        }
-        val requestBody = data?.let {
-            Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-        } ?: NetraRequestBody.EMPTY
-        val offlinePolicyAction: OfflinePolicyAction? =
-            requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
-            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
-        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
-        val headers = requestOptionsDto?.headers
-        val path = requestOptionsDto.url
-        val cancelOnDispose = requestOptionsDto.cancelOnDispose
+        try {
+            val client = NetraClientList.getClients().find { it.id == clientId }
+            val requestOptionsDto = requestOptions.let {
+                Gson().fromJson(it, RequestOptionsDTO::class.java)
+            }
+            val requestBody = data?.let {
+                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
+            } ?: NetraRequestBody.EMPTY
+            val offlinePolicyAction: OfflinePolicyAction? =
+                requestOptionsDto?.offlinePolicyAction?.toDataModel()
+            val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+                requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+            val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+            val headers = requestOptionsDto?.headers
+            val path = requestOptionsDto.url
+            val cancelOnDispose = requestOptionsDto.cancelOnDispose
 
-        if (client != null) {
-            val requestBuilder =
-                client.post(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
-            offlinePolicyAction?.let {
-                requestBuilder.whenOffline(offlinePolicyAction)
+            if (client != null) {
+                val requestBuilder =
+                    client.post(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
+                offlinePolicyAction?.let {
+                    requestBuilder.whenOffline(offlinePolicyAction)
+                }
+                slowNetworkPolicyAction?.let {
+                    requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+                }
+                cache?.let {
+                    requestBuilder.withCache(it)
+                }
+                cancelOnDispose?.let {
+                    requestBuilder.cancelWhenDestroyed()
+                }
+                requestBuilder.enqueue { response ->
+                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                }
+            } else {
+                callback.invoke(Result.failure(Exception("Client not found!")))
             }
-            slowNetworkPolicyAction?.let {
-                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
-            }
-            cache?.let {
-                requestBuilder.withCache(it)
-            }
-            cancelOnDispose?.let {
-                requestBuilder.cancelWhenDestroyed()
-            }
-            val response = requestBuilder.execute()
-            val result = Gson().toJson(ResponseDTO.fromDataModel(response))
-            callback.invoke(Result.success(result))
-
-        } else {
-            callback.invoke(Result.failure(Exception("Client not found!")))
+        } catch (e: Error) {
+            callback.invoke(Result.failure(Exception(e)))
         }
     }
 
@@ -124,43 +132,47 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
-        val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions.let {
-            Gson().fromJson(it, RequestOptionsDTO::class.java)
-        }
-        val requestBody = data?.let {
-            Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-        } ?: NetraRequestBody.EMPTY
-        val offlinePolicyAction: OfflinePolicyAction? =
-            requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
-            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
-        val headers = requestOptionsDto?.headers
-        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
-        val path = requestOptionsDto.url
-        val cancelOnDispose = requestOptionsDto.cancelOnDispose
+        try {
+            val client = NetraClientList.getClients().find { it.id == clientId }
+            val requestOptionsDto = requestOptions.let {
+                Gson().fromJson(it, RequestOptionsDTO::class.java)
+            }
+            val requestBody = data?.let {
+                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
+            } ?: NetraRequestBody.EMPTY
+            val offlinePolicyAction: OfflinePolicyAction? =
+                requestOptionsDto?.offlinePolicyAction?.toDataModel()
+            val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+                requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+            val headers = requestOptionsDto?.headers
+            val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+            val path = requestOptionsDto.url
+            val cancelOnDispose = requestOptionsDto.cancelOnDispose
 
-        if (client != null) {
-            val requestBuilder =
-                client.put(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
-            offlinePolicyAction?.let {
-                requestBuilder.whenOffline(offlinePolicyAction)
-            }
-            slowNetworkPolicyAction?.let {
-                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
-            }
-            cache?.let {
-                requestBuilder.withCache(it)
-            }
-            cancelOnDispose?.let {
-                requestBuilder.cancelWhenDestroyed()
-            }
-            val response = requestBuilder.execute()
-            val result = Gson().toJson(ResponseDTO.fromDataModel(response))
-            callback.invoke(Result.success(result))
+            if (client != null) {
+                val requestBuilder =
+                    client.put(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
+                offlinePolicyAction?.let {
+                    requestBuilder.whenOffline(offlinePolicyAction)
+                }
+                slowNetworkPolicyAction?.let {
+                    requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+                }
+                cache?.let {
+                    requestBuilder.withCache(it)
+                }
+                cancelOnDispose?.let {
+                    requestBuilder.cancelWhenDestroyed()
+                }
+                requestBuilder.enqueue { response ->
+                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                }
 
-        } else {
-            callback.invoke(Result.failure(Exception("Client not found!")))
+            } else {
+                callback.invoke(Result.failure(Exception("Client not found!")))
+            }
+        } catch (e: Error) {
+            callback.invoke(Result.failure(Exception(e)))
         }
     }
 
@@ -170,44 +182,48 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
-        val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions.let {
-            Gson().fromJson(it, RequestOptionsDTO::class.java)
-        }
-        val requestBody = data?.let {
-            Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-        } ?: NetraRequestBody.EMPTY
-        val offlinePolicyAction: OfflinePolicyAction? =
-            requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
-            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
-        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
-        val headers = requestOptionsDto?.headers
-        val path = requestOptionsDto.url
-        val cancelOnDispose = requestOptionsDto.cancelOnDispose
+        try {
+            val client = NetraClientList.getClients().find { it.id == clientId }
+            val requestOptionsDto = requestOptions.let {
+                Gson().fromJson(it, RequestOptionsDTO::class.java)
+            }
+            val requestBody = data?.let {
+                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
+            } ?: NetraRequestBody.EMPTY
+            val offlinePolicyAction: OfflinePolicyAction? =
+                requestOptionsDto?.offlinePolicyAction?.toDataModel()
+            val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+                requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+            val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+            val headers = requestOptionsDto?.headers
+            val path = requestOptionsDto.url
+            val cancelOnDispose = requestOptionsDto.cancelOnDispose
 
-        if (client != null) {
-            val requestBuilder =
-                client.patch(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
-            offlinePolicyAction?.let {
-                requestBuilder.whenOffline(offlinePolicyAction)
-            }
-            slowNetworkPolicyAction?.let {
-                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
-            }
-            cache?.let {
-                requestBuilder.withCache(it)
-            }
-            cancelOnDispose?.let {
-                requestBuilder.cancelWhenDestroyed()
-            }
+            if (client != null) {
+                val requestBuilder =
+                    client.patch(path, requestBody).addHeaders(headers ?: emptyMap())
+                        .asObject<Any>()
+                offlinePolicyAction?.let {
+                    requestBuilder.whenOffline(offlinePolicyAction)
+                }
+                slowNetworkPolicyAction?.let {
+                    requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+                }
+                cache?.let {
+                    requestBuilder.withCache(it)
+                }
+                cancelOnDispose?.let {
+                    requestBuilder.cancelWhenDestroyed()
+                }
 
-            val response = requestBuilder.execute()
-            val result = Gson().toJson(ResponseDTO.fromDataModel(response))
-            callback.invoke(Result.success(result))
-
-        } else {
-            callback.invoke(Result.failure(Exception("Client not found!")))
+                val response = requestBuilder.enqueue { response ->
+                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                }
+            } else {
+                callback.invoke(Result.failure(Exception("Client not found!")))
+            }
+        } catch (e: Exception) {
+            callback.invoke(Result.failure(Exception(e)))
         }
     }
 
@@ -217,43 +233,48 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
-        val client = NetraClientList.getClients().find { it.id == clientId }
-        val requestOptionsDto = requestOptions.let {
-            Gson().fromJson(it, RequestOptionsDTO::class.java)
-        }
-        val requestBody = data?.let {
-            Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-        } ?: NetraRequestBody.EMPTY
-        val offlinePolicyAction: OfflinePolicyAction? =
-            requestOptionsDto?.offlinePolicyAction?.toDataModel()
-        val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
-            requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
-        val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
-        val headers = requestOptionsDto?.headers
-        val path = requestOptionsDto.url
-        val cancelOnDispose = requestOptionsDto.cancelOnDispose
+        try {
+            val client = NetraClientList.getClients().find { it.id == clientId }
+            val requestOptionsDto = requestOptions.let {
+                Gson().fromJson(it, RequestOptionsDTO::class.java)
+            }
+            val requestBody = data?.let {
+                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
+            } ?: NetraRequestBody.EMPTY
+            val offlinePolicyAction: OfflinePolicyAction? =
+                requestOptionsDto?.offlinePolicyAction?.toDataModel()
+            val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
+                requestOptionsDto?.slowNetworkPolicyAction?.toDataModel()
+            val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
+            val headers = requestOptionsDto?.headers
+            val path = requestOptionsDto.url
+            val cancelOnDispose = requestOptionsDto.cancelOnDispose
 
-        if (client != null) {
-            val requestBuilder =
-                client.delete(path, requestBody).addHeaders(headers ?: emptyMap()).asObject<Any>()
-            offlinePolicyAction?.let {
-                requestBuilder.whenOffline(offlinePolicyAction)
-            }
-            slowNetworkPolicyAction?.let {
-                requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
-            }
-            cache?.let {
-                requestBuilder.withCache(it)
-            }
-            cancelOnDispose?.let {
-                requestBuilder.cancelWhenDestroyed()
-            }
-            val response = requestBuilder.execute()
-            val result = Gson().toJson(ResponseDTO.fromDataModel(response))
-            callback.invoke(Result.success(result))
+            if (client != null) {
+                val requestBuilder =
+                    client.delete(path, requestBody).addHeaders(headers ?: emptyMap())
+                        .asObject<Any>()
+                offlinePolicyAction?.let {
+                    requestBuilder.whenOffline(offlinePolicyAction)
+                }
+                slowNetworkPolicyAction?.let {
+                    requestBuilder.whenSlowNetwork(slowNetworkPolicyAction)
+                }
+                cache?.let {
+                    requestBuilder.withCache(it)
+                }
+                cancelOnDispose?.let {
+                    requestBuilder.cancelWhenDestroyed()
+                }
+                requestBuilder.enqueue { response ->
+                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                }
 
-        } else {
-            callback.invoke(Result.failure(Exception("Client not found!")))
+            } else {
+                callback.invoke(Result.failure(Exception("Client not found!")))
+            }
+        } catch (e: Error) {
+            callback.invoke(Result.failure(Exception(e)))
         }
     }
 

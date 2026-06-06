@@ -122,6 +122,7 @@ class _MyAppState extends State<MyApp> {
     final result = await netraClient.getStream(
       requestOptions: RequestOptions(
         url: "/image",
+        cancelOnDispose: true,
         offlinePolicyAction: OfflinePolicyAction.queue,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
