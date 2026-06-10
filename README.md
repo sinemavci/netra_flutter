@@ -24,7 +24,7 @@ A powerful Flutter networking plugin with built-in caching, offline queueing, sl
 ## Create Client
 
 ```dart
-val client = await NetraClient.build(
+val client = NetraClient(
    baseUrl: "https://api.example.com",
    headers: {
    "Authorization": "Bearer token"

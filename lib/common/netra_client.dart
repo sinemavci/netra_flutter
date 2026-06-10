@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:netra_flutter/common/controllers/netra_controller.dart';
@@ -11,38 +12,53 @@ import 'package:netra_flutter/common/observers/client_event.dart';
 import 'package:uuid/uuid.dart';
 
 class NetraClient {
-  String id;
-  final String baseUrl;
-  final ConverterType? converterType;
+  late String id;
+  String baseUrl;
+  ConverterType? converterType;
+  Map<String, String>? headers;
+  CircuitBreakerOptions? circuitBreakerOptions;
 
   late final ClientObserver observer;
   final controller = NetraController();
 
-  NetraClient._create(this.baseUrl, this.converterType) : id = Uuid().v4();
+  final Completer<void> _initCompleter = Completer<void>();
 
-  static Future<NetraClient> build({
-    required String baseUrl,
-    Map<String, String>? headers,
-    ConverterType? convertedType,
-    CircuitBreakerOptions? circuitBreakerOptions,
-  }) async {
-    final clientId = await NetraController().build(
-      baseUrl: baseUrl,
-      convertedType: convertedType,
-      headers: headers,
-      circuitBreakerOptions: circuitBreakerOptions,
-    );
-    var client = NetraClient._create(baseUrl, convertedType);
-    if (clientId != null) {
-      client.id = clientId;
-      client.observer = ClientObserver(
-        clientId: clientId,
+  NetraClient({
+    required this.baseUrl,
+    this.headers,
+    this.converterType,
+    this.circuitBreakerOptions,
+  }) {
+    id = const Uuid().v4();
+    _initializeNetraClient();
+  }
+
+  Future<void> _initializeNetraClient() async {
+    try {
+      final clientId = await controller.build(
+        baseUrl: baseUrl,
+        convertedType: converterType,
+        headers: headers,
+        circuitBreakerOptions: circuitBreakerOptions,
       );
+
+      if (clientId != null) {
+        id = clientId;
+        observer = ClientObserver(clientId: clientId);
+      }
+
+      _initCompleter.complete();
+    } catch (e, stackTrace) {
+      _initCompleter.completeError(e, stackTrace);
     }
-    return client;
+  }
+
+  Future<void> _ensureInitialized() async {
+    return _initCompleter.future;
   }
 
   Future<Response?> get({required RequestOptions requestOptions}) async {
+    await _ensureInitialized();
     final response = await controller.get(id, requestOptions);
     return response;
   }
@@ -50,6 +66,7 @@ class NetraClient {
   Future<Stream<List<int>>> getStream({
     required RequestOptions requestOptions,
   }) async {
+    await _ensureInitialized();
     final response = await controller.getStream(id, requestOptions);
     return response;
   }
@@ -58,6 +75,7 @@ class NetraClient {
     required RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
+    await _ensureInitialized();
     final response = await controller.post(
         id, body, requestOptions);
     return response;
@@ -67,6 +85,7 @@ class NetraClient {
     required RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
+    await _ensureInitialized();
     final response = await controller.put(
         id, body, requestOptions);
     return response;
@@ -76,6 +95,7 @@ class NetraClient {
     required RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
+    await _ensureInitialized();
     final response = await controller.patch(
         id, body, requestOptions);
     return response;
@@ -85,6 +105,7 @@ class NetraClient {
     RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
+    await _ensureInitialized();
     final response = await controller.delete(
         id, body, requestOptions);
     return response;
@@ -92,13 +113,18 @@ class NetraClient {
 
   String on(ClientEvent eventName) {
     String eventId = const Uuid().v4().toString();
-    observer.on(eventName, eventId);
-    controller.on(id, eventName.eventName, eventId);
+
+    _ensureInitialized().then((_) {
+      observer.on(eventName, eventId);
+      controller.on(id, eventName.eventName, eventId);
+    });
     return eventId;
   }
 
   void off(String eventId) {
-    observer.off(eventId);
-    controller.off(id, eventId);
+    _ensureInitialized().then((_) {
+      observer.off(eventId);
+      controller.off(id, eventId);
+    });
   }
 }

@@ -57,17 +57,17 @@ class _MyAppState extends State<MyApp> {
         "cache stolen used: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
   }
 
+  final netraClient = NetraClient(
+    baseUrl: "http://10.0.2.2:3001",
+    headers: {
+      "Authorization": "Bearer token"
+    },
+    converterType: ConverterType.gson,
+    circuitBreakerOptions: CircuitBreakerOptions(),
+  );
+
 
   Future<void> handleGet() async {
-    final netraClient = await NetraClient.build(
-      baseUrl: "http://10.0.2.2:3001",
-      headers: {
-        "Authorization": "Bearer token"
-      },
-      convertedType: ConverterType.gson,
-      circuitBreakerOptions: CircuitBreakerOptions(),
-    );
-
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {
       print("cache missed");
@@ -115,10 +115,6 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> handleGetImage() async {
-    final netraClient = await NetraClient.build(
-      baseUrl: "http://10.0.2.2:3001",
-    );
-
     final result = await netraClient.getStream(
       requestOptions: RequestOptions(
         url: "/image",
@@ -131,7 +127,7 @@ class _MyAppState extends State<MyApp> {
 
     result.listen(
           (data) {
-            print("data in main: ${data}");
+        print("data in main: ${data}");
         imageBytes.addAll(data);
       },
       onDone: () {
@@ -145,9 +141,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> handlePost() async {
-    final netraClient = await NetraClient.build(
+    final netraClient = NetraClient(
         baseUrl: "https://jsonplaceholder.typicode.com",
-        convertedType: ConverterType.kotlinX);
+        converterType: ConverterType.kotlinX);
 
     final result = await netraClient.post(
       body: RequestBody.createBytes(Uint8List.fromList(
@@ -165,9 +161,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> handlePut() async {
-    final netraClient = await NetraClient.build(
+    final netraClient = NetraClient(
         baseUrl: "https://jsonplaceholder.typicode.com",
-        convertedType: ConverterType.kotlinX);
+        converterType: ConverterType.kotlinX);
 
     final result = await netraClient.put(
       body: RequestBody.createBytes(Uint8List.fromList(
@@ -186,9 +182,9 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> handleDelete() async {
-    final netraClient = await NetraClient.build(
+    final netraClient = NetraClient(
         baseUrl: "https://jsonplaceholder.typicode.com",
-        convertedType: ConverterType.kotlinX);
+        converterType: ConverterType.kotlinX);
 
     final result = await netraClient.delete(
       requestOptions: RequestOptions(
@@ -215,9 +211,9 @@ class _MyAppState extends State<MyApp> {
 
     if (file != null) {
       final Uint8List bytes = await file.readAsBytes();
-      final netraClient = await NetraClient.build(
+      final netraClient = await NetraClient(
           baseUrl: "https://jsonplaceholder.typicode.com",
-          convertedType: ConverterType.kotlinX);
+          converterType: ConverterType.kotlinX);
 
       final requestBodyPart = RequestBodyPart.file(name: "image",
           fileName: "exampleImage",
