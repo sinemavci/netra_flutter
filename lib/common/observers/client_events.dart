@@ -11,14 +11,14 @@ enum ClientEvents {
   cacheExpired("CacheExpired"),
   cacheStaleUsed("StaleCacheUsed"),
 
-  // queue events
+  // request events
   requestQueued("RequestQueued"),
   queuedRequestRestored("QueuedRequestRestored"),
   queuedRequestExecuted("QueuedRequestExecuted"),
   queuedRequestFailed("QueuedRequestFailed"),
-
-  // request and response events
   requestExecuted("RequestExecuted"),
+
+  // response events
   responseReceived("ResponseReceived");
 
   final String value;

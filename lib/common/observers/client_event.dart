@@ -104,53 +104,64 @@ final class CacheStaleUsed extends CacheEvent {
       : super('StaleCacheUsed', onCacheStaleUsed: onStaleCacheUsed);
 }
 
-sealed class QueueEvent extends ClientEvent {
+sealed class RequestEvent extends ClientEvent {
   final OnRequestQueued? onRequestQueued;
   final OnQueuedRequestFailed? onQueuedRequestFailed;
   final OnQueuedRequestExecuted? onQueuedRequestExecuted;
   final OnQueuedRequestRestored? onQueuedRequestRestored;
+  final OnRequestExecuted? onRequestExecuted;
 
-  const QueueEvent(super.eventName, {
+  const RequestEvent(super.eventName, {
     this.onRequestQueued,
     this.onQueuedRequestFailed,
     this.onQueuedRequestExecuted,
     this.onQueuedRequestRestored,
+    this.onRequestExecuted,
   });
 
-  factory QueueEvent.requestQueued(
+  factory RequestEvent.requestQueued(
       OnRequestQueued? onRequestQueued) = RequestQueued;
 
-  factory QueueEvent.queuedRequestFailed(
+  factory RequestEvent.queuedRequestFailed(
       OnQueuedRequestFailed? onQueuedRequestFailed) = QueuedRequestFailed;
 
-  factory QueueEvent.queuedRequestExecuted(
+  factory RequestEvent.queuedRequestExecuted(
       OnQueuedRequestExecuted? onQueuedRequestExecuted) = QueuedRequestExecuted;
 
-  factory QueueEvent.queuedRequestRestored(
+  factory RequestEvent.queuedRequestRestored(
       OnQueuedRequestRestored? onQueuedRequestRestored) = QueuedRequestRestored;
+
+  factory RequestEvent.onRequestExecuted(
+      OnRequestExecuted? onRequestExecuted) = RequestExecuted;
 }
 
-final class RequestQueued extends QueueEvent {
+final class RequestQueued extends RequestEvent {
   const RequestQueued(OnRequestQueued? onRequestQueued)
       : super('RequestQueued', onRequestQueued: onRequestQueued);
 }
 
-final class QueuedRequestFailed extends QueueEvent {
+final class QueuedRequestFailed extends RequestEvent {
   const QueuedRequestFailed(OnQueuedRequestFailed? onQueuedRequestFailed)
       : super(
       'QueuedRequestFailed', onQueuedRequestFailed: onQueuedRequestFailed);
 }
 
-final class QueuedRequestExecuted extends QueueEvent {
+final class QueuedRequestExecuted extends RequestEvent {
   const QueuedRequestExecuted(OnQueuedRequestExecuted? onQueuedRequestExecuted)
       : super('QueuedRequestExecuted',
       onQueuedRequestExecuted: onQueuedRequestExecuted);
 }
 
-final class QueuedRequestRestored extends QueueEvent {
+final class QueuedRequestRestored extends RequestEvent {
   const QueuedRequestRestored(OnQueuedRequestRestored? onQueuedRequestRestored)
       : super('QueuedRequestRestored',
       onQueuedRequestRestored: onQueuedRequestRestored);
+}
+
+final class RequestExecuted extends RequestEvent {
+  const RequestExecuted(OnRequestExecuted? onRequestExecuted)
+      : super('RequestExecuted',
+      onRequestExecuted: onRequestExecuted);
 }
 
 sealed class ResponseEvent extends ClientEvent {
@@ -170,19 +181,4 @@ final class ResponseReceived extends ResponseEvent {
       onResponseReceived: onResponseReceived);
 }
 
-sealed class RequestEvent extends ClientEvent {
-  final OnRequestExecuted? onRequestExecuted;
 
-  const RequestEvent(super.eventName, {
-    this.onRequestExecuted,
-  });
-
-  factory RequestEvent.requestExecuted(
-      OnRequestExecuted? onRequestExecuted) = RequestExecuted;
-}
-
-final class RequestExecuted extends RequestEvent {
-  const RequestExecuted(OnRequestExecuted? onRequestExecuted)
-      : super('RequestExecuted',
-      onRequestExecuted: onRequestExecuted);
-}

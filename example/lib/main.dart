@@ -77,11 +77,6 @@ class _MyAppState extends State<MyApp> {
         print("response received: ${a} -- ${b}");
       });
     }));
-    netraClient.on(ResponseEvent.responseReceived((response) {
-      response.data?.forEach((a, b) {
-        print("response received: ${a} -- ${b}");
-      });
-    }));
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {
       print("cache missed");
@@ -91,15 +86,15 @@ class _MyAppState extends State<MyApp> {
       print("cache stored: ${a} ${b}");
     }));
 
-    netraClient.on(QueueEvent.requestQueued((key, a, b) {
+    netraClient.on(RequestEvent.requestQueued((key, a, b) {
       print("requestQueued: $key ${a} ${b}");
     }));
 
-    netraClient.on(QueueEvent.queuedRequestRestored((key) {
+    netraClient.on(RequestEvent.queuedRequestRestored((key) {
       print("queuedRequestRestored: $key");
     }));
 
-    netraClient.on(QueueEvent.queuedRequestExecuted((key, response) {
+    netraClient.on(RequestEvent.queuedRequestExecuted((key, response) {
       print(
           "queuedRequestExecuted: $key response${response.statusCode} ${response
               .data}");

@@ -8,7 +8,6 @@ import com.netra.library.observers.CacheEvent
 import com.netra.library.observers.INetraObserver
 import com.netra.library.observers.NetworkEvent
 import com.netra.library.observers.RequestEvent
-import com.netra.library.observers.RequestQueuedEvent
 import com.netra.library.observers.ResponseEvent
 
 
@@ -96,7 +95,7 @@ class NetraObserver(val clientId: String): INetraObserver {
         }
     }
 
-    override fun onQueueChanged(event: RequestQueuedEvent) {
+    override fun onRequestChanged(event: RequestEvent) {
         val parsedEventName = event::class.simpleName
 
         if (listenerEvents.any { item -> item.value == parsedEventName }) {
@@ -104,7 +103,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                 "EventName" to parsedEventName,
                 "Value" to
                         when (event) {
-                            is RequestQueuedEvent.RequestQueued -> {
+                            is RequestEvent.RequestQueued -> {
                                 mutableMapOf(
                                     "key" to event.key,
                                     "queueOrder" to event.queueOrder,
@@ -112,18 +111,18 @@ class NetraObserver(val clientId: String): INetraObserver {
                                 )
                             }
 
-                            is RequestQueuedEvent.QueuedRequestRestored -> {
+                            is RequestEvent.QueuedRequestRestored -> {
                                 mutableMapOf("key" to event.key)
                             }
 
-                            is RequestQueuedEvent.QueuedRequestExecuted -> {
+                            is RequestEvent.QueuedRequestExecuted -> {
                                 mutableMapOf(
                                     "key" to event.key,
                                     "response" to ResponseDTO.fromDataModel(event.response),
                                 )
                             }
 
-                            is RequestQueuedEvent.QueuedRequestFailed -> {
+                            is RequestEvent.QueuedRequestFailed -> {
                                 mutableMapOf("key" to event.key)
                             }
                         }
@@ -131,10 +130,6 @@ class NetraObserver(val clientId: String): INetraObserver {
             val clientEventHandler = clientEventHandlers[clientId]
             clientEventHandler?.send(gson.toJson(sender))
         }
-    }
-
-    override fun onRequestExecuted(event: RequestEvent) {
-        TODO("Not yet implemented")
     }
 
     override fun onResponseReceived(event: ResponseEvent) {
