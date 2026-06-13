@@ -18,14 +18,14 @@ class ClientObserver {
   final Map<String, StreamSubscription<dynamic>> _subscriptions = {};
   StreamSubscription<dynamic>? _masterSubscription;
 
-  late final EventChannel _shapeChangedEventChannel = EventChannel(
+  late final EventChannel _clientEventChannel = EventChannel(
       "ClientListener$clientId");
 
   void _startListening() {
     if (_masterSubscription != null) return;
 
     _masterSubscription =
-        _shapeChangedEventChannel.receiveBroadcastStream().listen((data) {
+        _clientEventChannel.receiveBroadcastStream().listen((data) {
           try {
             final Map<String, dynamic> event = jsonDecode(data);
             _eventController.add(event);
