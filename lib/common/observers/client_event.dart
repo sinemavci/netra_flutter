@@ -1,3 +1,4 @@
+import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/common/models/response.dart';
 
 typedef OnCacheMiss = void Function(String key);
@@ -12,6 +13,9 @@ typedef OnQueuedRequestFailed = void Function(String key);
 typedef OnQueuedRequestRestored = void Function(String key);
 typedef OnRequestQueued = void Function(String key, int queueOrder, int createdAt);
 typedef OnQueuedRequestExecuted = void Function(String key, Response response);
+
+typedef OnResponseReceived = void Function(Response response);
+typedef OnRequestExecuted = void Function(RequestOptions request);
 
 interface class ClientEvent {
   final String eventName;
@@ -147,4 +151,38 @@ final class QueuedRequestRestored extends QueueEvent {
   const QueuedRequestRestored(OnQueuedRequestRestored? onQueuedRequestRestored)
       : super('QueuedRequestRestored',
       onQueuedRequestRestored: onQueuedRequestRestored);
+}
+
+sealed class ResponseEvent extends ClientEvent {
+  final OnResponseReceived? onResponseReceived;
+
+  const ResponseEvent(super.eventName, {
+    this.onResponseReceived,
+  });
+
+  factory ResponseEvent.responseReceived(
+      OnResponseReceived? onQueuedRequestFailed) = ResponseReceived;
+}
+
+final class ResponseReceived extends ResponseEvent {
+  const ResponseReceived(OnResponseReceived? onResponseReceived)
+      : super('ResponseReceived',
+      onResponseReceived: onResponseReceived);
+}
+
+sealed class RequestEvent extends ClientEvent {
+  final OnRequestExecuted? onRequestExecuted;
+
+  const RequestEvent(super.eventName, {
+    this.onRequestExecuted,
+  });
+
+  factory RequestEvent.requestExecuted(
+      OnRequestExecuted? onRequestExecuted) = RequestExecuted;
+}
+
+final class RequestExecuted extends RequestEvent {
+  const RequestExecuted(OnRequestExecuted? onRequestExecuted)
+      : super('RequestExecuted',
+      onRequestExecuted: onRequestExecuted);
 }

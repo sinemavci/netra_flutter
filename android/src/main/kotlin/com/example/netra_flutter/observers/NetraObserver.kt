@@ -7,7 +7,9 @@ import com.google.gson.Gson
 import com.netra.library.observers.CacheEvent
 import com.netra.library.observers.INetraObserver
 import com.netra.library.observers.NetworkEvent
+import com.netra.library.observers.RequestEvent
 import com.netra.library.observers.RequestQueuedEvent
+import com.netra.library.observers.ResponseEvent
 
 
 class NetraObserver(val clientId: String): INetraObserver {
@@ -126,6 +128,31 @@ class NetraObserver(val clientId: String): INetraObserver {
                             }
                         }
             )
+            val clientEventHandler = clientEventHandlers[clientId]
+            clientEventHandler?.send(gson.toJson(sender))
+        }
+    }
+
+    override fun onRequestExecuted(event: RequestEvent) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onResponseReceived(event: ResponseEvent) {
+        val parsedEventName = event::class.simpleName
+
+        if (listenerEvents.any { item -> item.value == parsedEventName }) {
+            val sender = mutableMapOf(
+                "EventName" to parsedEventName,
+                "Value" to when (event) {
+                    is ResponseEvent.ResponseReceived -> {
+                        mutableMapOf(
+                            "key" to event.key,
+                            "response" to ResponseDTO.fromDataModel(event.response),
+                        )
+                    }
+                }
+            )
+
             val clientEventHandler = clientEventHandlers[clientId]
             clientEventHandler?.send(gson.toJson(sender))
         }

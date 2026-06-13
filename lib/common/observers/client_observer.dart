@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/observers/client_events.dart';
 import 'package:netra_flutter/common/observers/client_event.dart';
@@ -140,6 +141,22 @@ class ClientObserver {
       if (registeredEvent is QueuedRequestFailed) {
         final key = eventValue["key"] as String;
         registeredEvent.onQueuedRequestFailed?.call(key);
+      }
+    } else if (eventNameValue == ClientEvents.responseReceived.value) {
+      if (registeredEvent is ResponseReceived) {
+        final responseJson = eventValue["response"] as Map<String, dynamic>;
+        final response = ResponseDTO
+            .fromJson(responseJson)
+            .toDataModel();
+        registeredEvent.onResponseReceived?.call(response);
+      }
+    } else if (eventNameValue == ClientEvents.requestExecuted.value) {
+      if (registeredEvent is RequestExecuted) {
+        final responseJson = eventValue["request"] as Map<String, dynamic>;
+        final response = RequestOptionsDTO
+            .fromJson(responseJson)
+            .toDataModel();
+        registeredEvent.onRequestExecuted?.call(response);
       }
     }
   }

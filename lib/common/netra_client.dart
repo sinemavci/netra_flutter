@@ -1,9 +1,11 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:ui';
 
 import 'package:netra_flutter/common/controllers/netra_controller.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
+import 'package:netra_flutter/common/models/interceptor.dart';
+import 'package:netra_flutter/common/models/interceptor_list.dart';
 import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
@@ -18,6 +20,7 @@ class NetraClient {
   Map<String, String>? headers;
   CircuitBreakerOptions? circuitBreakerOptions;
 
+  late final InterceptorList interceptorList;
   late final ClientObserver observer;
   final controller = NetraController();
 
@@ -45,6 +48,7 @@ class NetraClient {
       if (clientId != null) {
         id = clientId;
         observer = ClientObserver(clientId: clientId);
+        interceptorList = InterceptorList(clientId: clientId);
       }
 
       _initCompleter.complete();
@@ -110,6 +114,12 @@ class NetraClient {
         id, body, requestOptions);
     return response;
   }
+
+  // Future<void> addInterceptor(Interceptor interceptor, Chain chain) async {
+  //   await _ensureInitialized();
+  //   final request = chain.request;
+  //   final response = interceptor.intercept(chain);
+  // }
 
   String on(ClientEvent eventName) {
     String eventId = const Uuid().v4().toString();
