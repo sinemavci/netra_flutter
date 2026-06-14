@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
       "Authorization": "Bearer token"
     },
     converterType: ConverterType.gson,
-    circuitBreakerOptions: CircuitBreakerOptions(),
+    // circuitBreakerOptions: CircuitBreakerOptions(),
   );
 
   Future<void> handleGet() async {
@@ -76,6 +76,9 @@ class _MyAppState extends State<MyApp> {
       response.data?.forEach((a, b) {
         print("response received: ${a} -- ${b}");
       });
+    }));
+    netraClient.on(RequestEvent.onRequestExecuted((key) {
+      print("request executed: ${key}");
     }));
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {

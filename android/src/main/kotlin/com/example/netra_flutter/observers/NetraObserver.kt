@@ -125,6 +125,13 @@ class NetraObserver(val clientId: String): INetraObserver {
                             is RequestEvent.QueuedRequestFailed -> {
                                 mutableMapOf("key" to event.key)
                             }
+
+                            is RequestEvent.RequestExecuted -> {
+                                mutableMapOf(
+                                    "key" to event.key,
+//                                    "request" to event.request,
+                                )
+                            }
                         }
             )
             val clientEventHandler = clientEventHandlers[clientId]

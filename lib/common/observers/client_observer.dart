@@ -152,11 +152,8 @@ class ClientObserver {
       }
     } else if (eventNameValue == ClientEvents.requestExecuted.value) {
       if (registeredEvent is RequestExecuted) {
-        final responseJson = eventValue["request"] as Map<String, dynamic>;
-        final response = RequestOptionsDTO
-            .fromJson(responseJson)
-            .toDataModel();
-        registeredEvent.onRequestExecuted?.call(response);
+        final key = eventValue["key"] as String;
+        registeredEvent.onRequestExecuted?.call(key);
       }
     }
   }
