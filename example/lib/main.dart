@@ -64,7 +64,7 @@ class _MyAppState extends State<MyApp> {
       "Authorization": "Bearer token"
     },
     converterType: ConverterType.gson,
-    // circuitBreakerOptions: CircuitBreakerOptions(),
+    circuitBreakerOptions: CircuitBreakerOptions(),
   );
 
   Future<void> handleGet() async {
