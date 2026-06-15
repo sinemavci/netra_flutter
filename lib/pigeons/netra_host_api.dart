@@ -17,16 +17,16 @@ abstract class NetraHostApi {
   String? get(String clientId, String requestOptions);
 
   @async
-  String? post(String clientId, String? data, String requestOptions);
+  String? post(String clientId, String requestOptions);
 
   @async
-  String? put(String clientId, String? data, String requestOptions);
+  String? put(String clientId, String requestOptions);
 
   @async
-  String? patch(String clientId, String? data, String requestOptions);
+  String? patch(String clientId, String requestOptions);
 
   @async
-  String? delete(String clientId, String? data, String requestOptions);
+  String? delete(String clientId, String requestOptions);
 
   @async
   void stream(String clientId, String requestOptions);

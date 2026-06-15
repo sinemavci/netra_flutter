@@ -79,7 +79,6 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun post(
         clientId: String,
-        data: String?,
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
@@ -88,9 +87,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val requestOptionsDto = requestOptions.let {
                 Gson().fromJson(it, RequestOptionsDTO::class.java)
             }
-            val requestBody = data?.let {
-                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-            } ?: NetraRequestBody.EMPTY
+            val requestBody = requestOptionsDto.body?.toDataModel() ?: NetraRequestBody.EMPTY
             val offlinePolicyAction: OfflinePolicyAction? =
                 requestOptionsDto?.offlinePolicyAction?.toDataModel()
             val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
@@ -128,7 +125,6 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun put(
         clientId: String,
-        data: String?,
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
@@ -137,9 +133,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val requestOptionsDto = requestOptions.let {
                 Gson().fromJson(it, RequestOptionsDTO::class.java)
             }
-            val requestBody = data?.let {
-                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-            } ?: NetraRequestBody.EMPTY
+            val requestBody = requestOptionsDto.body?.toDataModel() ?: NetraRequestBody.EMPTY
             val offlinePolicyAction: OfflinePolicyAction? =
                 requestOptionsDto?.offlinePolicyAction?.toDataModel()
             val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
@@ -178,7 +172,6 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun patch(
         clientId: String,
-        data: String?,
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
@@ -187,9 +180,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val requestOptionsDto = requestOptions.let {
                 Gson().fromJson(it, RequestOptionsDTO::class.java)
             }
-            val requestBody = data?.let {
-                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-            } ?: NetraRequestBody.EMPTY
+            val requestBody = requestOptionsDto.body?.toDataModel() ?: NetraRequestBody.EMPTY
             val offlinePolicyAction: OfflinePolicyAction? =
                 requestOptionsDto?.offlinePolicyAction?.toDataModel()
             val slowNetworkPolicyAction: SlowNetworkPolicyAction? =
@@ -229,7 +220,6 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
     override fun delete(
         clientId: String,
-        data: String?,
         requestOptions: String,
         callback: (Result<String?>) -> Unit
     ) {
@@ -238,9 +228,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val requestOptionsDto = requestOptions.let {
                 Gson().fromJson(it, RequestOptionsDTO::class.java)
             }
-            val requestBody = data?.let {
-                Gson().fromJson(it, RequestBodyDTO::class.java).toDataModel()
-            } ?: NetraRequestBody.EMPTY
+            val requestBody = requestOptionsDto.body?.toDataModel() ?: NetraRequestBody.EMPTY
             val offlinePolicyAction: OfflinePolicyAction? =
                 requestOptionsDto?.offlinePolicyAction?.toDataModel()
             val slowNetworkPolicyAction: SlowNetworkPolicyAction? =

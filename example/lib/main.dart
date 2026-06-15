@@ -158,12 +158,12 @@ class _MyAppState extends State<MyApp> {
         converterType: ConverterType.kotlinX);
 
     final result = await netraClient.post(
-      body: RequestBody.createBytes(Uint8List.fromList(
-          utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
-      ),
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(
         url: "/users",
+        body: RequestBody.createBytes(Uint8List.fromList(
+            utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
+        ),
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
@@ -178,13 +178,13 @@ class _MyAppState extends State<MyApp> {
         converterType: ConverterType.kotlinX);
 
     final result = await netraClient.put(
-      body: RequestBody.createBytes(Uint8List.fromList(
-          utf8.encode(
-              jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
-      ),
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(
         url: "/users/1",
+        body: RequestBody.createBytes(Uint8List.fromList(
+            utf8.encode(
+                jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
+        ),
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
@@ -224,7 +224,7 @@ class _MyAppState extends State<MyApp> {
     if (file != null) {
       final Uint8List bytes = await file.readAsBytes();
       final netraClient = await NetraClient(
-          baseUrl: "https://jsonplaceholder.typicode.com",
+          baseUrl: "http://10.0.2.2:3001",
           converterType: ConverterType.kotlinX);
 
       final requestBodyPart = RequestBodyPart.file(name: "image",
@@ -234,9 +234,9 @@ class _MyAppState extends State<MyApp> {
       final requestBody = RequestBody.multipart([requestBodyPart]);
 
       final result = await netraClient.post(
-        body: requestBody,
         requestOptions: RequestOptions(
-          url: "/users",
+          url: "/upload",
+          body: requestBody,
           offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
           slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
         ),

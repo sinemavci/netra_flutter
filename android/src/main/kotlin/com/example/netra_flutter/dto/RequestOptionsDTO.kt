@@ -8,4 +8,5 @@ data class RequestOptionsDTO(
     val cacheOptions: CacheOptionsDTO? = null,
     val headers: Map<String, String>?,
     val cancelOnDispose: Boolean? = false,
+    val body: RequestBodyDTO?= null,
 )

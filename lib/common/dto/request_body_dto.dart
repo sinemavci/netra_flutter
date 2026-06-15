@@ -32,4 +32,18 @@ abstract class RequestBodyDTO with _$RequestBodyDTO {
         type: typeResult
     );
   }
+
+  RequestBody toDataModel() {
+    if (isMultipart) {
+      return RequestBody.multipart(content);
+    } else {
+      if (type == "map") {
+        return RequestBody.createMap(content);
+      } else if (type == "raw") {
+        return RequestBody.createBytes(content);
+      } else {
+        return RequestBody.createJson(content);
+      }
+    }
+  }
 }

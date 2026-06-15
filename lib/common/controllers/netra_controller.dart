@@ -3,12 +3,10 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/dto/circuit_breaker_options_dto.dart';
-import 'package:netra_flutter/common/dto/request_body_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
-import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/pigeons/netra_host_api.g.dart';
@@ -77,17 +75,12 @@ class NetraController {
     return controller.stream;
   }
 
-  Future<Response?> post(String clientId,
-      RequestBody? data,
-      RequestOptions requestOptions,) async {
+  Future<Response?> post(String clientId, RequestOptions requestOptions) async {
     Response? response;
     try {
       var requestOptionsJson = jsonEncode(
           RequestOptionsDTO.fromDataModel(requestOptions).toJson());
-      var requestBodyJson = data != null ? jsonEncode(
-          RequestBodyDTO.fromDataModel(data).toJson()) : null;
-      final result = await _hostApi.post(
-          clientId, requestBodyJson, requestOptionsJson);
+      final result = await _hostApi.post(clientId, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -97,17 +90,12 @@ class NetraController {
     return response;
   }
 
-  Future<Response?> put(String clientId,
-      RequestBody? data,
-      RequestOptions requestOptions) async {
+  Future<Response?> put(String clientId, RequestOptions requestOptions) async {
     Response? response;
     try {
       var requestOptionsJson = jsonEncode(
           RequestOptionsDTO.fromDataModel(requestOptions).toJson());
-      var requestBodyJson = data != null ? jsonEncode(
-          RequestBodyDTO.fromDataModel(data).toJson()) : null;
-      final result = await _hostApi.put(
-          clientId, requestBodyJson, requestOptionsJson);
+      final result = await _hostApi.put(clientId, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -117,17 +105,12 @@ class NetraController {
     return response;
   }
 
-  Future<Response?> patch(String clientId,
-      RequestBody? data,
-      RequestOptions requestOptions) async {
+  Future<Response?> patch(String clientId, RequestOptions requestOptions) async {
     Response? response;
     try {
       var requestOptionsJson = jsonEncode(
           RequestOptionsDTO.fromDataModel(requestOptions).toJson());
-      var requestBodyJson = data != null ? jsonEncode(
-          RequestBodyDTO.fromDataModel(data).toJson()) : null;
-      final result = await _hostApi.patch(
-          clientId, requestBodyJson, requestOptionsJson);
+      final result = await _hostApi.patch(clientId, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
@@ -137,17 +120,12 @@ class NetraController {
     return response;
   }
 
-  Future<Response?> delete(String clientId,
-      RequestBody? data,
-      RequestOptions requestOptions) async {
+  Future<Response?> delete(String clientId, RequestOptions requestOptions) async {
     Response? response;
     try {
       var requestOptionsJson = jsonEncode(
           RequestOptionsDTO.fromDataModel(requestOptions).toJson());
-      var requestBodyJson = data != null ? jsonEncode(
-          RequestBodyDTO.fromDataModel(data).toJson()) : null;
-      final result = await _hostApi.delete(
-          clientId, requestBodyJson, requestOptionsJson);
+      final result = await _hostApi.delete(clientId, requestOptionsJson);
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }

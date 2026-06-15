@@ -1,6 +1,5 @@
-import 'package:netra_flutter/common/enums/offline_policy_action.dart';
-import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/cache_options.dart';
+import 'package:netra_flutter/netra_flutter_plugin.dart';
 import 'package:uuid/uuid.dart';
 
 class RequestOptions {
@@ -18,12 +17,15 @@ class RequestOptions {
 
   bool? cancelOnDispose;
 
+  RequestBody? body;
+
   RequestOptions({
     required this.url,
     this.offlinePolicyAction,
     this.slowNetworkPolicyAction,
     this.headers,
     this.cancelOnDispose,
+    this.body,
     CacheOptions? cacheOptions,
   })
       : cacheOptions = cacheOptions ?? CacheOptions(),

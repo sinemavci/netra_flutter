@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:netra_flutter/common/dto/cache_options_dto.dart';
 import 'package:netra_flutter/common/dto/offline_policy_action_dto.dart';
+import 'package:netra_flutter/common/dto/request_body_dto.dart';
 import 'package:netra_flutter/common/dto/slow_network_policy_action_dto.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
@@ -21,6 +22,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
     required CacheOptionsDTO? cacheOptions,
     required Map<String, String?>? headers,
     required bool? cancelOnDispose,
+    required RequestBodyDTO? body,
   }) = _RequestOptionsDTO;
 
   factory RequestOptionsDTO.fromJson(Map<String, dynamic> json) =>
@@ -30,6 +32,9 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
     return RequestOptionsDTO(
       id: model.id!,
       url: model.url,
+      body: model.body != null
+          ? RequestBodyDTO.fromDataModel(model.body!)
+          : null,
       offlinePolicyAction: model.offlinePolicyAction != null
           ? OfflinePolicyActionDTO.fromDataModel(model.offlinePolicyAction!)
           : null,
@@ -48,6 +53,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
   RequestOptions toDataModel() {
     return RequestOptions(
       url: url,
+      body: body?.toDataModel(),
       offlinePolicyAction: offlinePolicyAction == null
           ? null
           : OfflinePolicyAction.fromIdentifier(offlinePolicyAction!.identifier!,

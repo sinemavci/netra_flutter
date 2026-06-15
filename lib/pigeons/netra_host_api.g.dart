@@ -108,14 +108,14 @@ class NetraHostApi {
     return pigeonVar_replyValue as String?;
   }
 
-  Future<String?> post(String clientId, String? data, String requestOptions) async {
+  Future<String?> post(String clientId, String requestOptions) async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.netra_flutter.NetraHostApi.post$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, data, requestOptions]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, requestOptions]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
@@ -127,14 +127,14 @@ class NetraHostApi {
     return pigeonVar_replyValue as String?;
   }
 
-  Future<String?> put(String clientId, String? data, String requestOptions) async {
+  Future<String?> put(String clientId, String requestOptions) async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.netra_flutter.NetraHostApi.put$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, data, requestOptions]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, requestOptions]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
@@ -146,14 +146,14 @@ class NetraHostApi {
     return pigeonVar_replyValue as String?;
   }
 
-  Future<String?> patch(String clientId, String? data, String requestOptions) async {
+  Future<String?> patch(String clientId, String requestOptions) async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.netra_flutter.NetraHostApi.patch$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, data, requestOptions]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, requestOptions]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(
@@ -165,14 +165,14 @@ class NetraHostApi {
     return pigeonVar_replyValue as String?;
   }
 
-  Future<String?> delete(String clientId, String? data, String requestOptions) async {
+  Future<String?> delete(String clientId, String requestOptions) async {
     final pigeonVar_channelName = 'dev.flutter.pigeon.netra_flutter.NetraHostApi.delete$pigeonVar_messageChannelSuffix';
     final pigeonVar_channel = BasicMessageChannel<Object?>(
       pigeonVar_channelName,
       pigeonChannelCodec,
       binaryMessenger: pigeonVar_binaryMessenger,
     );
-    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, data, requestOptions]);
+    final Future<Object?> pigeonVar_sendFuture = pigeonVar_channel.send(<Object?>[clientId, requestOptions]);
     final pigeonVar_replyList = await pigeonVar_sendFuture as List<Object?>?;
 
     final Object? pigeonVar_replyValue = _extractReplyValueOrThrow(

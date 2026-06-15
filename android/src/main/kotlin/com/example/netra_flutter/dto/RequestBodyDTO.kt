@@ -1,6 +1,5 @@
 package com.example.netra_flutter.dto
 
-import com.example.netra_flutter.dto.RequestPartDTO
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.netra.library.NetraPart

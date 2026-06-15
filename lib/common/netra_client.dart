@@ -76,42 +76,34 @@ class NetraClient {
   }
 
   Future<Response?> post({
-    required RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
     await _ensureInitialized();
-    final response = await controller.post(
-        id, body, requestOptions);
+    final response = await controller.post(id, requestOptions);
     return response;
   }
 
   Future<Response?> put({
-    required RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
     await _ensureInitialized();
-    final response = await controller.put(
-        id, body, requestOptions);
+    final response = await controller.put(id, requestOptions);
     return response;
   }
 
   Future<Response?> patch({
-    required RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
     await _ensureInitialized();
-    final response = await controller.patch(
-        id, body, requestOptions);
+    final response = await controller.patch(id, requestOptions);
     return response;
   }
 
   Future<Response?> delete({
-    RequestBody? body,
     required RequestOptions requestOptions,
   }) async {
     await _ensureInitialized();
-    final response = await controller.delete(
-        id, body, requestOptions);
+    final response = await controller.delete(id, requestOptions);
     return response;
   }
 
