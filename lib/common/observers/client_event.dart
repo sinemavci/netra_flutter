@@ -15,7 +15,7 @@ typedef OnRequestQueued = void Function(String key, int queueOrder, int createdA
 typedef OnQueuedRequestExecuted = void Function(String key, Response response);
 
 typedef OnResponseReceived = void Function(Response response);
-typedef OnRequestExecuted = void Function(String key);
+typedef OnRequestExecuted = void Function(String key, RequestOptions request);
 
 interface class ClientEvent {
   final String eventName;

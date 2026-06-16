@@ -77,8 +77,8 @@ class _MyAppState extends State<MyApp> {
         print("response received: ${a} -- ${b}");
       });
     }));
-    netraClient.on(RequestEvent.onRequestExecuted((key) {
-      print("request executed: ${key}");
+    netraClient.on(RequestEvent.onRequestExecuted((key, request) {
+      print("request executed: key: ${key}  request: ${request.body?.content}");
     }));
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {
@@ -157,13 +157,17 @@ class _MyAppState extends State<MyApp> {
         baseUrl: "https://jsonplaceholder.typicode.com",
         converterType: ConverterType.kotlinX);
 
+    netraClient.on(RequestEvent.onRequestExecuted((key, request) {
+      print("request executed: key: ${key}  request: ${request.body?.content}");
+    }));
     final result = await netraClient.post(
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(
         url: "/users",
-        body: RequestBody.createBytes(Uint8List.fromList(
-            utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
-        ),
+        body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
+        // body: RequestBody.createBytes(Uint8List.fromList(
+        //     utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
+        // ),
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),

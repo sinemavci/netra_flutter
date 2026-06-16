@@ -1,7 +1,9 @@
 package com.example.netra_flutter.dto
 
+import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.netra.library.Cache
 import com.netra.library.NetraPart
 import com.netra.library.NetraRequestBody
 import java.lang.reflect.Type
@@ -28,6 +30,23 @@ data class RequestBodyDTO(
             val featureDTOList: List<RequestPartDTO> = Gson().fromJson(content as String, listType)
             val data: List<NetraPart> = featureDTOList.map { it.toDataModel() }
             NetraRequestBody.multipart(data)
+        }
+    }
+
+    companion object {
+        fun fromDataModel(body: NetraRequestBody): RequestBodyDTO {
+            var type = "json"
+            if (body.content is Map<*, *>) {
+                type = "map"
+            } else if (body.content is ArrayList<*> || body.content is ByteArray) {
+                type = "raw"
+            }
+            return RequestBodyDTO(
+                content = body.content,
+                contentType = body.contentType,
+                isMultipart = body.isMultipart,
+                type = type
+            )
         }
     }
 }

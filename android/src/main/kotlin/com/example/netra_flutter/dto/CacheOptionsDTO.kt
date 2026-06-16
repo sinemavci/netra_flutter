@@ -8,4 +8,12 @@ data class CacheOptionsDTO(
     fun toDataModel(): Cache {
         return Cache(ttl?.toLong())
     }
+
+    companion object {
+        fun fromDataModel(cache: Cache): CacheOptionsDTO {
+            return CacheOptionsDTO(
+                ttl = cache.ttl?.toDouble()
+            )
+        }
+    }
 }

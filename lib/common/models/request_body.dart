@@ -23,7 +23,7 @@ class RequestBody {
     );
   }
 
-  factory RequestBody.createBytes(List<int> bytes, {
+  factory RequestBody.createBytes(List bytes, {
     String? contentType,
   }) {
     return RequestBody._(

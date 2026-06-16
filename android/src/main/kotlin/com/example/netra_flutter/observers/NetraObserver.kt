@@ -2,6 +2,7 @@ package com.example.netra_flutter.observers
 
 import android.util.Log
 import com.example.netra_flutter.clientEventHandlers
+import com.example.netra_flutter.dto.RequestOptionsDTO
 import com.example.netra_flutter.dto.ResponseDTO
 import com.google.gson.Gson
 import com.netra.library.observers.CacheEvent
@@ -129,7 +130,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                             is RequestEvent.RequestExecuted -> {
                                 mutableMapOf(
                                     "key" to event.key,
-//                                    "request" to event.request,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
                         }

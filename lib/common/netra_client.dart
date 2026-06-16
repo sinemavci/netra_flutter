@@ -1,12 +1,9 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:netra_flutter/common/controllers/netra_controller.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
-import 'package:netra_flutter/common/models/interceptor.dart';
 import 'package:netra_flutter/common/models/interceptor_list.dart';
-import 'package:netra_flutter/common/models/request_body.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/common/observers/client_observer.dart';
