@@ -7,7 +7,6 @@ import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
-import 'package:netra_flutter/common/models/interceptor.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/common/observers/client_event.dart';
 import 'dart:async';
@@ -68,10 +67,6 @@ class _MyAppState extends State<MyApp> {
   );
 
   Future<void> handleGet() async {
-    // await netraClient.interceptorList.getInterceptors();
-    // await netraClient.interceptorList.add(Interceptor(
-    //
-    // ));
     netraClient.on(ResponseEvent.responseReceived((response) {
       response.data?.forEach((a, b) {
         print("response received: ${a} -- ${b}");
