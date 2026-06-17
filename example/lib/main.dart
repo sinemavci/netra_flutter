@@ -46,15 +46,15 @@ class _MyAppState extends State<MyApp> {
   StreamController<Uint8List> imageStream = StreamController();
 
 
-  void callback1(String key, int ageMs, int ttlMs, int expiredByMs) {
+  void callback1(RequestOptions request, int ageMs, int ttlMs, int expiredByMs) {
     print(
-        "cache expired: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
+        "cache expired: key ${request.url} ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
   }
 
 
-  void callback2(String key, int ageMs, int ttlMs, int expiredByMs) {
+  void callback2(RequestOptions request, int ageMs, int ttlMs, int expiredByMs) {
     print(
-        "cache stolen used: key $key ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
+        "cache stolen used: key ${request.url} ageMs $ageMs ttlMs $ttlMs expiredByMs $expiredByMs");
   }
 
   final netraClient = NetraClient(
@@ -100,6 +100,11 @@ class _MyAppState extends State<MyApp> {
 
 
     eventId = netraClient.on(CacheEvent.cacheStaleUsed(callback2));
+
+    netraClient.on(CacheEvent.cacheStored((request, a, b) {
+      print("cache stored: ${request.offlinePolicyAction?.identifier}");
+
+    }));
 
     final result = await netraClient.get(
       requestOptions: RequestOptions(

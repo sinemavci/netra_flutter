@@ -52,41 +52,41 @@ class NetraObserver(val clientId: String): INetraObserver {
                         when (event) {
                             is CacheEvent.CacheHit -> {
                                 mutableMapOf(
-                                    "key" to event.key,
                                     "ageMs" to event.ageMs,
                                     "ttlMs" to event.ttlMs,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
 
                             is CacheEvent.StaleCacheUsed -> {
                                 mutableMapOf(
-                                    "key" to event.key,
                                     "ageMs" to event.ageMs,
                                     "ttlMs" to event.ttlMs,
                                     "expiredByMs" to event.expiredByMs,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
 
                             is CacheEvent.CacheMiss -> {
                                 mutableMapOf(
-                                    "key" to event.key,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
 
                             is CacheEvent.CacheExpired -> {
                                 mutableMapOf(
-                                    "key" to event.key,
                                     "ageMs" to event.ageMs,
                                     "ttlMs" to event.ttlMs,
                                     "expiredByMs" to event.expiredByMs,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
 
                             is CacheEvent.CacheStored -> {
                                 mutableMapOf(
-                                    "key" to event.key,
                                     "ageMs" to event.ageMs,
                                     "sizeByte" to event.sizeByte,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
                         }

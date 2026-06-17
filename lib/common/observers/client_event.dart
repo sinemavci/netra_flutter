@@ -1,11 +1,11 @@
 import 'package:netra_flutter/common/models/request_options.dart';
 import 'package:netra_flutter/common/models/response.dart';
 
-typedef OnCacheMiss = void Function(String key);
-typedef OnCacheHit = void Function(String key, int ageMs, int ttlMs);
-typedef OnCacheStored = void Function(String key, int ageMs, int sizeByte);
-typedef OnCacheExpired = void Function(String key, int ageMs, int ttlMs, int expiredByMs);
-typedef OnStaleCacheUsed = void Function(String key, int ageMs, int ttlMs, int expiredByMs);
+typedef OnCacheMiss = void Function(RequestOptions request);
+typedef OnCacheHit = void Function(RequestOptions request, int ageMs, int ttlMs);
+typedef OnCacheStored = void Function(RequestOptions request, int ageMs, int sizeByte);
+typedef OnCacheExpired = void Function(RequestOptions request, int ageMs, int ttlMs, int expiredByMs);
+typedef OnStaleCacheUsed = void Function(RequestOptions request, int ageMs, int ttlMs, int expiredByMs);
 
 typedef OnNetworkChanged = void Function();
 

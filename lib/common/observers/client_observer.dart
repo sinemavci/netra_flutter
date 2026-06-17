@@ -83,38 +83,48 @@ class ClientObserver {
       }
     } else if (eventNameValue == ClientEvents.cacheMiss.value) {
       if (registeredEvent is CacheMiss) {
-        final key = eventValue["key"] as String;
-        registeredEvent.onCacheMiss?.call(key);
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        registeredEvent.onCacheMiss?.call(request);
       }
     } else if (eventNameValue == ClientEvents.cacheHit.value) {
       if (registeredEvent is CacheHit) {
-        final key = eventValue["key"] as String;
         final ageMs = eventValue["ageMs"] as int;
         final ttlMs = eventValue["ttlMs"] as int;
-        registeredEvent.onCacheHit?.call(key, ageMs, ttlMs);
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        registeredEvent.onCacheHit?.call(request, ageMs, ttlMs);
       }
     } else if (eventNameValue == ClientEvents.cacheStored.value) {
       if (registeredEvent is CacheStored) {
-        final key = eventValue["key"] as String;
         final ageMs = eventValue["ageMs"] as int;
         final sizeByte = eventValue["sizeByte"] as int;
-        registeredEvent.onCacheStored?.call(key, ageMs, sizeByte);
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        registeredEvent.onCacheStored?.call(request, ageMs, sizeByte);
       }
     } else if (eventNameValue == ClientEvents.cacheExpired.value) {
       if (registeredEvent is CacheExpired) {
-        final key = eventValue["key"] as String;
         final ageMs = eventValue["ageMs"] as int;
         final ttlMs = eventValue["ttlMs"] as int;
         final expiredByMs = eventValue["expiredByMs"] as int;
-        registeredEvent.onCacheExpired?.call(key, ageMs, ttlMs, expiredByMs);
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        registeredEvent.onCacheExpired?.call(request, ageMs, ttlMs, expiredByMs);
       }
     } else if (eventNameValue == ClientEvents.cacheStaleUsed.value) {
       if (registeredEvent is CacheStaleUsed) {
-        final key = eventValue["key"] as String;
         final ageMs = eventValue["ageMs"] as int;
         final ttlMs = eventValue["ttlMs"] as int;
         final expiredByMs = eventValue["expiredByMs"] as int;
-        registeredEvent.onCacheStaleUsed?.call(key, ageMs, ttlMs, expiredByMs);
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        registeredEvent.onCacheStaleUsed?.call(request, ageMs, ttlMs, expiredByMs);
       }
     } else if (eventNameValue == ClientEvents.requestQueued.value) {
       if (registeredEvent is RequestQueued) {
