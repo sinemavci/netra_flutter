@@ -16,10 +16,11 @@ enum ClientEvents {
   queuedRequestRestored("QueuedRequestRestored"),
   queuedRequestExecuted("QueuedRequestExecuted"),
   queuedRequestFailed("QueuedRequestFailed"),
-  requestExecuted("RequestExecuted"),
 
-  // response events
-  responseReceived("ResponseReceived");
+  // request events
+  requestExecuted("RequestExecuted"),
+  requestSuccess("RequestSuccess"),
+  requestFailed("RequestFailed");
 
   final String value;
 

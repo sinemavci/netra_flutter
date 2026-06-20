@@ -1,6 +1,5 @@
 package com.example.netra_flutter.observers
 
-import android.util.Log
 import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.RequestOptionsDTO
 import com.example.netra_flutter.dto.ResponseDTO
@@ -8,9 +7,8 @@ import com.google.gson.Gson
 import com.netra.library.observers.CacheEvent
 import com.netra.library.observers.INetraObserver
 import com.netra.library.observers.NetworkEvent
+import com.netra.library.observers.QueueEvent
 import com.netra.library.observers.RequestEvent
-import com.netra.library.observers.ResponseEvent
-
 
 class NetraObserver(val clientId: String): INetraObserver {
     private val gson = Gson()
@@ -104,32 +102,22 @@ class NetraObserver(val clientId: String): INetraObserver {
                 "EventName" to parsedEventName,
                 "Value" to
                         when (event) {
-                            is RequestEvent.RequestQueued -> {
-                                mutableMapOf(
-                                    "key" to event.key,
-                                    "queueOrder" to event.queueOrder,
-                                    "createdAt" to event.createdAt,
-                                )
-                            }
-
-                            is RequestEvent.QueuedRequestRestored -> {
-                                mutableMapOf("key" to event.key)
-                            }
-
-                            is RequestEvent.QueuedRequestExecuted -> {
-                                mutableMapOf(
-                                    "key" to event.key,
-                                    "response" to ResponseDTO.fromDataModel(event.response),
-                                )
-                            }
-
-                            is RequestEvent.QueuedRequestFailed -> {
-                                mutableMapOf("key" to event.key)
-                            }
-
                             is RequestEvent.RequestExecuted -> {
                                 mutableMapOf(
-                                    "key" to event.key,
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
+                                )
+                            }
+
+                            is RequestEvent.RequestSuccess -> {
+                                mutableMapOf(
+                                    "response" to ResponseDTO.fromDataModel(event.response),
+                                    "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
+                                )
+                            }
+
+                            is RequestEvent.RequestFailed -> {
+                                mutableMapOf(
+                                    "response" to ResponseDTO.fromDataModel(event.response),
                                     "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
@@ -140,22 +128,38 @@ class NetraObserver(val clientId: String): INetraObserver {
         }
     }
 
-    override fun onResponseReceived(event: ResponseEvent) {
+    override fun onQueueChanged(event: QueueEvent) {
         val parsedEventName = event::class.simpleName
 
         if (listenerEvents.any { item -> item.value == parsedEventName }) {
             val sender = mutableMapOf(
                 "EventName" to parsedEventName,
-                "Value" to when (event) {
-                    is ResponseEvent.ResponseReceived -> {
-                        mutableMapOf(
-                            "key" to event.key,
-                            "response" to ResponseDTO.fromDataModel(event.response),
-                        )
-                    }
-                }
-            )
+                "Value" to
+                        when (event) {
+                            is QueueEvent.RequestQueued -> {
+                                mutableMapOf(
+                                    "url" to event.url,
+                                    "queueOrder" to event.queueOrder,
+                                    "createdAt" to event.createdAt,
+                                )
+                            }
 
+                            is QueueEvent.QueuedRequestRestored -> {
+                                mutableMapOf("url" to event.url)
+                            }
+
+                            is QueueEvent.QueuedRequestExecuted -> {
+                                mutableMapOf(
+                                    "url" to event.url,
+                                    "response" to ResponseDTO.fromDataModel(event.response),
+                                )
+                            }
+
+                            is QueueEvent.QueuedRequestFailed -> {
+                                mutableMapOf("url" to event.url)
+                            }
+                        }
+            )
             val clientEventHandler = clientEventHandlers[clientId]
             clientEventHandler?.send(gson.toJson(sender))
         }

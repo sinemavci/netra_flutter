@@ -1,14 +1,12 @@
 import 'dart:convert';
-import 'dart:ffi';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:netra_flutter/common/enums/converter_type.dart';
-import 'package:netra_flutter/common/enums/offline_policy_action.dart';
-import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
-import 'package:netra_flutter/common/models/request_options.dart';
+import 'package:netra_flutter/common/observers/cache_event.dart';
 import 'package:netra_flutter/common/observers/client_event.dart';
+import 'package:netra_flutter/common/observers/queue_event.dart';
+import 'package:netra_flutter/common/observers/request_event.dart';
 import 'dart:async';
 import 'package:netra_flutter/netra_flutter_plugin.dart';
 import 'package:image_picker/image_picker.dart';
@@ -67,13 +65,14 @@ class _MyAppState extends State<MyApp> {
   );
 
   Future<void> handleGet() async {
-    netraClient.on(ResponseEvent.responseReceived((response) {
-      response.data?.forEach((a, b) {
-        print("response received: ${a} -- ${b}");
-      });
+    netraClient.on(RequestEvent.requestExecuted((request) {
+      print("request executed: request: ${request.url} ${request.body?.content}");
     }));
-    netraClient.on(RequestEvent.onRequestExecuted((key, request) {
-      print("request executed: key: ${key}  request: ${request.body?.content}");
+    netraClient.on(RequestEvent.requestSuccess((request, response) {
+      print("request success: request: ${request.url} ${request.body?.content} -- response: ${response.data}");
+    }));
+    netraClient.on(RequestEvent.requestFailed((request, response) {
+      print("request failed: request: ${request.url} ${request.body?.content} -- response: ${response.statusCode}");
     }));
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {
@@ -84,15 +83,15 @@ class _MyAppState extends State<MyApp> {
       print("cache stored: ${a} ${b}");
     }));
 
-    netraClient.on(RequestEvent.requestQueued((key, a, b) {
+    netraClient.on(QueueEvent.requestQueued((key, a, b) {
       print("requestQueued: $key ${a} ${b}");
     }));
 
-    netraClient.on(RequestEvent.queuedRequestRestored((key) {
+    netraClient.on(QueueEvent.queuedRequestRestored((key) {
       print("queuedRequestRestored: $key");
     }));
 
-    netraClient.on(RequestEvent.queuedRequestExecuted((key, response) {
+    netraClient.on(QueueEvent.queuedRequestExecuted((key, response) {
       print(
           "queuedRequestExecuted: $key response${response.statusCode} ${response
               .data}");
@@ -108,7 +107,7 @@ class _MyAppState extends State<MyApp> {
 
     final result = await netraClient.get(
       requestOptions: RequestOptions(
-        url: "/?status=200&delay=5000",
+        url: "/?status=500&delay=5000",
         offlinePolicyAction: OfflinePolicyAction.queue,
         cancelOnDispose: true,
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
@@ -157,9 +156,6 @@ class _MyAppState extends State<MyApp> {
         baseUrl: "https://jsonplaceholder.typicode.com",
         converterType: ConverterType.kotlinX);
 
-    netraClient.on(RequestEvent.onRequestExecuted((key, request) {
-      print("request executed: key: ${key}  request: ${request.body?.content}");
-    }));
     final result = await netraClient.post(
       // body: RequestBody.createJson(jsonEncode({'name': 'Sinem', 'job': 'developer'})),
       requestOptions: RequestOptions(

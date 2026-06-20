@@ -4,8 +4,12 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
+import 'package:netra_flutter/common/observers/cache_event.dart';
 import 'package:netra_flutter/common/observers/client_events.dart';
 import 'package:netra_flutter/common/observers/client_event.dart';
+import 'package:netra_flutter/common/observers/network_event.dart';
+import 'package:netra_flutter/common/observers/queue_event.dart';
+import 'package:netra_flutter/common/observers/request_event.dart';
 
 class ClientObserver {
   final String clientId;
@@ -69,6 +73,7 @@ class ClientObserver {
     final eventNameValue = event["EventName"];
     final eventValue = event["Value"];
 
+    /// network events
     if (eventNameValue == ClientEvents.offline.value) {
       if (registeredEvent is Offline) {
         registeredEvent.onChanged?.call();
@@ -81,7 +86,9 @@ class ClientObserver {
       if (registeredEvent is ConnectionRestored) {
         registeredEvent.onChanged?.call();
       }
-    } else if (eventNameValue == ClientEvents.cacheMiss.value) {
+    }
+    /// cache events
+    else if (eventNameValue == ClientEvents.cacheMiss.value) {
       if (registeredEvent is CacheMiss) {
         final requestJson = eventValue["request"] as Map<String, dynamic>;
         final request = RequestOptionsDTO.fromJson(requestJson)
@@ -126,47 +133,64 @@ class ClientObserver {
             .toDataModel();
         registeredEvent.onCacheStaleUsed?.call(request, ageMs, ttlMs, expiredByMs);
       }
-    } else if (eventNameValue == ClientEvents.requestQueued.value) {
+    }
+    /// queue events
+    else if (eventNameValue == ClientEvents.requestQueued.value) {
       if (registeredEvent is RequestQueued) {
-        final key = eventValue["key"] as String;
+        final url = eventValue["url"] as String;
         final queueOrder = eventValue["queueOrder"] as int;
         final createdAt = eventValue["createdAt"] as int;
-        registeredEvent.onRequestQueued?.call(key, queueOrder, createdAt);
+        registeredEvent.onRequestQueued?.call(url, queueOrder, createdAt);
       }
     } else if (eventNameValue == ClientEvents.queuedRequestRestored.value) {
       if (registeredEvent is QueuedRequestRestored) {
-        final key = eventValue["key"] as String;
-        registeredEvent.onQueuedRequestRestored?.call(key);
+        final url = eventValue["url"] as String;
+        registeredEvent.onQueuedRequestRestored?.call(url);
       }
     } else if (eventNameValue == ClientEvents.queuedRequestExecuted.value) {
       if (registeredEvent is QueuedRequestExecuted) {
-        final key = eventValue["key"] as String;
+        final url = eventValue["url"] as String;
         final responseJson = eventValue["response"] as Map<String, dynamic>;
         final response = ResponseDTO
             .fromJson(responseJson)
             .toDataModel();
-        registeredEvent.onQueuedRequestExecuted?.call(key, response);
+        registeredEvent.onQueuedRequestExecuted?.call(url, response);
       }
     } else if (eventNameValue == ClientEvents.queuedRequestFailed.value) {
       if (registeredEvent is QueuedRequestFailed) {
-        final key = eventValue["key"] as String;
-        registeredEvent.onQueuedRequestFailed?.call(key);
+        final url = eventValue["url"] as String;
+        registeredEvent.onQueuedRequestFailed?.call(url);
       }
-    } else if (eventNameValue == ClientEvents.responseReceived.value) {
-      if (registeredEvent is ResponseReceived) {
-        final responseJson = eventValue["response"] as Map<String, dynamic>;
-        final response = ResponseDTO
-            .fromJson(responseJson)
-            .toDataModel();
-        registeredEvent.onResponseReceived?.call(response);
-      }
-    } else if (eventNameValue == ClientEvents.requestExecuted.value) {
+    }
+    // request events
+    else if (eventNameValue == ClientEvents.requestExecuted.value) {
       if (registeredEvent is RequestExecuted) {
-        final key = eventValue["key"] as String;
         final requestJson = eventValue["request"] as Map<String, dynamic>;
         final request = RequestOptionsDTO.fromJson(requestJson)
             .toDataModel();
-        registeredEvent.onRequestExecuted?.call(key, request);
+        registeredEvent.onRequestExecuted?.call(request);
+      }
+    }
+    else if (eventNameValue == ClientEvents.requestSuccess.value) {
+      if (registeredEvent is RequestSuccess) {
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        final responseJson = eventValue["response"] as Map<String, dynamic>;
+        final response = ResponseDTO.fromJson(responseJson)
+            .toDataModel();
+        registeredEvent.onRequestSuccess?.call(request, response);
+      }
+    }
+    else if (eventNameValue == ClientEvents.requestFailed.value) {
+      if (registeredEvent is RequestFailed) {
+        final requestJson = eventValue["request"] as Map<String, dynamic>;
+        final request = RequestOptionsDTO.fromJson(requestJson)
+            .toDataModel();
+        final responseJson = eventValue["response"] as Map<String, dynamic>;
+        final response = ResponseDTO.fromJson(responseJson)
+            .toDataModel();
+        registeredEvent.onRequestFailed?.call(request, response);
       }
     }
   }
