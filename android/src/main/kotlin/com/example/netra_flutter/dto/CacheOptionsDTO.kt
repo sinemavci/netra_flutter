@@ -3,16 +3,16 @@ package com.example.netra_flutter.dto
 import com.netra.library.Cache
 
 data class CacheOptionsDTO(
-    val ttl: Double? = 600000.0,
+    val ttl: Double = Cache.TTL_DEFAULT.toDouble(),
 ) {
     fun toDataModel(): Cache {
-        return Cache(ttl?.toLong())
+        return Cache(ttl.toLong())
     }
 
     companion object {
         fun fromDataModel(cache: Cache): CacheOptionsDTO {
             return CacheOptionsDTO(
-                ttl = cache.ttl?.toDouble()
+                ttl = cache.ttl.toDouble()
             )
         }
     }
