@@ -11,6 +11,8 @@ abstract class OfflinePolicyActionDTO with _$OfflinePolicyActionDTO {
   const factory OfflinePolicyActionDTO({
     required String? identifier,
     int? retries,
+    int? retryDuration,
+    String? retryUnit,
   }) = _OfflinePolicyActionDTO;
 
   factory OfflinePolicyActionDTO.fromJson(Map<String, dynamic> json) =>
@@ -20,10 +22,18 @@ abstract class OfflinePolicyActionDTO with _$OfflinePolicyActionDTO {
     return OfflinePolicyActionDTO(
       identifier: model.identifier,
       retries: model is RetryPolicyAction ? model.retries : null,
+      retryDuration: model is RetryPolicyAction ? model.retryInterval
+          .inMilliseconds : null,
+      retryUnit: model is RetryPolicyAction ? "MILLISECONDS" : null,
     );
   }
 
   OfflinePolicyAction toDataModel() {
-    return OfflinePolicyAction.fromIdentifier(identifier!, retries: retries);
+    return OfflinePolicyAction.fromIdentifier(
+      identifier!,
+      retries: retries,
+      retryInterval: retryDuration != null ? Duration(
+          milliseconds: retryDuration!) : null,
+    );
   }
 }
