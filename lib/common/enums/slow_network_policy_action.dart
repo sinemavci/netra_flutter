@@ -8,15 +8,15 @@ sealed class SlowNetworkPolicyAction {
   static WaitPolicyAction wait({required int delay}) =>
       WaitPolicyAction(delay: delay);
 
-  static TimeoutPolicyAction timeout({required int timeout}) =>
+  static TimeoutPolicyAction timeout({required Duration timeout}) =>
       TimeoutPolicyAction(timeout: timeout);
 
   static SlowNetworkPolicyAction fromIdentifier(String identifier,
-      {int? delay, int? timeout}) {
+      {int? delay, Duration? timeout}) {
     return switch (identifier) {
       "USE_CACHE" => const UseCachePolicyAction(),
       "WAIT" => WaitPolicyAction(delay: delay ?? 1),
-      "TIMEOUT" => TimeoutPolicyAction(timeout: timeout ?? 1),
+      "TIMEOUT" => TimeoutPolicyAction(timeout: timeout ?? Duration(milliseconds: 1000)),
       _ => throw ArgumentError("Unknown offline policy: $identifier"),
     };
   }
@@ -33,5 +33,5 @@ class WaitPolicyAction extends SlowNetworkPolicyAction {
 
 class TimeoutPolicyAction extends SlowNetworkPolicyAction {
   const TimeoutPolicyAction({required this.timeout}) : super("TIMEOUT");
-  final int timeout;
+  final Duration timeout;
 }
