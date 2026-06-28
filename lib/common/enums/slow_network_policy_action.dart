@@ -16,7 +16,7 @@ sealed class SlowNetworkPolicyAction {
     return switch (identifier) {
       "USE_CACHE" => const UseCachePolicyAction(),
       "WAIT" => WaitPolicyAction(delay: delay ?? 1),
-      "TIMEOUT" => TimeoutPolicyAction(timeout: timeout ?? Duration(milliseconds: 1000)),
+      "TIMEOUT" => TimeoutPolicyAction(timeout: timeout ?? Duration(milliseconds: 2000)),
       _ => throw ArgumentError("Unknown offline policy: $identifier"),
     };
   }

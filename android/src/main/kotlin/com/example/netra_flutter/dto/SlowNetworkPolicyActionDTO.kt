@@ -1,13 +1,13 @@
 package com.example.netra_flutter.dto
 
 import com.netra.library.enums.SlowNetworkPolicyAction
-import java.util.concurrent.TimeUnit
+import kotlin.time.Duration.Companion.milliseconds
 
 data class SlowNetworkPolicyActionDTO(
     val identifier: String,
     val delay: Double?,
     val timeout: Double?,
-    val timeUnit: TimeUnit?,
+    val timeUnit: String?,
 ) {
     companion object {
         fun fromDataModel(slowNetworkPolicyAction: SlowNetworkPolicyAction): SlowNetworkPolicyActionDTO {
@@ -19,12 +19,12 @@ data class SlowNetworkPolicyActionDTO(
                     null
                 })?.toDouble()),
                 timeout = ((if (slowNetworkPolicyAction is SlowNetworkPolicyAction.TIMEOUT) {
-                    slowNetworkPolicyAction.timeout
+                    slowNetworkPolicyAction.timeout.inWholeMilliseconds
                 } else {
                     null
                 })?.toDouble()),
                 timeUnit = ((if (slowNetworkPolicyAction is SlowNetworkPolicyAction.TIMEOUT) {
-                    slowNetworkPolicyAction.timeUnit
+                    "MILLISECONDS"
                 } else {
                     null
                 }))
@@ -36,8 +36,7 @@ data class SlowNetworkPolicyActionDTO(
         return SlowNetworkPolicyAction.fromIdentifier(
             identifier,
             delay?.toLong(),
-            timeout?.toLong(),
-            timeUnit
+            timeout?.milliseconds,
         )
     }
 }
