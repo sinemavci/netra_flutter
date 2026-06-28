@@ -117,7 +117,10 @@ class NetraObserver(val clientId: String): INetraObserver {
 
                             is RequestEvent.RequestFailed -> {
                                 mutableMapOf(
-                                    "response" to ResponseDTO.fromDataModel(event.response),
+                                    "response" to event.response?.let {
+                                        ResponseDTO.fromDataModel(it)
+                                    },
+//                                    "exception" to  //todo: netra exception
                                     "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
@@ -144,11 +147,11 @@ class NetraObserver(val clientId: String): INetraObserver {
                                 )
                             }
 
-                            is QueueEvent.QueuedRequestRestored -> {
+                            is QueueEvent.QueuedRequestExecuted -> {
                                 mutableMapOf("url" to event.url)
                             }
 
-                            is QueueEvent.QueuedRequestExecuted -> {
+                            is QueueEvent.QueuedRequestSuccess -> {
                                 mutableMapOf(
                                     "url" to event.url,
                                     "response" to ResponseDTO.fromDataModel(event.response),
@@ -156,7 +159,13 @@ class NetraObserver(val clientId: String): INetraObserver {
                             }
 
                             is QueueEvent.QueuedRequestFailed -> {
-                                mutableMapOf("url" to event.url)
+                                mutableMapOf(
+                                    "url" to event.url,
+                                    "response" to event.response?.let {
+                                        ResponseDTO.fromDataModel(it)
+                                    },
+//                                    "exception" to  //todo: netra exception
+                                )
                             }
                         }
             )

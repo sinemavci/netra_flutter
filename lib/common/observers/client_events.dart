@@ -13,8 +13,8 @@ enum ClientEvents {
 
   // request events
   requestQueued("RequestQueued"),
-  queuedRequestRestored("QueuedRequestRestored"),
   queuedRequestExecuted("QueuedRequestExecuted"),
+  queuedRequestSuccess("QueuedRequestSuccess"),
   queuedRequestFailed("QueuedRequestFailed"),
 
   // request events

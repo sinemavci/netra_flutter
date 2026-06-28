@@ -1,16 +1,17 @@
 package com.example.netra_flutter.controller
 
+import android.Manifest
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import com.example.netra_flutter.ClientEventHandler
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
 import com.example.netra_flutter.StreamResponseEventHandler
 import com.example.netra_flutter.observers
 import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.CircuitBreakerOptionsDTO
-import com.example.netra_flutter.dto.RequestBodyDTO
 import com.example.netra_flutter.dto.ResponseDTO
 import com.example.netra_flutter.dto.RequestOptionsDTO
 import com.example.netra_flutter.observers.NetraObserver
@@ -31,6 +32,7 @@ import kotlin.invoke
 class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun get(
         clientId: String,
         requestOptions: String,
@@ -66,8 +68,20 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     Log.e("", "can activated for flutter")
                     requestBuilder.cancelWhenDestroyed()
                 }
-                requestBuilder.enqueue { result ->
-                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(result!!))))
+                requestBuilder.enqueue { result, exception ->
+                    Log.e("", "enqueue result: ${result?.statusCode}")
+                    Log.e("", "enqueue exception: ${exception}")
+                    // todo: exception parse
+                    if(result != null) {
+                        callback.invoke(
+                            Result.success(
+                                Gson().toJson(
+                                    ResponseDTO.fromDataModel(
+                                        result                                    )
+                                )
+                            )
+                        )
+                    }
                 }
             } else {
                 callback.invoke(Result.failure(Exception("Client not found!")))
@@ -77,6 +91,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun post(
         clientId: String,
         requestOptions: String,
@@ -112,8 +127,19 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
                 }
-                requestBuilder.enqueue { response ->
-                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                requestBuilder.enqueue { response, exception ->
+                    // todo: exception parse
+                    if(response != null) {
+                        callback.invoke(
+                            Result.success(
+                                Gson().toJson(
+                                    ResponseDTO.fromDataModel(
+                                        response
+                                    )
+                                )
+                            )
+                        )
+                    }
                 }
             } else {
                 callback.invoke(Result.failure(Exception("Client not found!")))
@@ -123,6 +149,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun put(
         clientId: String,
         requestOptions: String,
@@ -158,8 +185,19 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
                 }
-                requestBuilder.enqueue { response ->
-                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                requestBuilder.enqueue { response, exception ->
+                    // todo: exception parse
+                    if(response != null) {
+                        callback.invoke(
+                            Result.success(
+                                Gson().toJson(
+                                    ResponseDTO.fromDataModel(
+                                        response
+                                    )
+                                )
+                            )
+                        )
+                    }
                 }
 
             } else {
@@ -170,6 +208,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun patch(
         clientId: String,
         requestOptions: String,
@@ -207,8 +246,19 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     requestBuilder.cancelWhenDestroyed()
                 }
 
-                val response = requestBuilder.enqueue { response ->
-                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                requestBuilder.enqueue { response, exception ->
+                    // todo: exception parse
+                    if(response != null) {
+                        callback.invoke(
+                            Result.success(
+                                Gson().toJson(
+                                    ResponseDTO.fromDataModel(
+                                        response
+                                    )
+                                )
+                            )
+                        )
+                    }
                 }
             } else {
                 callback.invoke(Result.failure(Exception("Client not found!")))
@@ -218,6 +268,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun delete(
         clientId: String,
         requestOptions: String,
@@ -254,8 +305,19 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
                 }
-                requestBuilder.enqueue { response ->
-                    callback.invoke(Result.success(Gson().toJson(ResponseDTO.fromDataModel(response!!))))
+                requestBuilder.enqueue { response, exception ->
+                    // todo: exception parse
+                    if(response != null) {
+                        callback.invoke(
+                            Result.success(
+                                Gson().toJson(
+                                    ResponseDTO.fromDataModel(
+                                        response
+                                    )
+                                )
+                            )
+                        )
+                    }
                 }
 
             } else {
@@ -272,6 +334,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     override fun stream(
         clientId: String,
         requestOptions: String,

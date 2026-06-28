@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/observers/cache_event.dart';
-import 'package:netra_flutter/common/observers/client_event.dart';
 import 'package:netra_flutter/common/observers/queue_event.dart';
 import 'package:netra_flutter/common/observers/request_event.dart';
 import 'dart:async';
@@ -61,7 +59,7 @@ class _MyAppState extends State<MyApp> {
       "Authorization": "Bearer token"
     },
     converterType: ConverterType.gson,
-    circuitBreakerOptions: CircuitBreakerOptions(),
+    // circuitBreakerOptions: CircuitBreakerOptions(),
   );
 
   Future<void> handleGet() async {
@@ -72,7 +70,7 @@ class _MyAppState extends State<MyApp> {
       print("request success: request: ${request.url} ${request.body?.content} -- response: ${response.data}");
     }));
     netraClient.on(RequestEvent.requestFailed((request, response) {
-      print("request failed: request: ${request.url} ${request.body?.content} -- response: ${response.statusCode}");
+      print("request failed: request: ${request.url} ${request.body?.content} -- response: ${response?.statusCode}");
     }));
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {
@@ -107,10 +105,10 @@ class _MyAppState extends State<MyApp> {
 
     final result = await netraClient.get(
       requestOptions: RequestOptions(
-        url: "/?status=500&delay=5000",
+        url: "/?status=200&delay=4000",
         offlinePolicyAction: OfflinePolicyAction.queue,
         cancelOnDispose: true,
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.timeout(timeout: Duration(milliseconds: 2000)),
       ),
     );
 
@@ -164,7 +162,7 @@ class _MyAppState extends State<MyApp> {
         // body: RequestBody.createBytes(Uint8List.fromList(
         //     utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
         // ),
-        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
     );
@@ -185,7 +183,7 @@ class _MyAppState extends State<MyApp> {
             utf8.encode(
                 jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
         ),
-        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+        offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
         slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
       ),
     );
@@ -201,7 +199,7 @@ class _MyAppState extends State<MyApp> {
     final result = await netraClient.delete(
       requestOptions: RequestOptions(
           url: "/users/1",
-          offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+          offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
           slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
           headers: {
             "custom": "sinem here",
@@ -237,7 +235,7 @@ class _MyAppState extends State<MyApp> {
         requestOptions: RequestOptions(
           url: "/upload",
           body: requestBody,
-          offlinePolicyAction: OfflinePolicyAction.retry(retries: 3),
+          offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
           slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
         ),
       );

@@ -87,6 +87,7 @@ class ClientObserver {
         registeredEvent.onChanged?.call();
       }
     }
+
     /// cache events
     else if (eventNameValue == ClientEvents.cacheMiss.value) {
       if (registeredEvent is CacheMiss) {
@@ -121,7 +122,8 @@ class ClientObserver {
         final requestJson = eventValue["request"] as Map<String, dynamic>;
         final request = RequestOptionsDTO.fromJson(requestJson)
             .toDataModel();
-        registeredEvent.onCacheExpired?.call(request, ageMs, ttlMs, expiredByMs);
+        registeredEvent.onCacheExpired?.call(
+            request, ageMs, ttlMs, expiredByMs);
       }
     } else if (eventNameValue == ClientEvents.cacheStaleUsed.value) {
       if (registeredEvent is CacheStaleUsed) {
@@ -131,9 +133,11 @@ class ClientObserver {
         final requestJson = eventValue["request"] as Map<String, dynamic>;
         final request = RequestOptionsDTO.fromJson(requestJson)
             .toDataModel();
-        registeredEvent.onCacheStaleUsed?.call(request, ageMs, ttlMs, expiredByMs);
+        registeredEvent.onCacheStaleUsed?.call(
+            request, ageMs, ttlMs, expiredByMs);
       }
     }
+
     /// queue events
     else if (eventNameValue == ClientEvents.requestQueued.value) {
       if (registeredEvent is RequestQueued) {
@@ -142,24 +146,28 @@ class ClientObserver {
         final createdAt = eventValue["createdAt"] as int;
         registeredEvent.onRequestQueued?.call(url, queueOrder, createdAt);
       }
-    } else if (eventNameValue == ClientEvents.queuedRequestRestored.value) {
-      if (registeredEvent is QueuedRequestRestored) {
-        final url = eventValue["url"] as String;
-        registeredEvent.onQueuedRequestRestored?.call(url);
-      }
     } else if (eventNameValue == ClientEvents.queuedRequestExecuted.value) {
       if (registeredEvent is QueuedRequestExecuted) {
+        final url = eventValue["url"] as String;
+        registeredEvent.onQueuedRequestExecuted?.call(url);
+      }
+    } else if (eventNameValue == ClientEvents.queuedRequestSuccess.value) {
+      if (registeredEvent is QueuedRequestSuccess) {
         final url = eventValue["url"] as String;
         final responseJson = eventValue["response"] as Map<String, dynamic>;
         final response = ResponseDTO
             .fromJson(responseJson)
             .toDataModel();
-        registeredEvent.onQueuedRequestExecuted?.call(url, response);
+        registeredEvent.onQueuedRequestSuccess?.call(url, response);
       }
     } else if (eventNameValue == ClientEvents.queuedRequestFailed.value) {
       if (registeredEvent is QueuedRequestFailed) {
         final url = eventValue["url"] as String;
-        registeredEvent.onQueuedRequestFailed?.call(url);
+        final responseJson = eventValue["response"] as Map<String, dynamic>?;
+        final response = responseJson != null ? ResponseDTO
+            .fromJson(responseJson)
+            .toDataModel() : null;
+        registeredEvent.onQueuedRequestFailed?.call(url, response);
       }
     }
     // request events
@@ -187,9 +195,10 @@ class ClientObserver {
         final requestJson = eventValue["request"] as Map<String, dynamic>;
         final request = RequestOptionsDTO.fromJson(requestJson)
             .toDataModel();
-        final responseJson = eventValue["response"] as Map<String, dynamic>;
-        final response = ResponseDTO.fromJson(responseJson)
-            .toDataModel();
+        final responseJson = eventValue["response"] as Map<String, dynamic>?;
+        final response = responseJson != null ? ResponseDTO.fromJson(
+            responseJson)
+            .toDataModel() : null;
         registeredEvent.onRequestFailed?.call(request, response);
       }
     }

@@ -3,14 +3,14 @@ import 'package:netra_flutter/common/observers/client_event.dart';
 sealed class QueueEvent implements ClientEvent {
   final OnRequestQueued? onRequestQueued;
   final OnQueuedRequestFailed? onQueuedRequestFailed;
+  final OnQueuedRequestSuccess? onQueuedRequestSuccess;
   final OnQueuedRequestExecuted? onQueuedRequestExecuted;
-  final OnQueuedRequestRestored? onQueuedRequestRestored;
 
   const QueueEvent({
     this.onRequestQueued,
     this.onQueuedRequestFailed,
     this.onQueuedRequestExecuted,
-    this.onQueuedRequestRestored,
+    this.onQueuedRequestSuccess,
   });
 
   factory QueueEvent.requestQueued(
@@ -20,10 +20,10 @@ sealed class QueueEvent implements ClientEvent {
       OnQueuedRequestFailed? onQueuedRequestFailed) = QueuedRequestFailed;
 
   factory QueueEvent.queuedRequestExecuted(
-      OnQueuedRequestExecuted? onQueuedRequestExecuted) = QueuedRequestExecuted;
+      OnQueuedRequestSuccess? onQueuedRequestExecuted) = QueuedRequestSuccess;
 
   factory QueueEvent.queuedRequestRestored(
-      OnQueuedRequestRestored? onQueuedRequestRestored) = QueuedRequestRestored;
+      OnQueuedRequestExecuted? onQueuedRequestRestored) = QueuedRequestExecuted;
 }
 
 final class RequestQueued extends QueueEvent {
@@ -42,18 +42,18 @@ final class QueuedRequestFailed extends QueueEvent {
   String get eventName => 'QueuedRequestFailed';
 }
 
+final class QueuedRequestSuccess extends QueueEvent {
+  const QueuedRequestSuccess(OnQueuedRequestSuccess? onQueuedRequestSuccess)
+      : super(onQueuedRequestSuccess: onQueuedRequestSuccess);
+
+  @override
+  String get eventName => 'QueuedRequestSuccess';
+}
+
 final class QueuedRequestExecuted extends QueueEvent {
   const QueuedRequestExecuted(OnQueuedRequestExecuted? onQueuedRequestExecuted)
       : super(onQueuedRequestExecuted: onQueuedRequestExecuted);
 
   @override
   String get eventName => 'QueuedRequestExecuted';
-}
-
-final class QueuedRequestRestored extends QueueEvent {
-  const QueuedRequestRestored(OnQueuedRequestRestored? onQueuedRequestRestored)
-      : super(onQueuedRequestRestored: onQueuedRequestRestored);
-
-  @override
-  String get eventName => 'QueuedRequestRestored';
 }
