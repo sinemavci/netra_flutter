@@ -6,6 +6,8 @@ import 'package:netra_flutter/common/dto/circuit_breaker_options_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
+import 'package:netra_flutter/common/exceptions/base_platform_exception.dart';
+import 'package:netra_flutter/common/exceptions/exception_manager.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/response.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
@@ -45,8 +47,9 @@ class NetraController {
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
-    } catch (e) {
-      print("result error: ${e}");
+    } on PlatformException catch (e) {
+      print("get error: ${e}");
+      throw ExceptionManager.parse(e);
     }
     return response;
   }

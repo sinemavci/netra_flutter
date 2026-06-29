@@ -68,19 +68,18 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     Log.e("", "can activated for flutter")
                     requestBuilder.cancelWhenDestroyed()
                 }
-                requestBuilder.enqueue { result, exception ->
-                    Log.e("", "enqueue result: ${result?.statusCode}")
-                    Log.e("", "enqueue exception: ${exception}")
-                    // todo: exception parse
-                    if(result != null) {
+                requestBuilder.enqueue { response, exception ->
+                    if(response != null) {
                         callback.invoke(
                             Result.success(
                                 Gson().toJson(
                                     ResponseDTO.fromDataModel(
-                                        result                                    )
+                                        response                                    )
                                 )
                             )
                         )
+                    } else if(exception != null) {
+                        callback.invoke(Result.failure(exception))
                     }
                 }
             } else {
@@ -128,8 +127,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     requestBuilder.cancelWhenDestroyed()
                 }
                 requestBuilder.enqueue { response, exception ->
-                    // todo: exception parse
-                    if(response != null) {
+                    if (response != null) {
                         callback.invoke(
                             Result.success(
                                 Gson().toJson(
@@ -139,6 +137,8 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                                 )
                             )
                         )
+                    } else if (exception != null) {
+                        callback.invoke(Result.failure(exception))
                     }
                 }
             } else {
@@ -186,8 +186,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     requestBuilder.cancelWhenDestroyed()
                 }
                 requestBuilder.enqueue { response, exception ->
-                    // todo: exception parse
-                    if(response != null) {
+                    if (response != null) {
                         callback.invoke(
                             Result.success(
                                 Gson().toJson(
@@ -197,6 +196,8 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                                 )
                             )
                         )
+                    } else if (exception != null) {
+                        callback.invoke(Result.failure(exception))
                     }
                 }
 
@@ -247,8 +248,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
 
                 requestBuilder.enqueue { response, exception ->
-                    // todo: exception parse
-                    if(response != null) {
+                    if (response != null) {
                         callback.invoke(
                             Result.success(
                                 Gson().toJson(
@@ -258,6 +258,8 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                                 )
                             )
                         )
+                    } else if (exception != null) {
+                        callback.invoke(Result.failure(exception))
                     }
                 }
             } else {
@@ -306,8 +308,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     requestBuilder.cancelWhenDestroyed()
                 }
                 requestBuilder.enqueue { response, exception ->
-                    // todo: exception parse
-                    if(response != null) {
+                    if (response != null) {
                         callback.invoke(
                             Result.success(
                                 Gson().toJson(
@@ -317,6 +318,8 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                                 )
                             )
                         )
+                    } else if (exception != null) {
+                        callback.invoke(Result.failure(exception))
                     }
                 }
 

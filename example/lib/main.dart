@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:netra_flutter/common/exceptions/base_platform_exception.dart';
 import 'package:netra_flutter/common/observers/cache_event.dart';
 import 'package:netra_flutter/common/observers/queue_event.dart';
 import 'package:netra_flutter/common/observers/request_event.dart';
@@ -64,13 +65,16 @@ class _MyAppState extends State<MyApp> {
 
   Future<void> handleGet() async {
     netraClient.on(RequestEvent.requestExecuted((request) {
-      print("request executed: request: ${request.url} ${request.body?.content}");
+      print(
+          "request executed: request: ${request.url} ${request.body?.content}");
     }));
     netraClient.on(RequestEvent.requestSuccess((request, response) {
-      print("request success: request: ${request.url} ${request.body?.content} -- response: ${response.data}");
+      print("request success: request: ${request.url} ${request.body
+          ?.content} -- response: ${response.data}");
     }));
     netraClient.on(RequestEvent.requestFailed((request, response) {
-      print("request failed: request: ${request.url} ${request.body?.content} -- response: ${response?.statusCode}");
+      print("request failed: request: ${request.url} ${request.body
+          ?.content} -- response: ${response?.statusCode}");
     }));
     netraClient.on(CacheEvent.cacheExpired(callback1));
     netraClient.on(CacheEvent.cacheMiss((key) {
@@ -100,21 +104,25 @@ class _MyAppState extends State<MyApp> {
 
     netraClient.on(CacheEvent.cacheStored((request, a, b) {
       print("cache stored: ${request.offlinePolicyAction?.identifier}");
-
     }));
 
-    final result = await netraClient.get(
-      requestOptions: RequestOptions(
-        url: "/?status=200&delay=4000",
-        offlinePolicyAction: OfflinePolicyAction.queue,
-        cancelOnDispose: true,
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.timeout(timeout: Duration(milliseconds: 2000)),
-      ),
-    );
+    try {
+      final result = await netraClient.get(
+        requestOptions: RequestOptions(
+          url: "/?status=200&delay=4000",
+          offlinePolicyAction: OfflinePolicyAction.queue,
+          cancelOnDispose: true,
+          slowNetworkPolicyAction: SlowNetworkPolicyAction.timeout(
+              timeout: Duration(milliseconds: 2000)),
+        ),
+      );
+      print(
+          "result in main: ${jsonEncode(result?.headers)}  statusMessage ${result
+              ?.statusMessage} data: ${result?.data}");
+    } on NetraConnectionException catch (e) {
+      print("get connection exception on main:${e.message}");
+    }
 
-    print(
-        "result in main: ${jsonEncode(result?.headers)}  statusMessage ${result
-            ?.statusMessage} data: ${result?.data}");
 
     // Future.delayed(Duration(seconds: 15), () {
     //   if (eventId != null) {
