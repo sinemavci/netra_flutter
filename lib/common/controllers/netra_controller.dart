@@ -48,7 +48,6 @@ class NetraController {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
     } on PlatformException catch (e) {
-      print("get error: ${e}");
       throw ExceptionManager.parse(e);
     }
     return response;

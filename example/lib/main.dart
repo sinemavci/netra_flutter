@@ -119,7 +119,7 @@ class _MyAppState extends State<MyApp> {
       print(
           "result in main: ${jsonEncode(result?.headers)}  statusMessage ${result
               ?.statusMessage} data: ${result?.data}");
-    } on NetraConnectionException catch (e) {
+    } on NetraNetworkException catch (e) {
       print("get connection exception on main:${e.message}");
     }
 
