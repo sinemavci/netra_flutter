@@ -27,6 +27,9 @@ import com.netra.library.converter.NetraMoshiConverter
 import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
 import io.flutter.plugin.common.BinaryMessenger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlin.invoke
 
 class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
@@ -372,27 +375,29 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 requestBuilder.cancelWhenDestroyed()
             }
 
-            requestBuilder.executeStream(
-                onStreamReady = { inputStream ->
-                    val buffer = ByteArray(8192)
-                    var bytesRead: Int
+            CoroutineScope(Dispatchers.IO).launch {
+                requestBuilder.executeStream(
+                    onStreamReady = { inputStream ->
+                        val buffer = ByteArray(8192)
+                        var bytesRead: Int
 
-                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                        val chunk = buffer.copyOfRange(0, bytesRead)
-                        mainHandler.post {
-                            streamResponseEventHandlers[requestId]?.send(chunk)
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            val chunk = buffer.copyOfRange(0, bytesRead)
+                            mainHandler.post {
+                                streamResponseEventHandlers[requestId]?.send(chunk)
+                            }
                         }
-                    }
-                    mainHandler.post {
-                        streamResponseEventHandlers[requestId]?.endOfStream()
-                    }
-                                },
-                onFailure = { exception ->
-                    mainHandler.post {
-                        streamResponseEventHandlers[requestId]?.onCancel(null)
-                        callback.invoke(Result.failure(exception))
-                    }
-                })
+                        mainHandler.post {
+                            streamResponseEventHandlers[requestId]?.endOfStream()
+                        }
+                    },
+                    onFailure = { exception ->
+                        mainHandler.post {
+                            streamResponseEventHandlers[requestId]?.onCancel(null)
+                            callback.invoke(Result.failure(exception))
+                        }
+                    })
+            }
         } else {
             callback.invoke(Result.failure(Exception("Client not found!")))
         }

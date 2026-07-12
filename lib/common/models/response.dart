@@ -1,5 +1,5 @@
 class Response {
-  final Map<String, Object?>? data;
+  final Object? data;
   final int statusCode;
   final String? statusMessage;
   final Map<String, String?>? headers;

@@ -9,7 +9,7 @@ abstract class ResponseDTO with _$ResponseDTO {
   const ResponseDTO._();
 
   const factory ResponseDTO({
-    required Map<String, Object?>? data,
+    required Object? data,
     required int statusCode,
     required String? statusMessage,
     required Map<String, String?>? headers,
