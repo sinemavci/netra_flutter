@@ -62,7 +62,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           ? null
           : SlowNetworkPolicyAction.fromIdentifier(
         slowNetworkPolicyAction!.identifier!,
-        delay: slowNetworkPolicyAction!.delay,
+        delay: Duration(),
         timeout: Duration(),
       ),
       cacheOptions: cacheOptions?.toDataModel(),

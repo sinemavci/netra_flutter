@@ -22,7 +22,7 @@ abstract class SlowNetworkPolicyActionDTO with _$SlowNetworkPolicyActionDTO {
       SlowNetworkPolicyAction model) {
     return SlowNetworkPolicyActionDTO(
       identifier: model.identifier,
-      delay: model is WaitPolicyAction ? model.delay : null,
+      delay: model is WaitPolicyAction ? model.delay.inMilliseconds : null,
       timeout: model is TimeoutPolicyAction
           ? model.timeout.inMilliseconds
           : null,
@@ -33,7 +33,7 @@ abstract class SlowNetworkPolicyActionDTO with _$SlowNetworkPolicyActionDTO {
   SlowNetworkPolicyAction toDataModel() {
     return SlowNetworkPolicyAction.fromIdentifier(
       identifier!,
-      delay: delay,
+      delay: delay!= null ? Duration(milliseconds: delay!) : null,
       timeout: timeout != null ? Duration(milliseconds: timeout!) : null,
     );
   }

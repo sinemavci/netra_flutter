@@ -109,11 +109,11 @@ class _MyAppState extends State<MyApp> {
     try {
       final result = await netraClient.get(
         requestOptions: RequestOptions(
-          url: "/?status=200&delay=4000",
+          url: "/?status=200&delay=0000",
           offlinePolicyAction: OfflinePolicyAction.queue,
           cancelOnDispose: true,
-          slowNetworkPolicyAction: SlowNetworkPolicyAction.timeout(
-              timeout: Duration(milliseconds: 2000)),
+          slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(
+              delay: Duration(milliseconds: 6000)),
         ),
       );
       print(
@@ -137,7 +137,7 @@ class _MyAppState extends State<MyApp> {
         url: "/image",
         cancelOnDispose: true,
         offlinePolicyAction: OfflinePolicyAction.queue,
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: Duration(seconds: 2)),
       ),
     );
     final List<int> imageBytes = [];
@@ -171,7 +171,7 @@ class _MyAppState extends State<MyApp> {
         //     utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'developer'}))),
         // ),
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: Duration(seconds: 2)),
       ),
     );
     print("result in main: ${result?.statusCode}  statusMessage ${result
@@ -192,7 +192,7 @@ class _MyAppState extends State<MyApp> {
                 jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}))),
         ),
         offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
-        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+        slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: Duration(seconds: 2)),
       ),
     );
     print("result in main: ${result?.statusCode}  statusMessage ${result
@@ -208,7 +208,7 @@ class _MyAppState extends State<MyApp> {
       requestOptions: RequestOptions(
           url: "/users/1",
           offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
-          slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+          slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: Duration(seconds: 4)),
           headers: {
             "custom": "sinem here",
           }
@@ -244,7 +244,7 @@ class _MyAppState extends State<MyApp> {
           url: "/upload",
           body: requestBody,
           offlinePolicyAction: OfflinePolicyAction.retry(retries: 3, retryInterval: Duration(seconds: 4)),
-          slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: 2),
+          slowNetworkPolicyAction: SlowNetworkPolicyAction.wait(delay: Duration(seconds: 2)),
         ),
       );
       print("result in main: ${result?.statusCode}  statusMessage ${result

@@ -14,7 +14,7 @@ data class SlowNetworkPolicyActionDTO(
             return SlowNetworkPolicyActionDTO(
                 identifier = slowNetworkPolicyAction.identifier,
                 delay = ((if (slowNetworkPolicyAction is SlowNetworkPolicyAction.WAIT) {
-                    slowNetworkPolicyAction.delay
+                    slowNetworkPolicyAction.delay.inWholeMilliseconds
                 } else {
                     null
                 })?.toDouble()),
@@ -35,7 +35,7 @@ data class SlowNetworkPolicyActionDTO(
     fun toDataModel(): SlowNetworkPolicyAction {
         return SlowNetworkPolicyAction.fromIdentifier(
             identifier,
-            delay?.toLong(),
+            delay?.milliseconds,
             timeout?.milliseconds,
         )
     }
