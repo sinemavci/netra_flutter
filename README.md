@@ -6,6 +6,11 @@ A powerful Flutter networking plugin with built-in caching, offline queueing, sl
 
 ---
 
+## ⚙️ Installation
+```sh
+flutter pub add netra_flutter
+```
+
 ## Features
 
 - ⚡ Simple async/await API
