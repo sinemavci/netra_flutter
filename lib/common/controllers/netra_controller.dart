@@ -6,7 +6,6 @@ import 'package:netra_flutter/common/dto/circuit_breaker_options_dto.dart';
 import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
-import 'package:netra_flutter/common/exceptions/base_platform_exception.dart';
 import 'package:netra_flutter/common/exceptions/exception_manager.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
 import 'package:netra_flutter/common/models/response.dart';
@@ -140,7 +139,7 @@ class NetraController {
   Future<void> on(String clientId, String eventName, String eventId) async {
     try {
       await _hostApi.on(clientId, eventName, eventId);
-    } on PlatformException catch (e) {
+    } on PlatformException {
       rethrow;
     }
   }
@@ -148,7 +147,7 @@ class NetraController {
   Future<void> off(String clientId, String eventId) async {
     try {
       await _hostApi.off(clientId, eventId);
-    } on PlatformException catch (e) {
+    } on PlatformException {
       rethrow;
     }
   }

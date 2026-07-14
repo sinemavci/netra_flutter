@@ -1,4 +1,4 @@
-library netra_flutter_plugin;
+library;
 
 export './common/netra_client.dart';
 
