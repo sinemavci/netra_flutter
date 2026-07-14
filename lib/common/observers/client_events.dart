@@ -27,8 +27,6 @@ enum ClientEvents {
   const ClientEvents(this.value);
 
   factory ClientEvents.fromValue(String value) {
-    return ClientEvents.values.firstWhere(
-          (element) => element.value == value,
-    );
+    return ClientEvents.values.firstWhere((element) => element.value == value);
   }
 }

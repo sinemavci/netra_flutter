@@ -11,12 +11,17 @@ sealed class SlowNetworkPolicyAction {
   static TimeoutPolicyAction timeout({required Duration timeout}) =>
       TimeoutPolicyAction(timeout: timeout);
 
-  static SlowNetworkPolicyAction fromIdentifier(String identifier,
-      {Duration? delay, Duration? timeout}) {
+  static SlowNetworkPolicyAction fromIdentifier(
+    String identifier, {
+    Duration? delay,
+    Duration? timeout,
+  }) {
     return switch (identifier) {
       "USE_CACHE" => const UseCachePolicyAction(),
       "WAIT" => WaitPolicyAction(delay: delay ?? Duration(milliseconds: 1000)),
-      "TIMEOUT" => TimeoutPolicyAction(timeout: timeout ?? Duration(milliseconds: 1000)),
+      "TIMEOUT" => TimeoutPolicyAction(
+        timeout: timeout ?? Duration(milliseconds: 1000),
+      ),
       _ => throw ArgumentError("Unknown offline policy: $identifier"),
     };
   }

@@ -9,7 +9,7 @@ enum ConverterType {
 
   factory ConverterType.fromIdentifier(String identifier) {
     return ConverterType.values.firstWhere(
-          (element) => element.identifier == identifier,
+      (element) => element.identifier == identifier,
       orElse: () => ConverterType.kotlinX,
     );
   }

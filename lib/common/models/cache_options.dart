@@ -1,7 +1,5 @@
 class CacheOptions {
   final num? ttl;
 
-  CacheOptions({
-    this.ttl = 600000,
-  });
+  CacheOptions({this.ttl = 600000});
 }

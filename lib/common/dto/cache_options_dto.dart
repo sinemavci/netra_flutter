@@ -8,22 +8,16 @@ part 'cache_options_dto.g.dart';
 abstract class CacheOptionsDTO with _$CacheOptionsDTO {
   const CacheOptionsDTO._();
 
-  const factory CacheOptionsDTO({
-    required num? ttl,
-  }) = _CacheOptionsDTO;
+  const factory CacheOptionsDTO({required num? ttl}) = _CacheOptionsDTO;
 
   factory CacheOptionsDTO.fromJson(Map<String, dynamic> json) =>
       _$CacheOptionsDTOFromJson(json);
 
   factory CacheOptionsDTO.fromDataModel(CacheOptions model) {
-    return CacheOptionsDTO(
-      ttl: model.ttl,
-    );
+    return CacheOptionsDTO(ttl: model.ttl);
   }
 
   CacheOptions toDataModel() {
-    return CacheOptions(
-      ttl: ttl,
-    );
+    return CacheOptions(ttl: ttl);
   }
 }

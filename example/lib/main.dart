@@ -39,12 +39,7 @@ class RequestResult {
   final String? data;
   final String? error;
 
-  RequestResult({
-    required this.label,
-    this.statusCode,
-    this.data,
-    this.error,
-  });
+  RequestResult({required this.label, this.statusCode, this.data, this.error});
 
   bool get isSuccess => error == null;
 }
@@ -102,53 +97,92 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
   // ── observers ─────────────────────────────────────────────────────────────
 
   void _registerObservers() {
-    _mainClient.on(RequestEvent.requestExecuted((request) {
-      _showSnackbar('⚡ Executing: ${request.url}', color: Colors.blueGrey);
-    }));
+    _mainClient.on(
+      RequestEvent.requestExecuted((request) {
+        _showSnackbar('⚡ Executing: ${request.url}', color: Colors.blueGrey);
+      }),
+    );
 
-    _mainClient.on(RequestEvent.requestSuccess((request, response) {
-      _showSnackbar('✅ Success: ${response.statusCode}', color: Colors.green);
-    }));
+    _mainClient.on(
+      RequestEvent.requestSuccess((request, response) {
+        _showSnackbar('✅ Success: ${response.statusCode}', color: Colors.green);
+      }),
+    );
 
-    _mainClient.on(RequestEvent.requestFailed((request, response) {
-      _showSnackbar('❌ Failed: ${response?.statusCode ?? 'unknown'}', color: Colors.red);
-    }));
+    _mainClient.on(
+      RequestEvent.requestFailed((request, response) {
+        _showSnackbar(
+          '❌ Failed: ${response?.statusCode ?? 'unknown'}',
+          color: Colors.red,
+        );
+      }),
+    );
 
-    _mainClient.on(CacheEvent.cacheHit((request, ageMs, ttlMs) {
-      _showSnackbar('💾 Cache hit (age: ${ageMs}ms)', color: Colors.teal);
-    }));
+    _mainClient.on(
+      CacheEvent.cacheHit((request, ageMs, ttlMs) {
+        _showSnackbar('💾 Cache hit (age: ${ageMs}ms)', color: Colors.teal);
+      }),
+    );
 
-    _mainClient.on(CacheEvent.cacheMiss((request) {
-      _showSnackbar('🔍 Cache miss: ${request.url}', color: Colors.orange);
-    }));
+    _mainClient.on(
+      CacheEvent.cacheMiss((request) {
+        _showSnackbar('🔍 Cache miss: ${request.url}', color: Colors.orange);
+      }),
+    );
 
-    _mainClient.on(CacheEvent.cacheStored((request, ageMs, ttlMs) {
-      _showSnackbar('📦 Cache stored', color: Colors.teal);
-    }));
+    _mainClient.on(
+      CacheEvent.cacheStored((request, ageMs, ttlMs) {
+        _showSnackbar('📦 Cache stored', color: Colors.teal);
+      }),
+    );
 
-    _mainClient.on(CacheEvent.cacheExpired((request, ageMs, ttlMs, expiredByMs) {
-      _showSnackbar('⏰ Cache expired (by: ${expiredByMs}ms)', color: Colors.orange);
-    }));
+    _mainClient.on(
+      CacheEvent.cacheExpired((request, ageMs, ttlMs, expiredByMs) {
+        _showSnackbar(
+          '⏰ Cache expired (by: ${expiredByMs}ms)',
+          color: Colors.orange,
+        );
+      }),
+    );
 
-    _mainClient.on(CacheEvent.cacheStaleUsed((request, ageMs, ttlMs, expiredByMs) {
-      _showSnackbar('♻️ Stale cache used', color: Colors.amber);
-    }));
+    _mainClient.on(
+      CacheEvent.cacheStaleUsed((request, ageMs, ttlMs, expiredByMs) {
+        _showSnackbar('♻️ Stale cache used', color: Colors.amber);
+      }),
+    );
 
-    _mainClient.on(QueueEvent.requestQueued((url, queueOrder, createdAt) {
-      _showSnackbar('📬 Queued: $url (order: $queueOrder)', color: Colors.purple);
-    }));
+    _mainClient.on(
+      QueueEvent.requestQueued((url, queueOrder, createdAt) {
+        _showSnackbar(
+          '📬 Queued: $url (order: $queueOrder)',
+          color: Colors.purple,
+        );
+      }),
+    );
 
-    _mainClient.on(QueueEvent.queuedRequestRestored((url) {
-      _showSnackbar('🔄 Queue restored: $url', color: Colors.indigo);
-    }));
+    _mainClient.on(
+      QueueEvent.queuedRequestRestored((url) {
+        _showSnackbar('🔄 Queue restored: $url', color: Colors.indigo);
+      }),
+    );
 
-    _mainClient.on(QueueEvent.queuedRequestExecuted((url, response) {
-      _showSnackbar('✅ Queue executed: ${response.statusCode}', color: Colors.green);
-    }));
+    _mainClient.on(
+      QueueEvent.queuedRequestExecuted((url, response) {
+        _showSnackbar(
+          '✅ Queue executed: ${response.statusCode}',
+          color: Colors.green,
+        );
+      }),
+    );
 
-    _mainClient.on(QueueEvent.queuedRequestFailed((url, response) {
-      _showSnackbar('❌ Queue failed: $url ${response?.statusCode != null ? 'status code: ${response?.statusCode}' : ''}', color: Colors.red);
-    }));
+    _mainClient.on(
+      QueueEvent.queuedRequestFailed((url, response) {
+        _showSnackbar(
+          '❌ Queue failed: $url ${response?.statusCode != null ? 'status code: ${response?.statusCode}' : ''}',
+          color: Colors.red,
+        );
+      }),
+    );
   }
 
   // ── helpers ───────────────────────────────────────────────────────────────
@@ -194,11 +228,13 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(RequestResult(
-        label: 'GET /?status=200',
-        statusCode: result?.statusCode,
-        data: jsonEncode(result?.data),
-      ));
+      _setResult(
+        RequestResult(
+          label: 'GET /?status=200',
+          statusCode: result?.statusCode,
+          data: jsonEncode(result?.data),
+        ),
+      );
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'GET /?status=200', error: e.message));
     } finally {
@@ -224,11 +260,13 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(RequestResult(
-        label: 'POST /users',
-        statusCode: result?.statusCode,
-        data: jsonEncode(result?.data),
-      ));
+      _setResult(
+        RequestResult(
+          label: 'POST /users',
+          statusCode: result?.statusCode,
+          data: jsonEncode(result?.data),
+        ),
+      );
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'POST /users', error: e.message));
     } finally {
@@ -244,7 +282,9 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           url: '/users/1',
           body: RequestBody.createBytes(
             Uint8List.fromList(
-              utf8.encode(jsonEncode({'name': 'Sinem', 'job': 'mobile developer'})),
+              utf8.encode(
+                jsonEncode({'name': 'Sinem', 'job': 'mobile developer'}),
+              ),
             ),
           ),
           offlinePolicyAction: OfflinePolicyAction.retry(
@@ -256,11 +296,13 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(RequestResult(
-        label: 'PUT /users/1',
-        statusCode: result?.statusCode,
-        data: jsonEncode(result?.data),
-      ));
+      _setResult(
+        RequestResult(
+          label: 'PUT /users/1',
+          statusCode: result?.statusCode,
+          data: jsonEncode(result?.data),
+        ),
+      );
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'PUT /users/1', error: e.message));
     } finally {
@@ -284,11 +326,13 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           headers: {'X-Custom': 'netra-example'},
         ),
       );
-      _setResult(RequestResult(
-        label: 'DELETE /users/1',
-        statusCode: result?.statusCode,
-        data: jsonEncode(result?.data),
-      ));
+      _setResult(
+        RequestResult(
+          label: 'DELETE /users/1',
+          statusCode: result?.statusCode,
+          data: jsonEncode(result?.data),
+        ),
+      );
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'DELETE /users/1', error: e.message));
     } finally {
@@ -318,22 +362,23 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
       final List<int> buffer = [];
 
       stream.listen(
-            (data) => buffer.addAll(data),
+        (data) => buffer.addAll(data),
         onDone: () {
           final bytes = Uint8List.fromList(buffer);
           if (mounted) setState(() => _imageBytes = bytes);
-          _setResult(RequestResult(
-            label: 'GET /image (stream)',
-            statusCode: 200,
-            data: '${bytes.length} bytes received',
-          ));
+          _setResult(
+            RequestResult(
+              label: 'GET /image (stream)',
+              statusCode: 200,
+              data: '${bytes.length} bytes received',
+            ),
+          );
           _setLoading(false);
         },
         onError: (e) {
-          _setResult(RequestResult(
-            label: 'GET /image (stream)',
-            error: e.toString(),
-          ));
+          _setResult(
+            RequestResult(label: 'GET /image (stream)', error: e.toString()),
+          );
           _setLoading(false);
         },
       );
@@ -373,11 +418,13 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(RequestResult(
-        label: 'POST /upload',
-        statusCode: result?.statusCode,
-        data: jsonEncode(result?.data),
-      ));
+      _setResult(
+        RequestResult(
+          label: 'POST /upload',
+          statusCode: result?.statusCode,
+          data: jsonEncode(result?.data),
+        ),
+      );
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'POST /upload', error: e.message));
     } finally {
@@ -405,12 +452,36 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
               runSpacing: 8,
               alignment: WrapAlignment.center,
               children: [
-                _ActionButton(label: 'GET', onTap: _handleGet, loading: _loading),
-                _ActionButton(label: 'POST', onTap: _handlePost, loading: _loading),
-                _ActionButton(label: 'PUT', onTap: _handlePut, loading: _loading),
-                _ActionButton(label: 'DELETE', onTap: _handleDelete, loading: _loading),
-                _ActionButton(label: 'GET Image', onTap: _handleGetImage, loading: _loading),
-                _ActionButton(label: 'POST Image', onTap: _handlePostImage, loading: _loading),
+                _ActionButton(
+                  label: 'GET',
+                  onTap: _handleGet,
+                  loading: _loading,
+                ),
+                _ActionButton(
+                  label: 'POST',
+                  onTap: _handlePost,
+                  loading: _loading,
+                ),
+                _ActionButton(
+                  label: 'PUT',
+                  onTap: _handlePut,
+                  loading: _loading,
+                ),
+                _ActionButton(
+                  label: 'DELETE',
+                  onTap: _handleDelete,
+                  loading: _loading,
+                ),
+                _ActionButton(
+                  label: 'GET Image',
+                  onTap: _handleGetImage,
+                  loading: _loading,
+                ),
+                _ActionButton(
+                  label: 'POST Image',
+                  onTap: _handlePostImage,
+                  loading: _loading,
+                ),
               ],
             ),
           ),
@@ -418,8 +489,7 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           const Divider(height: 1),
 
           // ── result card ────────────────────────────────────────────────
-          if (_lastResult != null)
-            _ResultCard(result: _lastResult!),
+          if (_lastResult != null) _ResultCard(result: _lastResult!),
 
           // ── image preview ──────────────────────────────────────────────
           if (_imageBytes != null)
@@ -438,9 +508,7 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
             ),
 
           if (_loading && _imageBytes == null)
-            const Expanded(
-              child: Center(child: CircularProgressIndicator()),
-            ),
+            const Expanded(child: Center(child: CircularProgressIndicator())),
         ],
       ),
     );
@@ -540,11 +608,7 @@ class _ResultRow extends StatelessWidget {
   final String value;
   final Color? valueColor;
 
-  const _ResultRow({
-    required this.label,
-    required this.value,
-    this.valueColor,
-  });
+  const _ResultRow({required this.label, required this.value, this.valueColor});
 
   @override
   Widget build(BuildContext context) {

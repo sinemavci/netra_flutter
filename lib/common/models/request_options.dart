@@ -27,7 +27,6 @@ class RequestOptions {
     this.cancelOnDispose,
     this.body,
     CacheOptions? cacheOptions,
-  })
-      : cacheOptions = cacheOptions ?? CacheOptions(),
-        id = Uuid().v4();
+  }) : cacheOptions = cacheOptions ?? CacheOptions(),
+       id = Uuid().v4();
 }

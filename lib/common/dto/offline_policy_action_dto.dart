@@ -22,8 +22,9 @@ abstract class OfflinePolicyActionDTO with _$OfflinePolicyActionDTO {
     return OfflinePolicyActionDTO(
       identifier: model.identifier,
       retries: model is RetryPolicyAction ? model.retries : null,
-      retryDuration: model is RetryPolicyAction ? model.retryInterval
-          .inMilliseconds : null,
+      retryDuration: model is RetryPolicyAction
+          ? model.retryInterval.inMilliseconds
+          : null,
       retryUnit: model is RetryPolicyAction ? "MILLISECONDS" : null,
     );
   }
@@ -32,8 +33,9 @@ abstract class OfflinePolicyActionDTO with _$OfflinePolicyActionDTO {
     return OfflinePolicyAction.fromIdentifier(
       identifier!,
       retries: retries,
-      retryInterval: retryDuration != null ? Duration(
-          milliseconds: retryDuration!) : null,
+      retryInterval: retryDuration != null
+          ? Duration(milliseconds: retryDuration!)
+          : null,
     );
   }
 }

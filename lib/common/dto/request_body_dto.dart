@@ -26,10 +26,10 @@ abstract class RequestBodyDTO with _$RequestBodyDTO {
       typeResult = 'raw';
     }
     return RequestBodyDTO(
-        content: model.content,
-        contentType: model.contentType,
-        isMultipart: model.isMultipart,
-        type: typeResult
+      content: model.content,
+      contentType: model.contentType,
+      isMultipart: model.isMultipart,
+      type: typeResult,
     );
   }
 

@@ -11,6 +11,7 @@ class Response {
     this.headers,
   });
 }
+
 //todo:
 // response.requestOptions; // The original RequestOptions
 // response.redirects;      // List of redirects followed

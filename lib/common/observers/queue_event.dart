@@ -13,22 +13,25 @@ sealed class QueueEvent implements ClientEvent {
     this.onQueuedRequestSuccess,
   });
 
-  factory QueueEvent.requestQueued(
-      OnRequestQueued? onRequestQueued) = RequestQueued;
+  factory QueueEvent.requestQueued(OnRequestQueued? onRequestQueued) =
+      RequestQueued;
 
   factory QueueEvent.queuedRequestFailed(
-      OnQueuedRequestFailed? onQueuedRequestFailed) = QueuedRequestFailed;
+    OnQueuedRequestFailed? onQueuedRequestFailed,
+  ) = QueuedRequestFailed;
 
   factory QueueEvent.queuedRequestExecuted(
-      OnQueuedRequestSuccess? onQueuedRequestExecuted) = QueuedRequestSuccess;
+    OnQueuedRequestSuccess? onQueuedRequestExecuted,
+  ) = QueuedRequestSuccess;
 
   factory QueueEvent.queuedRequestRestored(
-      OnQueuedRequestExecuted? onQueuedRequestRestored) = QueuedRequestExecuted;
+    OnQueuedRequestExecuted? onQueuedRequestRestored,
+  ) = QueuedRequestExecuted;
 }
 
 final class RequestQueued extends QueueEvent {
   const RequestQueued(OnRequestQueued? onRequestQueued)
-      : super(onRequestQueued: onRequestQueued);
+    : super(onRequestQueued: onRequestQueued);
 
   @override
   String get eventName => 'RequestQueued';
@@ -36,7 +39,7 @@ final class RequestQueued extends QueueEvent {
 
 final class QueuedRequestFailed extends QueueEvent {
   const QueuedRequestFailed(OnQueuedRequestFailed? onQueuedRequestFailed)
-      : super(onQueuedRequestFailed: onQueuedRequestFailed);
+    : super(onQueuedRequestFailed: onQueuedRequestFailed);
 
   @override
   String get eventName => 'QueuedRequestFailed';
@@ -44,7 +47,7 @@ final class QueuedRequestFailed extends QueueEvent {
 
 final class QueuedRequestSuccess extends QueueEvent {
   const QueuedRequestSuccess(OnQueuedRequestSuccess? onQueuedRequestSuccess)
-      : super(onQueuedRequestSuccess: onQueuedRequestSuccess);
+    : super(onQueuedRequestSuccess: onQueuedRequestSuccess);
 
   @override
   String get eventName => 'QueuedRequestSuccess';
@@ -52,7 +55,7 @@ final class QueuedRequestSuccess extends QueueEvent {
 
 final class QueuedRequestExecuted extends QueueEvent {
   const QueuedRequestExecuted(OnQueuedRequestExecuted? onQueuedRequestExecuted)
-      : super(onQueuedRequestExecuted: onQueuedRequestExecuted);
+    : super(onQueuedRequestExecuted: onQueuedRequestExecuted);
 
   @override
   String get eventName => 'QueuedRequestExecuted';

@@ -14,36 +14,31 @@ class RequestBody {
     this.isMultipart = false,
   });
 
-  factory RequestBody.createJson(String json, {
+  factory RequestBody.createJson(
+    String json, {
     String contentType = "application/json; charset=utf-8",
   }) {
-    return RequestBody._(
-      content: json,
-      contentType: contentType,
-    );
+    return RequestBody._(content: json, contentType: contentType);
   }
 
-  factory RequestBody.createBytes(List bytes, {
-    String? contentType,
-  }) {
+  factory RequestBody.createBytes(List bytes, {String? contentType}) {
     return RequestBody._(
       content: bytes,
       contentType: contentType ?? "application/json; charset=utf-8",
     );
   }
 
-  factory RequestBody.createMap(Map<String, dynamic> map,) {
-    return RequestBody._(
-      content: map,
-    );
+  factory RequestBody.createMap(Map<String, dynamic> map) {
+    return RequestBody._(content: map);
   }
 
-  factory RequestBody.multipart(List<RequestBodyPart> parts,) {
+  factory RequestBody.multipart(List<RequestBodyPart> parts) {
     return RequestBody._(
-      content: jsonEncode(parts.map((it) {
-        return RequestBodyPartDTO
-            .fromDataModel(it).toJson();
-      }).toList()),
+      content: jsonEncode(
+        parts.map((it) {
+          return RequestBodyPartDTO.fromDataModel(it).toJson();
+        }).toList(),
+      ),
       contentType: "multipart/form-data",
       isMultipart: true,
     );

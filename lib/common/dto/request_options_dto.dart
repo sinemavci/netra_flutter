@@ -40,7 +40,8 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           : null,
       slowNetworkPolicyAction: model.slowNetworkPolicyAction != null
           ? SlowNetworkPolicyActionDTO.fromDataModel(
-          model.slowNetworkPolicyAction!)
+              model.slowNetworkPolicyAction!,
+            )
           : null,
       headers: model.headers,
       cancelOnDispose: model.cancelOnDispose,
@@ -56,15 +57,17 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
       body: body?.toDataModel(),
       offlinePolicyAction: offlinePolicyAction == null
           ? null
-          : OfflinePolicyAction.fromIdentifier(offlinePolicyAction!.identifier!,
-          retries: offlinePolicyAction!.retries),
+          : OfflinePolicyAction.fromIdentifier(
+              offlinePolicyAction!.identifier!,
+              retries: offlinePolicyAction!.retries,
+            ),
       slowNetworkPolicyAction: slowNetworkPolicyAction == null
           ? null
           : SlowNetworkPolicyAction.fromIdentifier(
-        slowNetworkPolicyAction!.identifier!,
-        delay: Duration(),
-        timeout: Duration(),
-      ),
+              slowNetworkPolicyAction!.identifier!,
+              delay: Duration(),
+              timeout: Duration(),
+            ),
       cacheOptions: cacheOptions?.toDataModel(),
       cancelOnDispose: cancelOnDispose,
       headers: headers,

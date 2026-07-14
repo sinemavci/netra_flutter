@@ -21,11 +21,11 @@ sealed class CacheEvent implements ClientEvent {
 
   factory CacheEvent.cacheStored(OnCacheStored? onCacheStored) = CacheStored;
 
-  factory CacheEvent.cacheExpired(
-      OnCacheExpired? onCacheExpired) = CacheExpired;
+  factory CacheEvent.cacheExpired(OnCacheExpired? onCacheExpired) =
+      CacheExpired;
 
-  factory CacheEvent.cacheStaleUsed(
-      OnStaleCacheUsed? onStaleCacheUsed) = CacheStaleUsed;
+  factory CacheEvent.cacheStaleUsed(OnStaleCacheUsed? onStaleCacheUsed) =
+      CacheStaleUsed;
 }
 
 final class CacheHit extends CacheEvent {
@@ -36,7 +36,7 @@ final class CacheHit extends CacheEvent {
 }
 
 final class CacheMiss extends CacheEvent {
-  const CacheMiss(OnCacheMiss? onCacheMiss): super(onCacheMiss: onCacheMiss);
+  const CacheMiss(OnCacheMiss? onCacheMiss) : super(onCacheMiss: onCacheMiss);
 
   @override
   String get eventName => 'CacheMiss';
@@ -44,7 +44,7 @@ final class CacheMiss extends CacheEvent {
 
 final class CacheStored extends CacheEvent {
   const CacheStored(OnCacheStored? onCacheStored)
-      : super(onCacheStored: onCacheStored);
+    : super(onCacheStored: onCacheStored);
 
   @override
   String get eventName => 'CacheStored';
@@ -52,7 +52,7 @@ final class CacheStored extends CacheEvent {
 
 final class CacheExpired extends CacheEvent {
   const CacheExpired(OnCacheExpired? onCacheExpired)
-      : super(onCacheExpired: onCacheExpired);
+    : super(onCacheExpired: onCacheExpired);
 
   @override
   String get eventName => 'CacheExpired';
@@ -60,7 +60,7 @@ final class CacheExpired extends CacheEvent {
 
 final class CacheStaleUsed extends CacheEvent {
   const CacheStaleUsed(OnStaleCacheUsed? onStaleCacheUsed)
-      : super(onCacheStaleUsed: onStaleCacheUsed);
+    : super(onCacheStaleUsed: onStaleCacheUsed);
 
   @override
   String get eventName => 'StaleCacheUsed';

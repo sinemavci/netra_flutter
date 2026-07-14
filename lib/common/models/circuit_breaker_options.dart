@@ -3,8 +3,5 @@ class CircuitBreakerOptions {
 
   final double? retryDelayMs;
 
-  CircuitBreakerOptions({
-    this.failureThreshold = 5,
-    this.retryDelayMs = 1000,
-  });
+  CircuitBreakerOptions({this.failureThreshold = 5, this.retryDelayMs = 1000});
 }

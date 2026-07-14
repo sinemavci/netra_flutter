@@ -9,8 +9,8 @@ sealed class NetworkEvent implements ClientEvent {
 
   factory NetworkEvent.slowNetwork(OnNetworkChanged? onChanged) = SlowNetwork;
 
-  factory NetworkEvent.connectionRestored(
-      OnNetworkChanged? onChanged) = ConnectionRestored;
+  factory NetworkEvent.connectionRestored(OnNetworkChanged? onChanged) =
+      ConnectionRestored;
 }
 
 final class Offline extends NetworkEvent {
