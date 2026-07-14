@@ -32,8 +32,8 @@ class NetraController {
       final clientId = await _hostApi.build(
           baseUrl, convertedType?.identifier, headers, _circuitBreakerOptions);
       result = clientId;
-    } catch (e) {
-      print("result error: ${e}");
+    } on PlatformException catch (e) {
+      throw ExceptionManager.parse(e);
     }
     return result;
   }
@@ -86,8 +86,8 @@ class NetraController {
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
-    } catch (e) {
-      print("result error: ${e}");
+    } on PlatformException catch (e) {
+      throw ExceptionManager.parse(e);
     }
     return response;
   }
@@ -101,8 +101,8 @@ class NetraController {
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
-    } catch (e) {
-      print("result error: ${e}");
+    } on PlatformException catch (e) {
+      throw ExceptionManager.parse(e);
     }
     return response;
   }
@@ -116,8 +116,8 @@ class NetraController {
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
-    } catch (e) {
-      print("result error: ${e}");
+    } on PlatformException catch (e) {
+      throw ExceptionManager.parse(e);
     }
     return response;
   }
@@ -131,8 +131,8 @@ class NetraController {
       if (result != null) {
         response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
       }
-    } catch (e) {
-      print("result error: ${e}");
+    } on PlatformException catch (e) {
+      throw ExceptionManager.parse(e);
     }
     return response;
   }

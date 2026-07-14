@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.example.netra_flutter.ClientEventHandler
 import com.example.netra_flutter.NetraControllerPigeon.NetraHostApi
@@ -68,20 +67,20 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                     requestBuilder.withCache(it)
                 }
                 cancelOnDispose?.let {
-                    Log.e("", "can activated for flutter")
                     requestBuilder.cancelWhenDestroyed()
                 }
                 requestBuilder.enqueue { response, exception ->
-                    if(response != null) {
+                    if (response != null) {
                         callback.invoke(
                             Result.success(
                                 Gson().toJson(
                                     ResponseDTO.fromDataModel(
-                                        response                                    )
+                                        response
+                                    )
                                 )
                             )
                         )
-                    } else if(exception != null) {
+                    } else if (exception != null) {
                         callback.invoke(Result.failure(exception))
                     }
                 }
@@ -453,44 +452,38 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
         circuitBreakerOptions: String?,
         callback: (Result<String?>) -> Unit
     ) {
-        try {
-            val clientBuilder: NetraClient.Builder = NetraClient.Builder(context)
-                .baseUrl(baseUrl)
-            val circuitBreakerOptionsDto = circuitBreakerOptions?.let {
-                Gson().fromJson(it, CircuitBreakerOptionsDTO::class.java)
-            }
-            circuitBreakerOptionsDto.let {
-                if (it?.failureThreshold != null && it.retryDelayMs != null) {
-                    clientBuilder.circuitBreaker(it.failureThreshold, it.retryDelayMs)
-                }
-            }
-            headers?.let {
-                clientBuilder.addHeaders(it)
-            }
-            if (convertedType !== null) {
-                when (convertedType) {
-                    NetraMoshiConverter().type -> {
-                        clientBuilder.addConverterFactory(NetraMoshiConverter())
-                    }
-
-                    NetraGsonConverter().type -> {
-                        clientBuilder.addConverterFactory(NetraGsonConverter())
-                    }
-
-                    NetraKotlinxConverter().type -> {
-                        clientBuilder.addConverterFactory(NetraKotlinxConverter())
-                    }
-                }
-            }
-
-            val client = clientBuilder.build()
-            NetraClientList.add(client)
-            clientEventHandlers[client.id] = ClientEventHandler(binaryMessenger, client.id)
-            callback(Result.success(client.id))
-        } catch (e: Error) {
-            Log.e("", "build error: ${e}")
-            //todo
-            // Result.failure(Throwable(e));
+        val clientBuilder: NetraClient.Builder = NetraClient.Builder(context)
+            .baseUrl(baseUrl)
+        val circuitBreakerOptionsDto = circuitBreakerOptions?.let {
+            Gson().fromJson(it, CircuitBreakerOptionsDTO::class.java)
         }
+        circuitBreakerOptionsDto.let {
+            if (it?.failureThreshold != null && it.retryDelayMs != null) {
+                clientBuilder.circuitBreaker(it.failureThreshold, it.retryDelayMs)
+            }
+        }
+        headers?.let {
+            clientBuilder.addHeaders(it)
+        }
+        if (convertedType !== null) {
+            when (convertedType) {
+                NetraMoshiConverter().type -> {
+                    clientBuilder.addConverterFactory(NetraMoshiConverter())
+                }
+
+                NetraGsonConverter().type -> {
+                    clientBuilder.addConverterFactory(NetraGsonConverter())
+                }
+
+                NetraKotlinxConverter().type -> {
+                    clientBuilder.addConverterFactory(NetraKotlinxConverter())
+                }
+            }
+        }
+
+        val client = clientBuilder.build()
+        NetraClientList.add(client)
+        clientEventHandlers[client.id] = ClientEventHandler(binaryMessenger, client.id)
+        callback(Result.success(client.id))
     }
 }
