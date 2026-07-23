@@ -1,5 +1,11 @@
 # Changelog
 
+### Stable Release
+
+- Promoted Netra Flutter from alpha to stable.
+- Improved observer handling for multi-client scenarios.
+- API considered stable for production usage.
+
 ## 0.1.0-alpha
 
 Initial alpha release.
