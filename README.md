@@ -4,9 +4,9 @@ A powerful Flutter networking plugin with built-in caching, offline queueing, sl
 
 Available Platforms
 
-✅ Kotlin Android
-✅ Flutter
-✅ React Native
+- ✅ Kotlin Android
+- ✅ Flutter
+- ✅ React Native
 🚧 iOS
 
 ---
