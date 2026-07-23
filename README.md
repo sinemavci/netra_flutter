@@ -7,7 +7,7 @@ Available Platforms
 - ✅ Kotlin Android
 - ✅ Flutter
 - ✅ React Native
-🚧 iOS
+- 🚧 iOS
 
 ---
 
