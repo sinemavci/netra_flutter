@@ -63,6 +63,18 @@ final client = NetraClient(
   baseUrl: "https://api.example.com",
 );
 
+client.on(RequestEvent.requestExecuted((request) {
+print("executing: ${request.url}");
+}));
+
+client.on(RequestEvent.requestSuccess((request, response) {
+print("success: ${response.statusCode} data: ${response.data}");
+}));
+
+client.on(RequestEvent.requestFailed((request, response) {
+print("failed: ${response?.statusCode}");
+}));
+
 final response = await client.get(
   requestOptions: RequestOptions(
     url: "/users",
