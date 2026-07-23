@@ -31,20 +31,27 @@ Netra focuses on real-world mobile networking problems:
 
 Instead of only being an HTTP client, Netra aims to provide a resilient networking layer for modern Flutter applications.
 
-## Comparison
+## Netra vs Dio Ecosystem
 
-| Capability | Dio (+ packages) | Netra |
-|------------|------------------|--------|
-| HTTP Client | ✅ | ✅ |
-| Request Cancellation | ✅ | ✅ |
-| Multipart Upload | ✅ | ✅ |
-| Caching | Via packages | Built-in |
-| Offline Queue | Via packages | Built-in |
-| Auto Retry on Reconnect | Via packages | Built-in |
-| Slow Network Policies | Custom implementation required | Built-in |
-| Circuit Breaker | Custom implementation required | Built-in |
-| Event-Driven Observers | Custom implementation required | Built-in |
-| Streaming API | ✅ | ✅ |
+Most Netra features can be implemented with Dio and additional packages.
+
+The difference is that Netra provides them as a unified networking layer out of the box.
+
+| Capability | Dio Ecosystem | Netra |
+|------------|---------------|--------|
+| HTTP Requests | Dio | Built-in |
+| Multipart Upload | Dio | Built-in |
+| Request Cancellation | Dio | Built-in |
+| Caching | Dio + dio_cache_interceptor | Built-in |
+| Offline Cache Fallback | Dio + dio_cache_interceptor configuration | Built-in |
+| Offline Queue | Custom implementation | Built-in |
+| Retry On Reconnect | offline_retry_interceptor + custom persistence | Built-in |
+| Slow Network Policies | Custom implementation | Built-in |
+| Circuit Breaker | Custom implementation | Built-in |
+| Request Lifecycle Events | Custom interceptors | Built-in |
+| Cache Events | Custom implementation | Built-in |
+| Queue Events | Custom implementation | Built-in |
+| Unified API | Multiple packages | Single SDK |
 
 ---
 
