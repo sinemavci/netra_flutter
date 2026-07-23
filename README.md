@@ -33,13 +33,18 @@ Instead of only being an HTTP client, Netra aims to provide a resilient networki
 
 ## Comparison
 
-| Feature | Http | Dio | Netra |
-|----------|------|------|------|
-| Offline Queue | ❌ | ❌ | ✅ |
-| Smart Cache | ❌ | ⚠️ | ✅ |
-| Slow Network Strategies | ❌ | ❌ | ✅ |
-| Circuit Breaker | ❌ | ❌ | ✅ |
-| Event Observability | ❌ | ⚠️ | ✅ |
+| Capability | Dio (+ packages) | Netra |
+|------------|------------------|--------|
+| HTTP Client | ✅ | ✅ |
+| Request Cancellation | ✅ | ✅ |
+| Multipart Upload | ✅ | ✅ |
+| Caching | Via packages | Built-in |
+| Offline Queue | Via packages | Built-in |
+| Auto Retry on Reconnect | Via packages | Built-in |
+| Slow Network Policies | Custom implementation required | Built-in |
+| Circuit Breaker | Custom implementation required | Built-in |
+| Event-Driven Observers | Custom implementation required | Built-in |
+| Streaming API | ✅ | ✅ |
 
 ---
 
