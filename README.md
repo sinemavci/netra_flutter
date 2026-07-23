@@ -2,7 +2,12 @@
 
 A powerful Flutter networking plugin with built-in caching, offline queueing, slow network strategies, circuit breaker support, multipart uploads, and event-driven observability.
 
-> **Platform support:** Android only — iOS support planned.
+Available Platforms
+
+✅ Kotlin Android
+✅ Flutter
+✅ React Native
+🚧 iOS
 
 ---
 
@@ -10,6 +15,33 @@ A powerful Flutter networking plugin with built-in caching, offline queueing, sl
 ```sh
 flutter pub add netra_flutter
 ```
+
+---
+
+## Why Netra?
+
+Netra focuses on real-world mobile networking problems:
+
+- Unreliable connections
+- Offline-first architecture
+- Slow networks
+- Cache consistency
+- Request recovery
+- Developer observability
+
+Instead of only being an HTTP client, Netra aims to provide a resilient networking layer for modern Flutter applications.
+
+## Comparison
+
+| Feature | Http | Dio | Netra |
+|----------|------|------|------|
+| Offline Queue | ❌ | ❌ | ✅ |
+| Smart Cache | ❌ | ⚠️ | ✅ |
+| Slow Network Strategies | ❌ | ❌ | ✅ |
+| Circuit Breaker | ❌ | ❌ | ✅ |
+| Event Observability | ❌ | ⚠️ | ✅ |
+
+---
 
 ## Features
 
@@ -515,23 +547,6 @@ final netraClient = NetraClient(
 - [ ] WebSocket support
 - [ ] Request deduplication
 - [ ] Logging interceptor
-
----
-
-## Why Netra?
-
-Netra focuses on real-world mobile networking problems:
-
-- Unreliable connections
-- Offline-first architecture
-- Slow networks
-- Cache consistency
-- Request recovery
-- Developer observability
-
-Instead of only being an HTTP client, Netra aims to provide a resilient networking layer for modern Flutter applications.
-
----
 
 ## License
 
