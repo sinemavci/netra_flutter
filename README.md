@@ -18,8 +18,6 @@ flutter pub add netra_flutter
 ```
 
 ---
-GitHub:
-https://github.com/sinemavci/netra_flutter
 
 ## Why Netra?
 
