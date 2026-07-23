@@ -1,5 +1,6 @@
 # Netra Flutter Plugin
 
+Built on top of a native Kotlin networking engine.
 A powerful Flutter networking plugin with built-in caching, offline queueing, slow network strategies, circuit breaker support, multipart uploads, and event-driven observability.
 
 Available Platforms
@@ -54,6 +55,23 @@ The difference is that Netra provides them as a unified networking layer out of 
 | Unified API | Multiple packages | Single SDK |
 
 ---
+
+## Quick Example
+
+```dart
+final client = NetraClient(
+  baseUrl: "https://api.example.com",
+);
+
+final response = await client.get(
+  requestOptions: RequestOptions(
+    url: "/users",
+    cacheOptions: CacheOptions(ttl: 60000),
+    offlinePolicyAction: OfflinePolicyAction.queue,
+    slowNetworkPolicyAction: SlowNetworkPolicyAction.useCache,
+  ),
+);
+```
 
 ## Features
 
