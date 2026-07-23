@@ -1,6 +1,6 @@
 # Changelog
 
-### Stable Release
+### 1.0.0
 
 - Promoted Netra Flutter from alpha to stable.
 - Improved observer handling for multi-client scenarios.
