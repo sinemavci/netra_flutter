@@ -1,15 +1,11 @@
 # Netra Flutter Plugin
 
+> ⚠️ **Platform Support:** Android only. iOS is not currently supported.
+
 Built on top of a native Kotlin networking engine.
 A powerful Flutter networking plugin with built-in caching, offline queueing, slow network strategies, circuit breaker support, multipart uploads, and event-driven observability.
 
-Available Platforms
-
-- ✅ Kotlin Android
-- ✅ Flutter
-- ✅ React Native
-- 🚧 iOS
-
+> 📱 Check out the [example app](./example) for a full working demo.
 ---
 
 ## ⚙️ Installation
