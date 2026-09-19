@@ -1,6 +1,6 @@
 name: netra_flutter
 description: "A Flutter networking plugin with offline queueing, slow network strategies, smart caching, circuit breaker, multipart uploads, and event-driven observability. Built on top of OkHttp via a native Android bridge."
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/sinemavci/netra_flutter
 repository: https://github.com/sinemavci/netra_flutter
 

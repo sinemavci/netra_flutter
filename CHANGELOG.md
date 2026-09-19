@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- Added exception param to RequestFailed and QueuedRequestFailed events.
+
 ### 1.0.1
 
 Updates readme documentation.
