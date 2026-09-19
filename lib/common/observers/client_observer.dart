@@ -168,7 +168,8 @@ class ClientObserver {
         final response = responseJson != null
             ? ResponseDTO.fromJson(responseJson).toDataModel()
             : null;
-        registeredEvent.onQueuedRequestFailed?.call(url, response);
+        final exception = eventValue["exception"] as String?;
+        registeredEvent.onQueuedRequestFailed?.call(url, response, exception);
       }
     }
     // request events
@@ -194,7 +195,8 @@ class ClientObserver {
         final response = responseJson != null
             ? ResponseDTO.fromJson(responseJson).toDataModel()
             : null;
-        registeredEvent.onRequestFailed?.call(request, response);
+        final exception = eventValue["exception"] as String?;
+        registeredEvent.onRequestFailed?.call(request, response, exception);
       }
     }
   }

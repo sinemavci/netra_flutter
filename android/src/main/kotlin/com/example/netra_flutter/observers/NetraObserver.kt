@@ -120,7 +120,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                                     "response" to event.response?.let {
                                         ResponseDTO.fromDataModel(it)
                                     },
-//                                    "exception" to  //todo: netra exception
+                                    "exception" to event.exception?.message,
                                     "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
@@ -164,7 +164,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                                     "response" to event.response?.let {
                                         ResponseDTO.fromDataModel(it)
                                     },
-//                                    "exception" to  //todo: netra exception
+                                    "exception" to event.exception?.message,
                                 )
                             }
                         }

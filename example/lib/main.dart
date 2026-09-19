@@ -110,9 +110,9 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
     );
 
     _mainClient.on(
-      RequestEvent.requestFailed((request, response) {
+      RequestEvent.requestFailed((request, response, exception) {
         _showSnackbar(
-          '❌ Failed: ${response?.statusCode ?? 'unknown'}',
+          '❌ Failed request: ${request.url} due to code: ${exception ?? response?.statusCode ?? 'unknown'}',
           color: Colors.red,
         );
       }),
@@ -176,9 +176,9 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
     );
 
     _mainClient.on(
-      QueueEvent.queuedRequestFailed((url, response) {
+      QueueEvent.queuedRequestFailed((url, response, exception) {
         _showSnackbar(
-          '❌ Queue failed: $url ${response?.statusCode != null ? 'status code: ${response?.statusCode}' : ''}',
+          '❌ Queue Failed request: $url due to code: ${exception ?? response?.statusCode ?? 'unknown'}',
           color: Colors.red,
         );
       }),

@@ -23,7 +23,7 @@ typedef OnStaleCacheUsed =
 
 typedef OnNetworkChanged = void Function();
 
-typedef OnQueuedRequestFailed = void Function(String url, Response? response);
+typedef OnQueuedRequestFailed = void Function(String url, Response? response, String? exception);
 typedef OnQueuedRequestExecuted = void Function(String url);
 typedef OnRequestQueued =
     void Function(String url, int queueOrder, int createdAt);
@@ -33,7 +33,7 @@ typedef OnRequestExecuted = void Function(RequestOptions request);
 typedef OnRequestSuccess =
     void Function(RequestOptions request, Response response);
 typedef OnRequestFailed =
-    void Function(RequestOptions request, Response? response);
+    void Function(RequestOptions request, Response? response, String? exception);
 
 interface class ClientEvent {
   final String eventName;
