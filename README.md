@@ -67,7 +67,7 @@ client.on(RequestEvent.requestSuccess((request, response) {
 print("success: ${response.statusCode} data: ${response.data}");
 }));
 
-client.on(RequestEvent.requestFailed((request, response) {
+client.on(RequestEvent.requestFailed((request, response, exception) {
 print("failed: ${response?.statusCode}");
 }));
 
@@ -475,7 +475,7 @@ netraClient.on(RequestEvent.requestSuccess((request, response) {
   print("success: ${response.statusCode} data: ${response.data}");
 }));
 
-netraClient.on(RequestEvent.requestFailed((request, response) {
+netraClient.on(RequestEvent.requestFailed((request, response, exception) {
   print("failed: ${response?.statusCode}");
 }));
 ```
