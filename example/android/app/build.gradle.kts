@@ -5,6 +5,26 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/sinemavci/netra")
+            credentials {
+                username = providers.gradleProperty("gpr.user")
+                    .orElse(providers.environmentVariable("GPR_USER"))
+                    .orElse(providers.environmentVariable("GITHUB_ACTOR"))
+                    .orNull ?: ""
+                password = providers.gradleProperty("gpr.key")
+                    .orElse(providers.environmentVariable("GPR_KEY"))
+                    .orElse(providers.environmentVariable("GITHUB_TOKEN"))
+                    .orNull ?: ""
+            }
+        }
+    }
+}
+
 android {
     namespace = "com.example.netra_flutter_example"
     compileSdk = flutter.compileSdkVersion
