@@ -1,25 +1,25 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:netra_flutter/common/models/response.dart';
 
-part 'response_dto.freezed.dart';
-part 'response_dto.g.dart';
+part 'response_received_dto.freezed.dart';
+part 'response_received_dto.g.dart';
 
 @freezed
-abstract class ResponseDTO with _$ResponseDTO {
-  const ResponseDTO._();
+abstract class ResponseReceivedDTO with _$ResponseReceivedDTO {
+  const ResponseReceivedDTO._();
 
-  const factory ResponseDTO({
+  const factory ResponseReceivedDTO({
     required Object? data,
     required int statusCode,
     required String? statusMessage,
     required Map<String, String?>? headers,
-  }) = _ResponseDTO;
+  }) = _ResponseReceivedDTO;
 
-  factory ResponseDTO.fromJson(Map<String, dynamic> json) =>
-      _$ResponseDTOFromJson(json);
+  factory ResponseReceivedDTO.fromJson(Map<String, dynamic> json) =>
+      _$ResponseReceivedDTOFromJson(json);
 
-  factory ResponseDTO.fromDataModel(Response model) {
-    return ResponseDTO(
+  factory ResponseReceivedDTO.fromDataModel(ResponseReceived model) {
+    return ResponseReceivedDTO(
       data: model.data,
       statusCode: model.statusCode,
       statusMessage: model.statusMessage,
@@ -27,8 +27,8 @@ abstract class ResponseDTO with _$ResponseDTO {
     );
   }
 
-  Response toDataModel() {
-    return Response(
+  ResponseReceived toDataModel() {
+    return ResponseReceived(
       data: data,
       statusCode: statusCode,
       statusMessage: statusMessage,

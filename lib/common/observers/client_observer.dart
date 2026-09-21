@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
-import 'package:netra_flutter/common/dto/response_dto.dart';
+import 'package:netra_flutter/common/dto/response_received_dto.dart';
 import 'package:netra_flutter/common/observers/cache_event.dart';
 import 'package:netra_flutter/common/observers/client_events.dart';
 import 'package:netra_flutter/common/observers/client_event.dart';
@@ -158,7 +158,7 @@ class ClientObserver {
       if (registeredEvent is QueuedRequestSuccess) {
         final url = eventValue["url"] as String;
         final responseJson = eventValue["response"] as Map<String, dynamic>;
-        final response = ResponseDTO.fromJson(responseJson).toDataModel();
+        final response = ResponseReceivedDTO.fromJson(responseJson).toDataModel();
         registeredEvent.onQueuedRequestSuccess?.call(url, response);
       }
     } else if (eventNameValue == ClientEvents.queuedRequestFailed.value) {
@@ -166,7 +166,7 @@ class ClientObserver {
         final url = eventValue["url"] as String;
         final responseJson = eventValue["response"] as Map<String, dynamic>?;
         final response = responseJson != null
-            ? ResponseDTO.fromJson(responseJson).toDataModel()
+            ? ResponseReceivedDTO.fromJson(responseJson).toDataModel()
             : null;
         final exception = eventValue["exception"] as String?;
         registeredEvent.onQueuedRequestFailed?.call(url, response, exception);
@@ -184,7 +184,7 @@ class ClientObserver {
         final requestJson = eventValue["request"] as Map<String, dynamic>;
         final request = RequestOptionsDTO.fromJson(requestJson).toDataModel();
         final responseJson = eventValue["response"] as Map<String, dynamic>;
-        final response = ResponseDTO.fromJson(responseJson).toDataModel();
+        final response = ResponseReceivedDTO.fromJson(responseJson).toDataModel();
         registeredEvent.onRequestSuccess?.call(request, response);
       }
     } else if (eventNameValue == ClientEvents.requestFailed.value) {
@@ -193,7 +193,7 @@ class ClientObserver {
         final request = RequestOptionsDTO.fromJson(requestJson).toDataModel();
         final responseJson = eventValue["response"] as Map<String, dynamic>?;
         final response = responseJson != null
-            ? ResponseDTO.fromJson(responseJson).toDataModel()
+            ? ResponseReceivedDTO.fromJson(responseJson).toDataModel()
             : null;
         final exception = eventValue["exception"] as String?;
         registeredEvent.onRequestFailed?.call(request, response, exception);

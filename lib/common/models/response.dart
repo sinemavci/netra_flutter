@@ -1,15 +1,25 @@
-class Response {
+sealed class Response {
+  const Response();
+}
+
+final class ResponseReceived extends Response {
   final Object? data;
   final int statusCode;
   final String? statusMessage;
   final Map<String, String?>? headers;
 
-  Response({
+  const ResponseReceived({
     required this.statusCode,
     this.data,
     this.statusMessage,
     this.headers,
   });
+}
+
+final class ResponseQueued extends Response {
+  final int queueOrder;
+
+  const ResponseQueued({required this.queueOrder});
 }
 
 //todo:

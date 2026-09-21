@@ -3,8 +3,9 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:netra_flutter/common/dto/circuit_breaker_options_dto.dart';
-import 'package:netra_flutter/common/dto/response_dto.dart';
 import 'package:netra_flutter/common/dto/request_options_dto.dart';
+import 'package:netra_flutter/common/dto/response_queued_dto.dart';
+import 'package:netra_flutter/common/dto/response_received_dto.dart';
 import 'package:netra_flutter/common/enums/converter_type.dart';
 import 'package:netra_flutter/common/exceptions/exception_manager.dart';
 import 'package:netra_flutter/common/models/circuit_breaker_options.dart';
@@ -51,7 +52,14 @@ class NetraController {
       );
       final result = await _hostApi.get(clientId, _requestOptions);
       if (result != null) {
-        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+        final decodedJson = json.decode(result);
+        if (decodedJson['queueOrder'] != null) {
+          response =
+              ResponseQueuedDTO.fromJson(json.decode(result)).toDataModel();
+        } else {
+          response =
+              ResponseReceivedDTO.fromJson(json.decode(result)).toDataModel();
+        }
       }
     } on PlatformException catch (e) {
       throw ExceptionManager.parse(e);
@@ -99,7 +107,14 @@ class NetraController {
       );
       final result = await _hostApi.post(clientId, requestOptionsJson);
       if (result != null) {
-        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+        final decodedJson = json.decode(result);
+        if (decodedJson['queueOrder'] != null) {
+          response =
+              ResponseQueuedDTO.fromJson(json.decode(result)).toDataModel();
+        } else {
+          response =
+              ResponseReceivedDTO.fromJson(json.decode(result)).toDataModel();
+        }
       }
     } on PlatformException catch (e) {
       throw ExceptionManager.parse(e);
@@ -115,7 +130,14 @@ class NetraController {
       );
       final result = await _hostApi.put(clientId, requestOptionsJson);
       if (result != null) {
-        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+        final decodedJson = json.decode(result);
+        if (decodedJson['queueOrder'] != null) {
+          response =
+              ResponseQueuedDTO.fromJson(json.decode(result)).toDataModel();
+        } else {
+          response =
+              ResponseReceivedDTO.fromJson(json.decode(result)).toDataModel();
+        }
       }
     } on PlatformException catch (e) {
       throw ExceptionManager.parse(e);
@@ -134,7 +156,14 @@ class NetraController {
       );
       final result = await _hostApi.patch(clientId, requestOptionsJson);
       if (result != null) {
-        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+        final decodedJson = json.decode(result);
+        if (decodedJson['queueOrder'] != null) {
+          response =
+              ResponseQueuedDTO.fromJson(json.decode(result)).toDataModel();
+        } else {
+          response =
+              ResponseReceivedDTO.fromJson(json.decode(result)).toDataModel();
+        }
       }
     } on PlatformException catch (e) {
       throw ExceptionManager.parse(e);
@@ -153,7 +182,14 @@ class NetraController {
       );
       final result = await _hostApi.delete(clientId, requestOptionsJson);
       if (result != null) {
-        response = ResponseDTO.fromJson(json.decode(result)).toDataModel();
+        final decodedJson = json.decode(result);
+        if (decodedJson['queueOrder'] != null) {
+          response =
+              ResponseQueuedDTO.fromJson(json.decode(result)).toDataModel();
+        } else {
+          response =
+              ResponseReceivedDTO.fromJson(json.decode(result)).toDataModel();
+        }
       }
     } on PlatformException catch (e) {
       throw ExceptionManager.parse(e);

@@ -2,7 +2,7 @@ package com.example.netra_flutter.observers
 
 import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.RequestOptionsDTO
-import com.example.netra_flutter.dto.ResponseDTO
+import com.example.netra_flutter.dto.ResponseReceivedDTO
 import com.google.gson.Gson
 import com.netra.library.observers.CacheEvent
 import com.netra.library.observers.INetraObserver
@@ -110,7 +110,7 @@ class NetraObserver(val clientId: String): INetraObserver {
 
                             is RequestEvent.RequestSuccess -> {
                                 mutableMapOf(
-                                    "response" to ResponseDTO.fromDataModel(event.response),
+                                    "response" to ResponseReceivedDTO.fromDataModel(event.response),
                                     "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
                                 )
                             }
@@ -118,7 +118,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                             is RequestEvent.RequestFailed -> {
                                 mutableMapOf(
                                     "response" to event.response?.let {
-                                        ResponseDTO.fromDataModel(it)
+                                        ResponseReceivedDTO.fromDataModel(it)
                                     },
                                     "exception" to event.exception?.message,
                                     "request" to RequestOptionsDTO.fromDataModel(event.request.toConfig()),
@@ -154,7 +154,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                             is QueueEvent.QueuedRequestSuccess -> {
                                 mutableMapOf(
                                     "url" to event.url,
-                                    "response" to ResponseDTO.fromDataModel(event.response),
+                                    "response" to ResponseReceivedDTO.fromDataModel(event.response),
                                 )
                             }
 
@@ -162,7 +162,7 @@ class NetraObserver(val clientId: String): INetraObserver {
                                 mutableMapOf(
                                     "url" to event.url,
                                     "response" to event.response?.let {
-                                        ResponseDTO.fromDataModel(it)
+                                        ResponseReceivedDTO.fromDataModel(it)
                                     },
                                     "exception" to event.exception?.message,
                                 )

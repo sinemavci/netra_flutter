@@ -11,8 +11,9 @@ import com.example.netra_flutter.StreamResponseEventHandler
 import com.example.netra_flutter.observers
 import com.example.netra_flutter.clientEventHandlers
 import com.example.netra_flutter.dto.CircuitBreakerOptionsDTO
-import com.example.netra_flutter.dto.ResponseDTO
+import com.example.netra_flutter.dto.ResponseReceivedDTO
 import com.example.netra_flutter.dto.RequestOptionsDTO
+import com.example.netra_flutter.dto.ResponseQueuedDTO
 import com.example.netra_flutter.observers.NetraObserver
 import com.example.netra_flutter.streamResponseEventHandlers
 import com.google.gson.Gson
@@ -20,6 +21,7 @@ import com.netra.library.Cache
 import com.netra.library.NetraClient
 import com.netra.library.NetraClientList
 import com.netra.library.NetraRequestBody
+import com.netra.library.NetraResponse
 import com.netra.library.converter.NetraGsonConverter
 import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
@@ -29,7 +31,6 @@ import io.flutter.plugin.common.BinaryMessenger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.invoke
 
 class NetraServiceController(val context: Context, val binaryMessenger: BinaryMessenger) : NetraHostApi {
     private val mainHandler = Handler(Looper.getMainLooper())
@@ -71,15 +72,14 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
-                        callback.invoke(
-                            Result.success(
-                                Gson().toJson(
-                                    ResponseDTO.fromDataModel(
-                                        response
-                                    )
-                                )
+                        val model = if (response is NetraResponse.ResponseQueued) {
+                            ResponseQueuedDTO.fromDataModel(response)
+                        } else {
+                            ResponseReceivedDTO.fromDataModel(
+                                response as NetraResponse.ResponseReceived
                             )
-                        )
+                        }
+                        callback.invoke(Result.success(Gson().toJson(model)))
                     } else if (exception != null) {
                         callback.invoke(Result.failure(exception))
                     }
@@ -130,15 +130,14 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
-                        callback.invoke(
-                            Result.success(
-                                Gson().toJson(
-                                    ResponseDTO.fromDataModel(
-                                        response
-                                    )
-                                )
+                        val model = if (response is NetraResponse.ResponseQueued) {
+                            ResponseQueuedDTO.fromDataModel(response)
+                        } else {
+                            ResponseReceivedDTO.fromDataModel(
+                                response as NetraResponse.ResponseReceived
                             )
-                        )
+                        }
+                        callback.invoke(Result.success(Gson().toJson(model)))
                     } else if (exception != null) {
                         callback.invoke(Result.failure(exception))
                     }
@@ -189,15 +188,14 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
-                        callback.invoke(
-                            Result.success(
-                                Gson().toJson(
-                                    ResponseDTO.fromDataModel(
-                                        response
-                                    )
-                                )
+                        val model = if (response is NetraResponse.ResponseQueued) {
+                            ResponseQueuedDTO.fromDataModel(response)
+                        } else {
+                            ResponseReceivedDTO.fromDataModel(
+                                response as NetraResponse.ResponseReceived
                             )
-                        )
+                        }
+                        callback.invoke(Result.success(Gson().toJson(model)))
                     } else if (exception != null) {
                         callback.invoke(Result.failure(exception))
                     }
@@ -251,15 +249,14 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
 
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
-                        callback.invoke(
-                            Result.success(
-                                Gson().toJson(
-                                    ResponseDTO.fromDataModel(
-                                        response
-                                    )
-                                )
+                        val model = if (response is NetraResponse.ResponseQueued) {
+                            ResponseQueuedDTO.fromDataModel(response)
+                        } else {
+                            ResponseReceivedDTO.fromDataModel(
+                                response as NetraResponse.ResponseReceived
                             )
-                        )
+                        }
+                        callback.invoke(Result.success(Gson().toJson(model)))
                     } else if (exception != null) {
                         callback.invoke(Result.failure(exception))
                     }
@@ -311,15 +308,14 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
-                        callback.invoke(
-                            Result.success(
-                                Gson().toJson(
-                                    ResponseDTO.fromDataModel(
-                                        response
-                                    )
-                                )
+                        val model = if (response is NetraResponse.ResponseQueued) {
+                            ResponseQueuedDTO.fromDataModel(response)
+                        } else {
+                            ResponseReceivedDTO.fromDataModel(
+                                response as NetraResponse.ResponseReceived
                             )
-                        )
+                        }
+                        callback.invoke(Result.success(Gson().toJson(model)))
                     } else if (exception != null) {
                         callback.invoke(Result.failure(exception))
                     }

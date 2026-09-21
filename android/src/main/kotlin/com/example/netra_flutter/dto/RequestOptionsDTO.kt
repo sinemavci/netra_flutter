@@ -1,8 +1,6 @@
 package com.example.netra_flutter.dto
 
 import com.netra.library.NetraRequestConfig
-import com.netra.library.NetraResponse
-import com.netra.library.enums.OfflinePolicyAction
 
 data class RequestOptionsDTO(
     val id: String,

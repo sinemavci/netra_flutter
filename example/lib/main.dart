@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:netra_flutter/common/exceptions/base_platform_exception.dart';
 import 'package:netra_flutter/common/models/cache_options.dart';
@@ -105,16 +106,28 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
 
     _mainClient.on(
       RequestEvent.requestSuccess((request, response) {
-        _showSnackbar('✅ Success: ${response.statusCode}', color: Colors.green);
+        if(response is ResponseReceived) {
+          _showSnackbar(
+              '✅ Success: ${response.statusCode}', color: Colors.green);
+        } else if (response is ResponseQueued) {
+          _showSnackbar(
+              '✅ Response Queued', color: Colors.blueAccent);
+        }
       }),
     );
 
     _mainClient.on(
       RequestEvent.requestFailed((request, response, exception) {
-        _showSnackbar(
-          '❌ Failed request: ${request.url} due to code: ${exception ?? response?.statusCode ?? 'unknown'}',
-          color: Colors.red,
-        );
+        if (response is ResponseReceived) {
+          _showSnackbar(
+            '❌ Failed request: ${request.url} due to code: ${exception ??
+                response.statusCode}',
+            color: Colors.red,
+          );
+        } else if (response is ResponseQueued) {
+          _showSnackbar(
+              '✅ Response Queued', color: Colors.blueAccent);
+        }
       }),
     );
 
@@ -168,19 +181,32 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
 
     _mainClient.on(
       QueueEvent.queuedRequestExecuted((url, response) {
-        _showSnackbar(
-          '✅ Queue executed: ${response.statusCode}',
-          color: Colors.green,
-        );
+        if(response is ResponseReceived) {
+          _showSnackbar(
+            '✅ Queue executed: ${response.statusCode}',
+            color: Colors.green,
+          );
+        }
+        else if (response is ResponseQueued) {
+          _showSnackbar(
+              '✅ Response Queued', color: Colors.blueAccent);
+        }
       }),
     );
 
     _mainClient.on(
       QueueEvent.queuedRequestFailed((url, response, exception) {
-        _showSnackbar(
-          '❌ Queue Failed request: $url due to code: ${exception ?? response?.statusCode ?? 'unknown'}',
-          color: Colors.red,
-        );
+        if(response is ResponseReceived) {
+          _showSnackbar(
+            '❌ Queue Failed request: $url due to code: ${exception ??
+                response.statusCode}',
+            color: Colors.red,
+          );
+        }
+        else if (response is ResponseQueued) {
+          _showSnackbar(
+              '✅ Response Queued', color: Colors.blueAccent);
+        }
       }),
     );
   }
@@ -228,13 +254,23 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(
-        RequestResult(
-          label: 'GET /?status=200',
-          statusCode: result?.statusCode,
-          data: jsonEncode(result?.data),
-        ),
-      );
+      if (result is ResponseReceived) {
+        _setResult(
+          RequestResult(
+            label: 'GET /?status=200',
+            statusCode: result.statusCode,
+            data: jsonEncode(result.data),
+          ),
+        );
+      }
+      else {
+        _setResult(
+          RequestResult(
+            label: 'GET /?status=200',
+            data: 'Response Queued',
+          ),
+        );
+      }
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'GET /?status=200', error: e.message));
     } finally {
@@ -260,13 +296,23 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(
-        RequestResult(
-          label: 'POST /users',
-          statusCode: result?.statusCode,
-          data: jsonEncode(result?.data),
-        ),
-      );
+      if (result is ResponseReceived) {
+        _setResult(
+          RequestResult(
+            label: 'POST /users',
+            statusCode: result.statusCode,
+            data: jsonEncode(result.data),
+          ),
+        );
+      }
+      else {
+        _setResult(
+          RequestResult(
+            label: 'POST /users',
+            data: 'Response Queued',
+          ),
+        );
+      }
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'POST /users', error: e.message));
     } finally {
@@ -296,13 +342,23 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(
-        RequestResult(
-          label: 'PUT /users/1',
-          statusCode: result?.statusCode,
-          data: jsonEncode(result?.data),
-        ),
-      );
+      if (result is ResponseReceived) {
+        _setResult(
+          RequestResult(
+            label: 'PUT /users/1',
+            statusCode: result.statusCode,
+            data: jsonEncode(result.data),
+          ),
+        );
+      }
+      else {
+        _setResult(
+          RequestResult(
+            label: 'PUT /users/1',
+            data: 'Response Queued',
+          ),
+        );
+      }
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'PUT /users/1', error: e.message));
     } finally {
@@ -326,13 +382,23 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           headers: {'X-Custom': 'netra-example'},
         ),
       );
-      _setResult(
-        RequestResult(
-          label: 'DELETE /users/1',
-          statusCode: result?.statusCode,
-          data: jsonEncode(result?.data),
-        ),
-      );
+      if (result is ResponseReceived) {
+        _setResult(
+          RequestResult(
+            label: 'DELETE /users/1',
+            statusCode: result.statusCode,
+            data: jsonEncode(result.data),
+          ),
+        );
+      }
+      else {
+        _setResult(
+          RequestResult(
+            label: 'DELETE /users/1',
+            data: 'Response Queued',
+          ),
+        );
+      }
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'DELETE /users/1', error: e.message));
     } finally {
@@ -418,13 +484,23 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           ),
         ),
       );
-      _setResult(
-        RequestResult(
-          label: 'POST /upload',
-          statusCode: result?.statusCode,
-          data: jsonEncode(result?.data),
-        ),
-      );
+      if (result is ResponseReceived) {
+        _setResult(
+          RequestResult(
+            label: 'POST /upload',
+            statusCode: result.statusCode,
+            data: jsonEncode(result.data),
+          ),
+        );
+      }
+      else {
+        _setResult(
+          RequestResult(
+            label: 'POST /upload',
+            data: 'Response Queued',
+          ),
+        );
+      }
     } on NetraNetworkException catch (e) {
       _setResult(RequestResult(label: 'POST /upload', error: e.message));
     } finally {
