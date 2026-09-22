@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.3
+
+- Response queued and received added.
+
 ## 1.0.2
 
 - Added exception param to RequestFailed and QueuedRequestFailed events.
