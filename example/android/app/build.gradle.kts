@@ -8,6 +8,7 @@ plugins {
 allprojects {
     repositories {
         google()
+//        mavenLocal()
         mavenCentral()
         maven {
             url = uri("https://maven.pkg.github.com/sinemavci/netra")

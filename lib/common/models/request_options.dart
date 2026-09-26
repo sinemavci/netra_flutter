@@ -1,3 +1,4 @@
+import 'package:netra_flutter/common/enums/execution_mode.dart';
 import 'package:netra_flutter/common/models/cache_options.dart';
 import 'package:netra_flutter/netra_flutter_plugin.dart';
 import 'package:uuid/uuid.dart';
@@ -17,6 +18,8 @@ class RequestOptions {
 
   bool? cancelOnDispose;
 
+  ExecutionMode? executionMode;
+
   RequestBody? body;
 
   RequestOptions({
@@ -25,6 +28,7 @@ class RequestOptions {
     this.slowNetworkPolicyAction,
     this.headers,
     this.cancelOnDispose,
+    this.executionMode = ExecutionMode.direct,
     this.body,
     CacheOptions? cacheOptions,
   }) : cacheOptions = cacheOptions ?? CacheOptions(),

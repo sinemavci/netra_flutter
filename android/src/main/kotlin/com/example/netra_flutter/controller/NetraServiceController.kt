@@ -25,6 +25,7 @@ import com.netra.library.NetraResponse
 import com.netra.library.converter.NetraGsonConverter
 import com.netra.library.converter.NetraKotlinxConverter
 import com.netra.library.converter.NetraMoshiConverter
+import com.netra.library.enums.ExecutionMode
 import com.netra.library.enums.OfflinePolicyAction
 import com.netra.library.enums.SlowNetworkPolicyAction
 import io.flutter.plugin.common.BinaryMessenger
@@ -54,6 +55,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val headers = requestOptionsDto?.headers
             val path = requestOptionsDto.url
             val cancelOnDispose = requestOptionsDto.cancelOnDispose
+            val backgroundMode = requestOptionsDto.executionMode == ExecutionMode.GUARANTEED.name
 
             if (client != null) {
                 val requestBuilder =
@@ -69,6 +71,9 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
+                }
+                if(backgroundMode) {
+                    requestBuilder.background()
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
@@ -112,6 +117,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val headers = requestOptionsDto?.headers
             val path = requestOptionsDto.url
             val cancelOnDispose = requestOptionsDto.cancelOnDispose
+            val backgroundMode = requestOptionsDto.executionMode == ExecutionMode.GUARANTEED.name
 
             if (client != null) {
                 val requestBuilder =
@@ -127,6 +133,9 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
+                }
+                if(backgroundMode) {
+                    requestBuilder.background()
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
@@ -170,6 +179,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val cache: Cache? = requestOptionsDto?.cacheOptions?.toDataModel()
             val path = requestOptionsDto.url
             val cancelOnDispose = requestOptionsDto.cancelOnDispose
+            val backgroundMode = requestOptionsDto.executionMode == ExecutionMode.GUARANTEED.name
 
             if (client != null) {
                 val requestBuilder =
@@ -185,6 +195,9 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
+                }
+                if(backgroundMode) {
+                    requestBuilder.background()
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {
@@ -229,6 +242,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val headers = requestOptionsDto?.headers
             val path = requestOptionsDto.url
             val cancelOnDispose = requestOptionsDto.cancelOnDispose
+            val backgroundMode = requestOptionsDto.executionMode == ExecutionMode.GUARANTEED.name
 
             if (client != null) {
                 val requestBuilder =
@@ -245,6 +259,9 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
+                }
+                if(backgroundMode) {
+                    requestBuilder.background()
                 }
 
                 requestBuilder.enqueue { response, exception ->
@@ -289,6 +306,7 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
             val headers = requestOptionsDto?.headers
             val path = requestOptionsDto.url
             val cancelOnDispose = requestOptionsDto.cancelOnDispose
+            val backgroundMode = requestOptionsDto.executionMode == ExecutionMode.GUARANTEED.name
 
             if (client != null) {
                 val requestBuilder =
@@ -305,6 +323,9 @@ class NetraServiceController(val context: Context, val binaryMessenger: BinaryMe
                 }
                 cancelOnDispose?.let {
                     requestBuilder.cancelWhenDestroyed()
+                }
+                if(backgroundMode) {
+                    requestBuilder.background()
                 }
                 requestBuilder.enqueue { response, exception ->
                     if (response != null) {

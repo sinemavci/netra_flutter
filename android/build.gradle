@@ -5,6 +5,7 @@ buildscript {
     ext.kotlin_version = "2.2.20"
     repositories {
         google()
+//        mavenLocal()
         mavenCentral()
         maven {
             url = uri("https://maven.pkg.github.com/sinemavci/netra")
@@ -30,6 +31,7 @@ buildscript {
 allprojects {
     repositories {
         google()
+//        mavenLocal()
         mavenCentral()
         maven {
             url = uri("https://maven.pkg.github.com/sinemavci/netra")
@@ -83,7 +85,8 @@ android {
         implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
         implementation("org.jetbrains.kotlin:kotlin-reflect:2.1.0")
         api("com.google.code.gson:gson:2.10.1")
-        implementation "com.netra:netra:1.0.1"
+        implementation "com.netra:netra:1.0.2"
+//        implementation "com.netra:netra:1.0.2-LOCAL"
     }
 
     testOptions {

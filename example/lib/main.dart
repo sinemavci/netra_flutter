@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:netra_flutter/common/enums/execution_mode.dart';
 import 'package:netra_flutter/common/exceptions/base_platform_exception.dart';
 import 'package:netra_flutter/common/models/cache_options.dart';
 import 'package:netra_flutter/common/observers/cache_event.dart';
@@ -248,6 +249,7 @@ class _NetraExamplePageState extends State<NetraExamplePage> {
           url: '/?status=200&delay=1000',
           offlinePolicyAction: OfflinePolicyAction.queue,
           cancelOnDispose: true,
+          executionMode: ExecutionMode.guaranteed,
           cacheOptions: CacheOptions(),
           slowNetworkPolicyAction: SlowNetworkPolicyAction.timeout(
             timeout: const Duration(seconds: 5),

@@ -3,6 +3,7 @@ import 'package:netra_flutter/common/dto/cache_options_dto.dart';
 import 'package:netra_flutter/common/dto/offline_policy_action_dto.dart';
 import 'package:netra_flutter/common/dto/request_body_dto.dart';
 import 'package:netra_flutter/common/dto/slow_network_policy_action_dto.dart';
+import 'package:netra_flutter/common/enums/execution_mode.dart';
 import 'package:netra_flutter/common/enums/offline_policy_action.dart';
 import 'package:netra_flutter/common/enums/slow_network_policy_action.dart';
 import 'package:netra_flutter/common/models/request_options.dart';
@@ -22,6 +23,7 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
     required CacheOptionsDTO? cacheOptions,
     required Map<String, String?>? headers,
     required bool? cancelOnDispose,
+    required String? executionMode,
     required RequestBodyDTO? body,
   }) = _RequestOptionsDTO;
 
@@ -40,11 +42,12 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
           : null,
       slowNetworkPolicyAction: model.slowNetworkPolicyAction != null
           ? SlowNetworkPolicyActionDTO.fromDataModel(
-              model.slowNetworkPolicyAction!,
-            )
+        model.slowNetworkPolicyAction!,
+      )
           : null,
       headers: model.headers,
       cancelOnDispose: model.cancelOnDispose,
+      executionMode: model.executionMode?.identifier,
       cacheOptions: model.cacheOptions != null
           ? CacheOptionsDTO.fromDataModel(model.cacheOptions!)
           : null,
@@ -58,18 +61,20 @@ abstract class RequestOptionsDTO with _$RequestOptionsDTO {
       offlinePolicyAction: offlinePolicyAction == null
           ? null
           : OfflinePolicyAction.fromIdentifier(
-              offlinePolicyAction!.identifier!,
-              retries: offlinePolicyAction!.retries,
-            ),
+        offlinePolicyAction!.identifier!,
+        retries: offlinePolicyAction!.retries,
+      ),
       slowNetworkPolicyAction: slowNetworkPolicyAction == null
           ? null
           : SlowNetworkPolicyAction.fromIdentifier(
-              slowNetworkPolicyAction!.identifier!,
-              delay: Duration(),
-              timeout: Duration(),
-            ),
+        slowNetworkPolicyAction!.identifier!,
+        delay: Duration(),
+        timeout: Duration(),
+      ),
       cacheOptions: cacheOptions?.toDataModel(),
       cancelOnDispose: cancelOnDispose,
+      executionMode: executionMode != null ? ExecutionMode.fromIdentifier(
+          executionMode!) : ExecutionMode.direct,
       headers: headers,
     );
   }
