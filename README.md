@@ -96,6 +96,7 @@ final response = await client.get(
 - 🧩 Converter support (Gson, KotlinX, Moshi)
 - 🛑 Request cancellation on dispose
 - 🧵 Fully async Dart API
+- 🛡️ Guaranteed background execution for long-running requests
 
 ---
 
@@ -139,6 +140,7 @@ RequestOptions(
   slowNetworkPolicyAction: ...,           // SlowNetworkPolicyAction?
   cacheOptions: CacheOptions(),           // cache config
   cancelOnDispose: true,                  // auto-cancel on widget dispose
+  executionMode: ExecutionMode.direct,    // Execution Mode Direct or Guaranteed
 )
 ```
 
@@ -225,6 +227,53 @@ result?.headers         // Map<String, String?>?
 result?.data            // dynamic
 result?.isCache         // bool — true if served from cache
 ```
+
+---
+
+## Response Types
+
+The examples above assume the simple, common case — the request ran and you got real data back. But not every request finishes immediately: an offline-queued or background request hasn't run yet when the call returns. To make that explicit, Netra returns a sealed `NetraResponse<T>` with two variants:
+
+```dart
+sealed class NetraResponse<T> {}
+
+class ResponseReceived<T> extends NetraResponse<T> {
+  final T? data;
+  final int statusCode;
+  final String? statusMessage;
+  final Map<String, String?>? headers;
+  final bool isCache;
+}
+
+class ResponseQueued<T> extends NetraResponse<T> {
+  final int queueOrder;
+}
+```
+
+| Variant | When you get it |
+|---|---|
+| `ResponseReceived` | The normal case — the request actually ran and you have a real response (online, or served from cache) |
+| `ResponseQueued` | The request was deferred instead of run immediately — either `offlinePolicyAction: OfflinePolicyAction.queue` was set and the device is offline, or `backgroundOptions` was set (see [Background Execution](#background-execution)) |
+
+Handle both explicitly with a `switch`:
+
+```dart
+final result = await netraClient.get(
+  requestOptions: RequestOptions(
+    url: "/users",
+    offlinePolicyAction: OfflinePolicyAction.queue,
+  ),
+);
+
+switch (result) {
+  case ResponseReceived(:final data, :final statusCode):
+    print("received: $statusCode data: $data");
+  case ResponseQueued(:final queuePosition):
+    print("queued position $queuePosition");
+}
+```
+
+> ⚠️ When `Execution Guaranteed Mode` is set, `ResponseQueued` is **always** returned — regardless of whether the device is online — because the request is handed off to a guaranteed background executor from the start rather than run inline. Listen to [Queue Events](#queue-events) to find out when it actually finishes.
 
 ---
 
@@ -365,6 +414,38 @@ offlinePolicyAction: OfflinePolicyAction.retry(
   retryInterval: Duration(seconds: 2),
 ),
 ```
+
+---
+
+## Guaranteed Execution
+
+For requests that should survive the app being backgrounded or killed — large uploads, big downloads, anything you don't want lost if the user leaves mid-request — set `backgroundOptions`. The request is handed off to a guaranteed background executor immediately; `get`/`post`/etc. return `ResponseQueued` right away, and the real result arrives later through [Queue Events](#queue-events).
+
+```dart
+final result = await netraClient.post(
+  requestOptions: RequestOptions(
+    url: "/uploads/photo",
+    body: RequestBody.multipart([...]),
+    executionMode: ExecutionMode.guaranteed
+  ),
+);
+
+// result is always ResponseQueued here
+```
+
+Listen for the eventual result the same way you'd listen for offline queue events:
+
+```dart
+netraClient.on(QueueEvent.queuedRequestExecuted((url, response) {
+  print("background upload finished: ${response.statusCode}");
+}));
+
+netraClient.on(QueueEvent.queuedRequestFailed((url) {
+  print("background upload failed: $url");
+}));
+```
+
+> Combining `backgroundOptions` with `offlinePolicyAction` is allowed but redundant — `backgroundOptions` already defers the request unconditionally, so the offline policy is never evaluated in that case.
 
 ---
 
@@ -538,6 +619,8 @@ netraClient.on(QueueEvent.queuedRequestFailed((url) {
 | `queuedRequestRestored` | Connection restored, queue processing started |
 | `queuedRequestExecuted` | Queued request succeeded |
 | `queuedRequestFailed` | Queued request failed on retry |
+
+> These same events also fire for `backgroundOptions` requests — a background request is a queued request under the hood, just deferred unconditionally instead of only when offline.
 
 ### Network Events
 

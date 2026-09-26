@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.4
+
+- Execution Direct and Guaranteed mode implemented.
+
 ## 1.0.3
 
 - Response queued and received added.
